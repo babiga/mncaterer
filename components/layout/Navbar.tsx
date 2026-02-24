@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/avatar";
 import BoringAvatar from "boring-avatars";
 
+const AVATAR_COLORS = ["#080F1D", "#12294F", "#31124B", "#4E215B", "#D4AF5A"];
+
 type NavbarUser = {
   id: string;
   name: string;
@@ -145,7 +147,7 @@ export default function Navbar() {
                     size={36}
                     name={currentUser.name}
                     variant="beam"
-                    colors={["#F59E0B", "#84CC16", "#06B6D4", "#3B82F6", "#F97316"]}
+                    colors={AVATAR_COLORS}
                   />
                 </AvatarFallback>
               </Avatar>
@@ -207,7 +209,7 @@ export default function Navbar() {
                           size={40}
                           name={currentUser.name}
                           variant="beam"
-                          colors={["#F59E0B", "#84CC16", "#06B6D4", "#3B82F6", "#F97316"]}
+                          colors={AVATAR_COLORS}
                         />
                       </AvatarFallback>
                     </Avatar>
