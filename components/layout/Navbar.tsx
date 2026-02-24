@@ -27,7 +27,11 @@ type NavbarUser = {
   userType: "dashboard" | "customer";
 };
 
-export default function Navbar() {
+type NavbarProps = {
+  trimmed?: boolean;
+};
+
+export default function Navbar({ trimmed = false }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [currentUser, setCurrentUser] = useState<NavbarUser | null>(null);
   const t = useTranslations("Navbar");
@@ -109,15 +113,16 @@ export default function Navbar() {
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center space-x-8">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors tracking-wide"
-            >
-              {link.name}
-            </a>
-          ))}
+          {!trimmed &&
+            navLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.href}
+                className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors tracking-wide"
+              >
+                {link.name}
+              </a>
+            ))}
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -195,15 +200,16 @@ export default function Navbar() {
               className="bg-background border-l border-white/10 w-[80%]"
             >
               <div className="flex flex-col space-y-8 mt-12">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    className="text-2xl font-serif text-foreground hover:text-primary transition-colors"
-                  >
-                    {link.name}
-                  </a>
-                ))}
+                {!trimmed &&
+                  navLinks.map((link) => (
+                    <a
+                      key={link.name}
+                      href={link.href}
+                      className="text-2xl font-serif text-foreground hover:text-primary transition-colors"
+                    >
+                      {link.name}
+                    </a>
+                  ))}
 
                 <div className="flex gap-4 pt-4 border-t border-white/5">
                   <button

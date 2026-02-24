@@ -338,7 +338,9 @@
     "UserArea": {
         "brand": "My Account",
         "nav": {
-            "profile": "Profile"
+            "profile": "Profile",
+            "orders": "Orders",
+            "feedbacks": "Feedbacks"
         },
         "actions": {
             "logout": "Log out",
