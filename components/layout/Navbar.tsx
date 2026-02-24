@@ -1,12 +1,12 @@
 'use client'
 
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
+import { useRouter as useBaseRouter } from "next/navigation";
 import { Globe } from "lucide-react";
 import {
   DropdownMenu,
@@ -14,13 +14,29 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar";
+import BoringAvatar from "boring-avatars";
+
+type NavbarUser = {
+  id: string;
+  name: string;
+  email: string;
+  avatar: string | null;
+  userType: "dashboard" | "customer";
+};
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [currentUser, setCurrentUser] = useState<NavbarUser | null>(null);
   const t = useTranslations("Navbar");
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
+  const baseRouter = useBaseRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,6 +44,32 @@ export default function Navbar() {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadCurrentUser = async () => {
+      try {
+        const response = await fetch("/api/auth/me", { cache: "no-store" });
+        if (!response.ok) return;
+
+        const result = await response.json();
+        if (isMounted) {
+          setCurrentUser(result?.data ?? null);
+        }
+      } catch {
+        if (isMounted) {
+          setCurrentUser(null);
+        }
+      }
+    };
+
+    loadCurrentUser();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const navLinks = [
@@ -40,6 +82,15 @@ export default function Navbar() {
 
   const handleLocaleChange = (newLocale: string) => {
     router.replace(pathname, { locale: newLocale });
+  };
+
+  const handleUserAvatarClick = () => {
+    if (!currentUser) return;
+    if (currentUser.userType === "dashboard") {
+      baseRouter.push("/dashboard");
+      return;
+    }
+    router.push("/profile");
   };
 
   return (
@@ -81,9 +132,31 @@ export default function Navbar() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Link href={"/login"}><Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-black transition-all">
-            {t("bookNow")}
-          </Button></Link>
+          {currentUser ? (
+            <button
+              onClick={handleUserAvatarClick}
+              className="rounded-full transition-opacity hover:opacity-90"
+              aria-label="Open account"
+            >
+              <Avatar className="h-9 w-9 border border-white/10">
+                <AvatarImage src={currentUser.avatar || undefined} alt={currentUser.name} />
+                <AvatarFallback className="bg-transparent p-0">
+                  <BoringAvatar
+                    size={36}
+                    name={currentUser.name}
+                    variant="beam"
+                    colors={["#F59E0B", "#84CC16", "#06B6D4", "#3B82F6", "#F97316"]}
+                  />
+                </AvatarFallback>
+              </Avatar>
+            </button>
+          ) : (
+            <Link href={"/login"}>
+              <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-black transition-all">
+                {t("bookNow")}
+              </Button>
+            </Link>
+          )}
         </div>
 
         {/* Mobile Nav */}
@@ -121,9 +194,34 @@ export default function Navbar() {
                   </button>
                 </div>
 
-                <Button className="bg-primary text-black hover:bg-primary/90 w-full">
-                  {t("bookNow")}
-                </Button>
+                {currentUser ? (
+                  <button
+                    onClick={handleUserAvatarClick}
+                    className="w-full flex items-center justify-center gap-3 rounded-md border border-white/10 p-3"
+                    aria-label="Open account"
+                  >
+                    <Avatar className="h-10 w-10 border border-white/10">
+                      <AvatarImage src={currentUser.avatar || undefined} alt={currentUser.name} />
+                      <AvatarFallback className="bg-transparent p-0">
+                        <BoringAvatar
+                          size={40}
+                          name={currentUser.name}
+                          variant="beam"
+                          colors={["#F59E0B", "#84CC16", "#06B6D4", "#3B82F6", "#F97316"]}
+                        />
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm font-medium text-foreground">
+                      {currentUser.name}
+                    </span>
+                  </button>
+                ) : (
+                  <Link href="/login" className="w-full">
+                    <Button className="bg-primary text-black hover:bg-primary/90 w-full">
+                      {t("bookNow")}
+                    </Button>
+                  </Link>
+                )}
               </div>
             </SheetContent>
           </Sheet>

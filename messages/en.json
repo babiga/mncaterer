@@ -334,5 +334,61 @@
             "cancel": "Cancel",
             "confirm": "Delete"
         }
+    },
+    "UserArea": {
+        "brand": "My Account",
+        "nav": {
+            "profile": "Profile"
+        },
+        "actions": {
+            "logout": "Log out",
+            "loggingOut": "Logging out..."
+        }
+    },
+    "UserProfile": {
+        "page": {
+            "title": "Profile Settings",
+            "description": "Manage your personal account information."
+        },
+        "title": "Basic Information",
+        "description": "Update your profile details used for bookings and contact.",
+        "fields": {
+            "name": "Display Name",
+            "email": "Email",
+            "firstName": "First Name",
+            "lastName": "Last Name",
+            "phone": "Phone",
+            "address": "Address",
+            "userType": "Account Type",
+            "organizationName": "Organization",
+            "companyLegalNo": "Registration Number"
+        },
+        "placeholders": {
+            "name": "Enter your display name",
+            "firstName": "Enter your first name",
+            "lastName": "Enter your last name",
+            "phone": "+976 XXXX XXXX",
+            "address": "Enter your address"
+        },
+        "userType": {
+            "INDIVIDUAL": "Individual",
+            "CORPORATE": "Corporate"
+        },
+        "actions": {
+            "save": "Save Changes",
+            "saving": "Saving..."
+        },
+        "messages": {
+            "updateSuccess": "Profile updated successfully.",
+            "updateError": "Failed to update profile."
+        },
+        "validation": {
+            "nameMin": "Name must be at least 2 characters",
+            "nameMax": "Name must be less than 100 characters",
+            "firstNameMax": "First name must be less than 50 characters",
+            "lastNameMax": "Last name must be less than 50 characters",
+            "phoneInvalid": "Please enter a valid phone number",
+            "addressMax": "Address must be less than 500 characters"
+        }
     }
 }

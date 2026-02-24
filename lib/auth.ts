@@ -4,6 +4,7 @@ import { SignJWT, jwtVerify } from "jose";
 import { prisma } from "@/lib/prisma";
 import type {
   DashboardUser,
+  User,
   ChefProfile,
   CompanyProfile,
   DashboardUserRole,
@@ -41,6 +42,8 @@ export type DashboardUserWithProfile = Omit<DashboardUser, "password"> & {
   chefProfile: ChefProfile | null;
   companyProfile: CompanyProfile | null;
 };
+
+export type CustomerUser = Omit<User, "password">;
 
 // Create a session token
 export async function createSession(payload: Omit<SessionPayload, "exp">): Promise<string> {
@@ -121,4 +124,24 @@ export async function getCurrentUserWithProfile(): Promise<DashboardUserWithProf
     ...userWithoutPassword,
     type: typeMap[dashboardUser.role],
   };
+}
+
+// Get current regular customer user
+export async function getCurrentCustomer(): Promise<CustomerUser | null> {
+  const session = await getSession();
+
+  if (!session || session.userType !== "customer") {
+    return null;
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.userId },
+  });
+
+  if (!user) {
+    return null;
+  }
+
+  const { password: _, ...userWithoutPassword } = user;
+  return userWithoutPassword;
 }

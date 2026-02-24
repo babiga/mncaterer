@@ -66,7 +66,7 @@ export function LoginForm() {
       if (result.userType === "dashboard") {
         baseRouter.push("/dashboard");
       } else {
-        router.push("/");
+        router.push("/profile");
       }
     } catch {
       setError(t("errors.serverError"));
