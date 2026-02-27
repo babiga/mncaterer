@@ -7,23 +7,38 @@ import { ArrowLeft, GlassWater, Sparkles, Wine } from "lucide-react";
 
 export default async function PrivateServicePage() {
   const t = await getTranslations("ServiceDetails.private");
+  const s = await getTranslations("Services");
   const touchpoints = t.raw("touchpoints") as string[];
   const moments = [
     { title: t("moments.0.title"), description: t("moments.0.description") },
     { title: t("moments.1.title"), description: t("moments.1.description") },
     { title: t("moments.2.title"), description: t("moments.2.description") },
   ];
+  const serviceNav = [
+    { href: "/services/corporate", label: s("corporate.title") },
+    { href: "/services/wedding", label: s("weddings.title") },
+    { href: "/services/vip", label: s("vip.title") },
+  ];
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,#50324f_0%,#2d1830_45%,#170d1b_100%)] text-rose-50">
       <Navbar trimmed />
       <main className="container mx-auto px-6 pb-20 pt-28 space-y-14">
-        <Button asChild variant="ghost" className="text-rose-100 hover:bg-white/10">
-          <Link href="/#services">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            {t("backToServices")}
-          </Link>
-        </Button>
+        <div className="flex flex-wrap items-center gap-4">
+          <Button asChild variant="ghost" className="text-rose-100 hover:bg-white/10">
+            <Link href="/#services">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back
+            </Link>
+          </Button>
+          <div className="flex flex-wrap items-center gap-4 text-xs uppercase tracking-[0.16em] text-rose-100/80">
+            {serviceNav.map((item) => (
+              <Link key={item.href} href={item.href} className="hover:text-rose-100 transition-colors">
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </div>
 
         <section className="grid gap-6 rounded-3xl border border-rose-200/25 bg-[#2f1932]/70 p-8 md:grid-cols-[0.95fr_1.05fr] md:p-12">
           <div className="relative min-h-80 overflow-hidden rounded-[1.75rem] border border-rose-100/20">
@@ -42,7 +57,7 @@ export default async function PrivateServicePage() {
             <h1 className="text-4xl font-semibold leading-tight md:text-6xl">{t("title")}</h1>
             <p className="max-w-xl text-rose-100/85 md:text-lg">{t("description")}</p>
             <Button asChild size="lg" className="bg-rose-200 text-[#2b1230] hover:bg-rose-100">
-              <Link href="/profile">{t("cta")}</Link>
+              <Link href="/inquiry">{t("cta")}</Link>
             </Button>
           </div>
         </section>

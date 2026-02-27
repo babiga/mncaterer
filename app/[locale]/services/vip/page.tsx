@@ -15,23 +15,38 @@ import {
 
 export default async function VipServicePage() {
   const t = await getTranslations("ServiceDetails.vip");
+  const s = await getTranslations("Services");
   const pillars = [
     { title: t("pillars.0.title"), description: t("pillars.0.description"), icon: Gem },
     { title: t("pillars.1.title"), description: t("pillars.1.description"), icon: ShieldCheck },
     { title: t("pillars.2.title"), description: t("pillars.2.description"), icon: Sparkles },
   ];
   const signatureMoments = t.raw("signatureMoments") as string[];
+  const serviceNav = [
+    { href: "/services/corporate", label: s("corporate.title") },
+    { href: "/services/private", label: s("private.title") },
+    { href: "/services/wedding", label: s("weddings.title") },
+  ];
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,#40351f_0%,#1f1a11_45%,#0b0906_100%)] text-amber-50">
       <Navbar trimmed />
       <main className="container mx-auto px-6 pb-20 pt-28 space-y-12">
-        <Button asChild variant="ghost" className="text-amber-100 hover:bg-amber-100/10">
-          <Link href="/#services">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            {t("backToServices")}
-          </Link>
-        </Button>
+        <div className="flex flex-wrap items-center gap-4">
+          <Button asChild variant="ghost" className="text-amber-100 hover:bg-amber-100/10">
+            <Link href="/#services">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back
+            </Link>
+          </Button>
+          <div className="flex flex-wrap items-center gap-4 text-xs uppercase tracking-[0.16em] text-amber-100/80">
+            {serviceNav.map((item) => (
+              <Link key={item.href} href={item.href} className="hover:text-amber-50 transition-colors">
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </div>
 
         <section className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr]">
           <aside className="space-y-6 rounded-3xl border border-amber-200/25 bg-[#17130d]/85 p-8 lg:sticky lg:top-24 lg:h-fit">
@@ -46,7 +61,7 @@ export default async function VipServicePage() {
               {t("description")}
             </p>
             <Button asChild className="bg-amber-200 text-[#1f1a11] hover:bg-amber-100">
-              <Link href="/profile">{t("cta")}</Link>
+              <Link href="/inquiry">{t("cta")}</Link>
             </Button>
             <div className="rounded-2xl border border-amber-200/20 bg-[#1f1a11]/75 p-4">
               <h2 className="mb-3 text-lg font-semibold">{t("cadenceTitle")}</h2>

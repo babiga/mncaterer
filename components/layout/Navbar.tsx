@@ -37,6 +37,7 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
   const t = useTranslations("Navbar");
   const locale = useLocale();
   const pathname = usePathname();
+  const isWeddingServicePage = pathname.includes("/services/wedding");
   const router = useRouter();
   const baseRouter = useBaseRouter();
 
@@ -106,7 +107,9 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
       <div className="container mx-auto px-6 flex justify-between items-center">
         <Link
           href="/"
-          className="md:text-xl lg:text-2xl font-serif tracking-wider font-bold text-foreground uppercase"
+          className={`md:text-xl lg:text-2xl font-serif tracking-wider font-bold uppercase ${
+            isWeddingServicePage ? "text-[#8a5b35]" : "text-foreground"
+          }`}
         >
           Mongolian National Caterer
         </Link>
@@ -118,7 +121,11 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
               <a
                 key={link.name}
                 href={link.href}
-                className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors tracking-wide"
+                className={`text-sm font-medium transition-colors tracking-wide ${
+                  isWeddingServicePage
+                    ? "text-[#8a5b35]/85 hover:text-[#6f4d2f]"
+                    : "text-foreground/80 hover:text-primary"
+                }`}
               >
                 {link.name}
               </a>
@@ -129,7 +136,11 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
               <Button
                 variant="ghost"
                 size="sm"
-                className="flex items-center gap-2 text-foreground/80 hover:text-primary"
+                className={`flex items-center gap-2 ${
+                  isWeddingServicePage
+                    ? "text-[#8a5b35]/85 hover:text-[#6f4d2f]"
+                    : "text-foreground/80 hover:text-primary"
+                }`}
               >
                 <Globe className="h-4 w-4" />
                 <span className="uppercase">{locale}</span>
@@ -179,7 +190,11 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
             <Link href={"/login"}>
               <Button
                 variant="outline"
-                className="border-primary text-primary hover:bg-primary hover:text-black transition-all"
+                className={
+                  isWeddingServicePage
+                    ? "border-[#8a5b35] text-[#8a5b35] hover:bg-[#8a5b35] hover:text-amber-50 transition-all"
+                    : "border-primary text-primary hover:bg-primary hover:text-black transition-all"
+                }
               >
                 {t("getStarted")}
               </Button>
@@ -205,7 +220,11 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
                     <a
                       key={link.name}
                       href={link.href}
-                      className="text-2xl font-serif text-foreground hover:text-primary transition-colors"
+                      className={`text-2xl font-serif transition-colors ${
+                        isWeddingServicePage
+                          ? "text-[#8a5b35] hover:text-[#6f4d2f]"
+                          : "text-foreground hover:text-primary"
+                      }`}
                     >
                       {link.name}
                     </a>
@@ -214,13 +233,29 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
                 <div className="flex gap-4 pt-4 border-t border-white/5">
                   <button
                     onClick={() => handleLocaleChange("en")}
-                    className={`text-sm uppercase tracking-widest ${locale === "en" ? "text-primary" : "text-foreground/60"}`}
+                    className={`text-sm uppercase tracking-widest ${
+                      locale === "en"
+                        ? isWeddingServicePage
+                          ? "text-[#8a5b35]"
+                          : "text-primary"
+                        : isWeddingServicePage
+                          ? "text-[#8a5b35]/55"
+                          : "text-foreground/60"
+                    }`}
                   >
                     EN
                   </button>
                   <button
                     onClick={() => handleLocaleChange("mn")}
-                    className={`text-sm uppercase tracking-widest ${locale === "mn" ? "text-primary" : "text-foreground/60"}`}
+                    className={`text-sm uppercase tracking-widest ${
+                      locale === "mn"
+                        ? isWeddingServicePage
+                          ? "text-[#8a5b35]"
+                          : "text-primary"
+                        : isWeddingServicePage
+                          ? "text-[#8a5b35]/55"
+                          : "text-foreground/60"
+                    }`}
                   >
                     MN
                   </button>
@@ -252,7 +287,13 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
                   </button>
                 ) : (
                   <Link href="/login" className="w-full">
-                    <Button className="bg-primary text-black hover:bg-primary/90 w-full">
+                    <Button
+                      className={
+                        isWeddingServicePage
+                          ? "bg-[#8a5b35] text-amber-50 hover:bg-[#764c2d] w-full"
+                          : "bg-primary text-black hover:bg-primary/90 w-full"
+                      }
+                    >
                       {t("getStarted")}
                     </Button>
                   </Link>

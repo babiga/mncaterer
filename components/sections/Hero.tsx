@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 
 // Static hero images fallback
 const staticHeroImages = [
@@ -145,11 +146,12 @@ export default function Hero({ banners }: { banners?: BannerType[] }) {
             {t("bookCatering")}
           </Button>
           <Button
+            asChild
             size="lg"
             variant="outline"
             className="border-white/30 text-white hover:border-primary hover:text-primary hover:bg-transparent text-lg px-8 py-6 rounded-none backdrop-blur-sm transition-all duration-300"
           >
-            {t("requestQuote")}
+            <Link href="/inquiry">{t("requestQuote")}</Link>
           </Button>
         </motion.div>
       </div>

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 
 export default function VIPSection() {
   const t = useTranslations("VIP");
@@ -41,8 +42,8 @@ export default function VIPSection() {
               ))}
             </ul>
 
-            <Button className="bg-white text-black hover:bg-primary hover:text-black text-lg px-8 py-6 rounded-none transition-all">
-              {t("requestAccess")}
+            <Button asChild className="bg-white text-black hover:bg-primary hover:text-black text-lg px-8 py-6 rounded-none transition-all">
+              <Link href="/inquiry">{t("requestAccess")}</Link>
             </Button>
           </motion.div>
 

@@ -7,23 +7,38 @@ import { ArrowLeft, Clock3, Flower2, Heart, Sparkles, Utensils } from "lucide-re
 
 export default async function WeddingServicePage() {
   const t = await getTranslations("ServiceDetails.wedding");
+  const s = await getTranslations("Services");
   const timeline = [
     { title: t("timeline.0.title"), description: t("timeline.0.description") },
     { title: t("timeline.1.title"), description: t("timeline.1.description") },
     { title: t("timeline.2.title"), description: t("timeline.2.description") },
   ];
   const signatures = t.raw("signatures") as string[];
+  const serviceNav = [
+    { href: "/services/corporate", label: s("corporate.title") },
+    { href: "/services/private", label: s("private.title") },
+    { href: "/services/vip", label: s("vip.title") },
+  ];
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,#f6ecdc_0%,#eadcc9_45%,#dbc8af_100%)] text-stone-900">
       <Navbar trimmed />
       <main className="container mx-auto px-6 pb-20 pt-28 space-y-14">
-        <Button asChild variant="ghost" className="text-stone-700 hover:bg-stone-900/5">
-          <Link href="/#services">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            {t("backToServices")}
-          </Link>
-        </Button>
+        <div className="flex flex-wrap items-center gap-4">
+          <Button asChild variant="ghost" className="text-stone-700 hover:bg-stone-900/5">
+            <Link href="/#services">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back
+            </Link>
+          </Button>
+          <div className="flex flex-wrap items-center gap-4 text-xs uppercase tracking-[0.16em] text-[#8a5b35]/85">
+            {serviceNav.map((item) => (
+              <Link key={item.href} href={item.href} className="hover:text-[#6f4d2f] transition-colors">
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </div>
 
         <section className="rounded-3xl border border-[#d7c2a6] bg-[#fffaf1]/90 p-8 md:p-12">
           <div className="mx-auto max-w-3xl space-y-6 text-center">
@@ -36,7 +51,7 @@ export default async function WeddingServicePage() {
             </h1>
             <p className="text-[#6f4d2f] md:text-lg">{t("description")}</p>
             <Button asChild className="bg-[#8a5b35] text-amber-50 hover:bg-[#764c2d]">
-              <Link href="/profile">{t("cta")}</Link>
+              <Link href="/inquiry">{t("cta")}</Link>
             </Button>
           </div>
           <div className="relative mt-8 min-h-80 overflow-hidden rounded-2xl border border-[#d7c2a6]">

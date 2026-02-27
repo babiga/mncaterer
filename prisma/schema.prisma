@@ -111,6 +111,25 @@ enum NotificationType {
   IN_APP
 }
 
+enum InquiryRequesterType {
+  INDIVIDUAL
+  ORG
+}
+
+enum InquiryServiceType {
+  CORPORATE
+  PRIVATE
+  WEDDING
+  VIP
+  OTHER
+}
+
+enum InquiryStatus {
+  NEW
+  IN_PROGRESS
+  RESOLVED
+}
+
 // ============================================
 // USER (Customers - Public Website)
 // ============================================
@@ -507,6 +526,22 @@ model DashboardNotification {
   isRead  Boolean          @default(false)
 
   createdAt DateTime @default(now())
+}
+
+model Inquiry {
+  id String @id @default(cuid())
+
+  type        InquiryRequesterType
+  name        String
+  phone       String
+  email       String
+  serviceType InquiryServiceType
+  message     String? @db.Text
+
+  status InquiryStatus @default(NEW)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // ============================================

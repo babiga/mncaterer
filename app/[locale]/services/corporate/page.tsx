@@ -14,6 +14,7 @@ import {
 
 export default async function CorporateServicePage() {
   const t = await getTranslations("ServiceDetails.corporate");
+  const s = await getTranslations("Services");
   const highlights = [
     { title: t("highlights.0.title"), description: t("highlights.0.description"), icon: UtensilsCrossed },
     { title: t("highlights.1.title"), description: t("highlights.1.description"), icon: CalendarClock },
@@ -25,17 +26,31 @@ export default async function CorporateServicePage() {
     { step: "02", title: t("process.1.title"), description: t("process.1.description") },
     { step: "03", title: t("process.2.title"), description: t("process.2.description") },
   ];
+  const serviceNav = [
+    { href: "/services/private", label: s("private.title") },
+    { href: "/services/wedding", label: s("weddings.title") },
+    { href: "/services/vip", label: s("vip.title") },
+  ];
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,#1f3b67_0%,#0f1f39_45%,#081222_100%)] text-slate-100">
       <Navbar trimmed />
       <main className="container mx-auto px-6 pb-20 pt-28 space-y-14">
-        <Button asChild variant="ghost" className="text-slate-200 hover:bg-white/10">
-          <Link href="/#services">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            {t("backToServices")}
-          </Link>
-        </Button>
+        <div className="flex flex-wrap items-center gap-4">
+          <Button asChild variant="ghost" className="text-slate-200 hover:bg-white/10">
+            <Link href="/#services">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back
+            </Link>
+          </Button>
+          <div className="flex flex-wrap items-center gap-4 text-xs uppercase tracking-[0.16em] text-blue-100/80">
+            {serviceNav.map((item) => (
+              <Link key={item.href} href={item.href} className="hover:text-blue-100 transition-colors">
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </div>
 
         <section className="grid gap-8 rounded-3xl border border-blue-200/25 bg-[#0e213d]/75 p-8 lg:grid-cols-[1.05fr_0.95fr] lg:p-12">
           <div className="space-y-7">
@@ -54,7 +69,7 @@ export default async function CorporateServicePage() {
               ))}
             </div>
             <Button asChild size="lg" className="bg-blue-200 text-[#0b1a33] hover:bg-blue-100">
-              <Link href="/profile">{t("cta")}</Link>
+              <Link href="/inquiry">{t("cta")}</Link>
             </Button>
           </div>
 

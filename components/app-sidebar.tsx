@@ -7,6 +7,7 @@ import {
   CrownIcon,
   LayoutDashboardIcon,
   PartyPopperIcon,
+  MessageSquareIcon,
   SettingsIcon,
   StarIcon,
   UsersIcon,
@@ -78,6 +79,11 @@ const data = {
       name: "Users",
       url: "/dashboard/users",
       icon: UsersIcon,
+    },
+    {
+      name: "Inquiries",
+      url: "/dashboard/inquiries",
+      icon: MessageSquareIcon,
     },
     {
       name: "Finance",

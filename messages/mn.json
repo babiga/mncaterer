@@ -402,150 +402,150 @@
     },
     "ServiceDetails": {
         "corporate": {
-            "backToServices": "Back to services",
-            "eyebrow": "Corporate Catering",
-            "title": "Business events with polished culinary execution.",
-            "description": "From private leadership dinners to high-volume company functions, this service is built for reliability, speed, and premium guest experience.",
-            "cta": "Start booking consultation",
-            "heroAlt": "Corporate catering service",
-            "bestFitTitle": "Best fit for",
-            "deliveryTitle": "Delivery framework",
+            "backToServices": "Үйлчилгээ рүү буцах",
+            "eyebrow": "Компанийн Кейтеринг",
+            "title": "Бизнес арга хэмжээнд тохирсон өндөр түвшний кейтеринг.",
+            "description": "Удирдлагын оройн зоогноос эхлээд олон хүнтэй компанийн эвент хүртэл найдвартай, хурдтай, дээд зэрэглэлийн үйлчилгээ үзүүлнэ.",
+            "cta": "Захиалгын зөвлөгөө эхлүүлэх",
+            "heroAlt": "Компанийн кейтеринг үйлчилгээ",
+            "bestFitTitle": "Тохиромжтой эвентүүд",
+            "deliveryTitle": "Хүргэлт, үйлчилгээний бүтэц",
             "highlights": [
                 {
-                    "title": "Executive Ready Menus",
-                    "description": "Balanced pacing for breakfast briefings, lunch workshops, and evening receptions."
+                    "title": "Удирдлагын түвшний цэс",
+                    "description": "Өглөөний уулзалт, өдрийн воркшоп, оройн хүлээн авалтад тохируулсан тэнцвэртэй хэмнэл."
                 },
                 {
-                    "title": "Operational Precision",
-                    "description": "Arrival windows, service cadence, and cleanup are aligned to your run-of-show."
+                    "title": "Нарийн ажиллагаа",
+                    "description": "Ирцийн цаг, үйлчилгээний урсгал, цэвэрлэгээ зэргийг эвентийн хөтөлбөртэй уялдуулна."
                 },
                 {
-                    "title": "Brand-Aligned Delivery",
-                    "description": "Service presentation can match company standards and event identity."
+                    "title": "Брэндтэй нийцсэн танилцуулга",
+                    "description": "Хоол, үйлчилгээний харагдах байдал компанийн өнгө төрхтэй нийцнэ."
                 }
             ],
             "formats": [
-                "Board meetings and leadership offsites",
-                "Product launches and media previews",
-                "Client appreciation dinners",
-                "Annual parties and end-of-year gatherings"
+                "ТУЗ-ийн хурал, удирдлагын уулзалт",
+                "Бүтээгдэхүүн танилцуулга, медиа арга хэмжээ",
+                "Харилцагчийн хүндэтгэлийн оройн зоог",
+                "Жилийн хаалтын болон байгууллагын баярын эвент"
             ],
             "process": [
                 {
-                    "title": "Event Brief",
-                    "description": "We align on event goals, guest profile, dietary needs, and venue constraints."
+                    "title": "Эвентийн товч төлөвлөлт",
+                    "description": "Эвентийн зорилго, зочдын онцлог, хоолны шаардлага, байршлын нөхцөлийг тодорхойлно."
                 },
                 {
-                    "title": "Menu and Flow Design",
-                    "description": "Our team builds a menu and service plan that fits your timeline minute-by-minute."
+                    "title": "Цэс ба урсгалын дизайн",
+                    "description": "Манай баг таны хөтөлбөрийн минут бүрт нийцсэн цэс, үйлчилгээний төлөвлөгөө гаргана."
                 },
                 {
-                    "title": "Execution",
-                    "description": "Dedicated coordinators manage setup, active service, and close-out without disruption."
+                    "title": "Гүйцэтгэл",
+                    "description": "Хариуцсан зохицуулагчид бэлтгэл, үйлчилгээ, дуусгалтыг тасалдалгүй удирдана."
                 }
             ]
         },
         "private": {
-            "backToServices": "Back to services",
-            "eyebrow": "Private Occasions",
-            "title": "Intimate events designed around your personal style.",
-            "description": "Private service is built for comfort and character. Menus, pacing, and table presentation are tailored to your guests and setting so hosting feels effortless.",
-            "cta": "Design my private event",
-            "heroAlt": "Private occasion service",
-            "includedTitle": "What is included",
-            "toneTitle": "Guest experience tone",
-            "guestRangeTitle": "Recommended guest range",
-            "guestRangeDescription": "Best suited for 10-150 guests where detail-rich hospitality and personalized pacing matter most.",
+            "backToServices": "Үйлчилгээ рүү буцах",
+            "eyebrow": "Хувийн Арга Хэмжээ",
+            "title": "Таны хэв маягт тохирсон дотно эвентийн үйлчилгээ.",
+            "description": "Хувийн арга хэмжээнд зориулсан үйлчилгээ нь тав тух, онцлог уур амьсгалд төвлөрнө. Цэс, үйлчилгээний хэмнэл, ширээний засал бүгд таны зочдод тохируулна.",
+            "cta": "Хувийн эвентээ төлөвлөх",
+            "heroAlt": "Хувийн арга хэмжээний үйлчилгээ",
+            "includedTitle": "Үүнд багтсан зүйлс",
+            "toneTitle": "Зочны туршлагын өнгө аяс",
+            "guestRangeTitle": "Зөвлөмжит зочдын тоо",
+            "guestRangeDescription": "10-150 зочинтой, нарийн деталь чухал эвентүүдэд хамгийн тохиромжтой.",
             "touchpoints": [
-                "Host-first menu workshop and atmosphere planning",
-                "Flexible service format from plated to shared style",
-                "Warm, discreet floor team for intimate guest flow",
-                "Optional beverage pairing and signature welcome setup"
+                "Захиалагчийн хүсэлтэд тулгуурласан цэс, уур амьсгалын төлөвлөлт",
+                "Плате эсвэл хуваалцах хэлбэрийн уян хатан үйлчилгээ",
+                "Дотно орчинд тохирсон дулаан, даруу үйлчилгээний баг",
+                "Ундааны хослол болон онцгой угтах хэсгийн сонголт"
             ],
             "tone": [
-                "Service stays attentive without interrupting the flow of conversation.",
-                "Course pacing adapts to your rhythm, from relaxed evenings to energetic celebrations.",
-                "Tablescape and plating details are curated to reflect your host identity."
+                "Үйлчилгээ нь ярианы урсгалыг таслалгүйгээр анхааралтай явагдана.",
+                "Хоолны хэмнэл нь тайван оройноос баярын идэвхтэй уур амьсгал хүртэл уян хатан зохицно.",
+                "Ширээний засал, таваглалт нь таны арга хэмжээний өнгө төрхийг илэрхийлнэ."
             ],
             "moments": [
                 {
-                    "title": "Dinner Parties",
-                    "description": "Refined multi-course experiences for small guest counts and close conversation."
+                    "title": "Оройн зоогийн үдэшлэг",
+                    "description": "Цөөн зочинтой, дотно ярианд тохирсон олон дамжлагат цэвэрхэн шийдэл."
                 },
                 {
-                    "title": "Milestone Celebrations",
-                    "description": "Birthdays and anniversaries with expressive menus shaped around your story."
+                    "title": "Онцгой тэмдэглэлт баяр",
+                    "description": "Төрсөн өдөр, ойн баярт зориулсан таны түүхтэй уялдсан онцгой цэс."
                 },
                 {
-                    "title": "Boutique Receptions",
-                    "description": "Creative culinary layouts for curated homes, villas, and private spaces."
+                    "title": "Бутикт хүлээн авалт",
+                    "description": "Хувийн сууц, вилла, тусгай орон зайд тохирсон бүтээлч хоолны шийдлүүд."
                 }
             ]
         },
         "wedding": {
-            "backToServices": "Back to services",
-            "eyebrow": "Wedding Catering",
-            "title": "Romantic, warm service for your most important day.",
-            "description": "This page is intentionally beige and soft-toned to match wedding styling. Every service detail is planned around ceremony flow, emotional moments, and elegant guest comfort.",
-            "cta": "Plan wedding menu",
-            "heroAlt": "Wedding catering service",
-            "signatureTitle": "Signature inclusions",
-            "timelineTitle": "Celebration timeline",
-            "menuTitle": "Menu direction",
-            "menuDescription": "Couples typically choose a blend of plated elegance and interactive stations so formal moments feel refined while social moments remain lively and personal.",
+            "backToServices": "Үйлчилгээ рүү буцах",
+            "eyebrow": "Хуримын Кейтеринг",
+            "title": "Таны хамгийн чухал өдөрт зориулсан романтик, дулаан үйлчилгээ.",
+            "description": "Хуримын өнгө төрхөд нийцсэн зөөлөн, дулаан шийдлээр ёслолын урсгал, сэтгэл хөдөлгөм мөч, зочдын тав тухыг төвд тавин төлөвлөнө.",
+            "cta": "Хуримын цэс төлөвлөх",
+            "heroAlt": "Хуримын кейтеринг үйлчилгээ",
+            "signatureTitle": "Онцгой багц",
+            "timelineTitle": "Баярын хөтөлбөрийн дараалал",
+            "menuTitle": "Цэсний чиглэл",
+            "menuDescription": "Ихэнх хосууд албан ёсны хэсэгт тансаг плате, чөлөөт хэсэгт интерактив станц хослуулж баярын уур амьсгалыг тэнцвэржүүлдэг.",
             "signatures": [
-                "Couple-led tasting and menu refinement session",
-                "Dedicated wedding service captain and ceremony timing sync",
-                "Dietary-aware guest management for seated plans",
-                "Dessert and toast choreography with venue coordination"
+                "Хосуудын оролцоотой амталгаа, цэсийн нарийвчилсан тохиргоо",
+                "Хуримын үйлчилгээ хариуцсан ахлах менежер, ёслолын цагийн уялдаа",
+                "Зочдын хоолны онцгой шаардлагад нийцсэн суудлын төлөвлөлт",
+                "Амттан болон хундага өргөх үеийн тайз, байршлын зохицуулалт"
             ],
             "timeline": [
                 {
-                    "title": "Welcome Reception",
-                    "description": "Passed bites and drinks during guest arrival and photo session."
+                    "title": "Зочин угтах хэсэг",
+                    "description": "Зочид ирэх болон зураг авалтын үеэр хөнгөн зууш, ундаагаар үйлчилнэ."
                 },
                 {
-                    "title": "Main Celebration Dining",
-                    "description": "Plated or shared-service dinner paced around speeches and rituals."
+                    "title": "Үндсэн баярын зоог",
+                    "description": "Илтгэл, ёслолын хэсэгтэй уялдсан плате эсвэл хуваалцах хэлбэрийн зоог."
                 },
                 {
-                    "title": "Late Celebration Service",
-                    "description": "Light comfort selections and desserts for the final part of the night."
+                    "title": "Оройн төгсгөлийн үйлчилгээ",
+                    "description": "Баярын төгсгөлд зориулсан хөнгөн хоол, амттаны сонголтууд."
                 }
             ]
         },
         "vip": {
-            "backToServices": "Back to services",
+            "backToServices": "Үйлчилгээ рүү буцах",
             "eyebrow": "VIP Premiere",
-            "title": "Bespoke service for high-stakes and high-visibility events.",
-            "description": "VIP is engineered for hosts who need precision, discretion, and unmistakable quality at every touchpoint from first briefing to final guest departure.",
-            "cta": "Request VIP consultation",
-            "heroAlt": "VIP catering service",
-            "signatureTitle": "Signature moments",
-            "cadenceTitle": "Service cadence",
+            "title": "Өндөр ач холбогдолтой эвентүүдэд зориулсан тусгай VIP үйлчилгээ.",
+            "description": "Эхний зөвлөгөөнөөс эхлээд зочдын сүүлийн алхам хүртэлх мөч бүрт нарийвчлал, нууцлал, ялгарах чанарыг шаарддаг захиалагчдад зориулсан шийдэл.",
+            "cta": "VIP зөвлөгөө хүсэх",
+            "heroAlt": "VIP кейтеринг үйлчилгээ",
+            "signatureTitle": "Онцгой мөчүүд",
+            "cadenceTitle": "Үйлчилгээний хэмнэл",
             "signatureMoments": [
-                "Chef-led tasting arc before final event signoff",
-                "Sommelier-ready pairings for each menu movement",
-                "Table-side finishing and guest-by-guest personalization",
-                "Real-time pacing control for high-visibility moments"
+                "Эцсийн баталгаажуулалтын өмнөх ахлах тогоочийн амталгааны үе шат",
+                "Цэс бүрт тохирсон сомельегийн ундааны хослол",
+                "Ширээний дэргэд эцсийн өнгөлгөө болон зочин бүрийн хувийн тохиргоо",
+                "Олон нийтийн анхаарлын мөчүүдэд бодит цагийн хэмнэлийн удирдлага"
             ],
             "cadence": [
-                "Discovery and preference mapping with host or EA team.",
-                "Bespoke menu architecture and sensory presentation planning.",
-                "Real-time white-glove execution and discreet oversight."
+                "Захиалагч эсвэл туслах багтай эхний шаардлага, хүсэлтийн нарийвчилсан ярилцлага.",
+                "Тусгай цэсийн бүтэц болон мэдрэмж төвтэй танилцуулгын төлөвлөлт.",
+                "Бодит цагийн white-glove гүйцэтгэл болон даруу хяналт."
             ],
             "pillars": [
                 {
-                    "title": "Rare Ingredient Sourcing",
-                    "description": "Ingredient strategy is curated per guest profile and event narrative."
+                    "title": "Ховор түүхий эдийн бүрдүүлэлт",
+                    "description": "Зочдын онцлог, эвентийн түүхэнд тулгуурласан түүхий эдийн стратеги."
                 },
                 {
-                    "title": "White-Glove Service",
-                    "description": "Senior service teams execute discreetly with VIP treatment standards."
+                    "title": "White-Glove үйлчилгээ",
+                    "description": "Ахлах түвшний баг VIP стандартын дагуу даруу, нарийн гүйцэтгэнэ."
                 },
                 {
-                    "title": "Concierge Control",
-                    "description": "One lead point-of-contact coordinates all culinary and service decisions."
+                    "title": "Concierge зохицуулалт",
+                    "description": "Нэг ахлах холбоо барих цэгээр хоол, үйлчилгээний бүх шийдвэрийг нэгтгэн удирдана."
                 }
             ]
         }
