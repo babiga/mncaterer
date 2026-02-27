@@ -154,6 +154,7 @@ model User {
   bookings      Booking[]
   reviews       Review[]
   notifications Notification[]
+  inquiries     Inquiry[]
 }
 
 // ============================================
@@ -531,6 +532,9 @@ model DashboardNotification {
 model Inquiry {
   id String @id @default(cuid())
 
+  userId String?
+  user   User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
+
   type        InquiryRequesterType
   name        String
   phone       String
@@ -542,6 +546,8 @@ model Inquiry {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 // ============================================

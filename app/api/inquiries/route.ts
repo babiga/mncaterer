@@ -53,6 +53,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await getSession();
     const body = await request.json();
     const result = createInquirySchema.safeParse(body);
 
@@ -71,6 +72,13 @@ export async function POST(request: NextRequest) {
       data: {
         ...result.data,
         message: result.data.message?.trim() || null,
+        ...(session?.userType === "customer"
+          ? {
+              user: {
+                connect: { id: session.userId },
+              },
+            }
+          : {}),
       },
     });
 

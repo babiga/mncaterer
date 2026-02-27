@@ -17,6 +17,7 @@ import {
 
 export type InquiryRecord = {
   id: string;
+  userId: string | null;
   type: "INDIVIDUAL" | "ORG";
   name: string;
   phone: string;
@@ -105,6 +106,16 @@ export function getInquiriesColumns({
       accessorKey: "type",
       header: "Type",
       cell: ({ row }) => <span>{typeLabel[row.original.type]}</span>,
+    },
+    {
+      accessorKey: "userId",
+      header: "Linked User",
+      cell: ({ row }) =>
+        row.original.userId ? (
+          <span className="font-mono text-xs">{row.original.userId}</span>
+        ) : (
+          <span className="text-xs text-muted-foreground">Guest</span>
+        ),
     },
     {
       accessorKey: "serviceType",

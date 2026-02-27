@@ -215,9 +215,31 @@
         "title": "Хоолны Урлагийн Мастерууд",
         "description": "Танд зориулсан амтны мастерууд.",
         "viewAll": "Бүх тогооч нарыг харах",
+        "back": "Буцах",
         "reviews": "сэтгэгдэл",
         "specialty": "Мэргэшил",
         "openDetails": "Профайл нээх",
+        "loginAction": "Нэвтрэх",
+        "requestConsultation": "Зөвлөгөө хүсэх",
+        "reviewsSectionTitle": "Сэтгэгдлүүд",
+        "noReviewsYet": "Одоогоор сэтгэгдэл алга.",
+        "loginToReview": "Сэтгэгдэл үлдээхийн тулд хэрэглэгчээр нэвтэрнэ үү.",
+        "reviewEligibilityHint": "Энэ тогоочтой дууссан захиалгын дараа сэтгэгдэл үлдээх боломжтой.",
+        "yourRatingLabel": "Таны үнэлгээ",
+        "yourCommentLabel": "Таны сэтгэгдэл",
+        "reviewCommentPlaceholder": "Энэ тогоочийн үйлчилгээний туршлагаа бичнэ үү...",
+        "reviewSubmit": "Сэтгэгдэл илгээх",
+        "reviewSubmitting": "Илгээж байна...",
+        "reviewSubmitSuccess": "Сэтгэгдэл амжилттай илгээгдлээ.",
+        "reviewSubmitError": "Сэтгэгдэл илгээж чадсангүй.",
+        "editReview": "Засах",
+        "deleteReview": "Устгах",
+        "saveReview": "Хадгалах",
+        "cancelReviewEdit": "Болих",
+        "reviewUpdateSuccess": "Сэтгэгдэл амжилттай шинэчлэгдлээ.",
+        "reviewUpdateError": "Сэтгэгдэл шинэчилж чадсангүй.",
+        "reviewDeleteSuccess": "Сэтгэгдэл амжилттай устгагдлаа.",
+        "reviewDeleteError": "Сэтгэгдэл устгаж чадсангүй.",
         "role": "Тогооч",
         "defaultSpecialty": "Хоолны урлаг",
         "detailDescription": "{name} нь өндөр зэрэглэлийн орц, нарийн гүйцэтгэлээр онцгой туршлагыг бүтээдэг."
@@ -548,6 +570,55 @@
                     "description": "Нэг ахлах холбоо барих цэгээр хоол, үйлчилгээний бүх шийдвэрийг нэгтгэн удирдана."
                 }
             ]
+        }
+    },
+    "InquiryPage": {
+        "eyebrow": "Consultation",
+        "title": "Inquiry Request",
+        "description": "Tell us about your event and our team will contact you shortly.",
+        "cardTitle": "Request Consultation",
+        "fields": {
+            "type": {
+                "label": "Type",
+                "placeholder": "Select type",
+                "options": {
+                    "INDIVIDUAL": "Individual",
+                    "ORG": "Organization"
+                }
+            },
+            "serviceType": {
+                "label": "Service Type",
+                "placeholder": "Select service",
+                "options": {
+                    "CORPORATE": "Corporate",
+                    "PRIVATE": "Private",
+                    "WEDDING": "Wedding",
+                    "VIP": "VIP",
+                    "OTHER": "Other"
+                }
+            },
+            "name": {
+                "label": "Name"
+            },
+            "phone": {
+                "label": "Phone"
+            },
+            "email": {
+                "label": "Email"
+            },
+            "message": {
+                "label": "Message (Optional)",
+                "placeholder": "Share any details about your event..."
+            }
+        },
+        "actions": {
+            "submit": "Submit Inquiry",
+            "submitting": "Submitting...",
+            "backHome": "Back to Home"
+        },
+        "messages": {
+            "submitSuccess": "Consultation inquiry sent successfully",
+            "submitError": "Failed to submit inquiry"
         }
     }
 }

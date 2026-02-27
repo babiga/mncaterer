@@ -215,9 +215,31 @@
         "title": "Masters of the Kitchen",
         "description": "Meet the artisans behind your next unforgettable meal.",
         "viewAll": "Meet All Our Chefs",
+        "back": "Back",
         "reviews": "reviews",
         "specialty": "Specialty",
         "openDetails": "Open Profile",
+        "loginAction": "Log in",
+        "requestConsultation": "Request Consultation",
+        "reviewsSectionTitle": "Reviews",
+        "noReviewsYet": "No reviews yet.",
+        "loginToReview": "Log in as a customer to leave a review.",
+        "reviewEligibilityHint": "You can leave a review after a completed booking with this chef.",
+        "yourRatingLabel": "Your Rating",
+        "yourCommentLabel": "Your Comment",
+        "reviewCommentPlaceholder": "Share your experience with this chef...",
+        "reviewSubmit": "Submit Review",
+        "reviewSubmitting": "Submitting...",
+        "reviewSubmitSuccess": "Review submitted successfully.",
+        "reviewSubmitError": "Failed to submit review.",
+        "editReview": "Edit",
+        "deleteReview": "Delete",
+        "saveReview": "Save",
+        "cancelReviewEdit": "Cancel",
+        "reviewUpdateSuccess": "Review updated successfully.",
+        "reviewUpdateError": "Failed to update review.",
+        "reviewDeleteSuccess": "Review deleted successfully.",
+        "reviewDeleteError": "Failed to delete review.",
         "role": "Chef",
         "defaultSpecialty": "Culinary Arts",
         "detailDescription": "{name} crafts elevated experiences with precise execution and premium ingredients."
@@ -548,6 +570,55 @@
                     "description": "One lead point-of-contact coordinates all culinary and service decisions."
                 }
             ]
+        }
+    },
+    "InquiryPage": {
+        "eyebrow": "Consultation",
+        "title": "Inquiry Request",
+        "description": "Tell us about your event and our team will contact you shortly.",
+        "cardTitle": "Request Consultation",
+        "fields": {
+            "type": {
+                "label": "Type",
+                "placeholder": "Select type",
+                "options": {
+                    "INDIVIDUAL": "Individual",
+                    "ORG": "Organization"
+                }
+            },
+            "serviceType": {
+                "label": "Service Type",
+                "placeholder": "Select service",
+                "options": {
+                    "CORPORATE": "Corporate",
+                    "PRIVATE": "Private",
+                    "WEDDING": "Wedding",
+                    "VIP": "VIP",
+                    "OTHER": "Other"
+                }
+            },
+            "name": {
+                "label": "Name"
+            },
+            "phone": {
+                "label": "Phone"
+            },
+            "email": {
+                "label": "Email"
+            },
+            "message": {
+                "label": "Message (Optional)",
+                "placeholder": "Share any details about your event..."
+            }
+        },
+        "actions": {
+            "submit": "Submit Inquiry",
+            "submitting": "Submitting...",
+            "backHome": "Back to Home"
+        },
+        "messages": {
+            "submitSuccess": "Consultation inquiry sent successfully",
+            "submitError": "Failed to submit inquiry"
         }
     }
 }
