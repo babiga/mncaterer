@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#111827" />
+  <text
+    x="256"
+    y="290"
+    text-anchor="middle"
+    font-size="150"
+    font-family="Montserrat, sans-serif"
+    font-weight="700"
+    fill="#f9fafb"
+  >
+    TX
+  </text>
+</svg>
+

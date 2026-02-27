@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Montserrat } from "next/font/google";
 import "../globals.css";
 import { Providers } from "../providers";
@@ -29,6 +29,14 @@ export const metadata: Metadata = {
   title: "Mongolian National Caterer | Crafted for Unforgettable Moments",
   description:
     "Premium high-end catering for private events, corporate functions, and VIP occasions.",
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [
+      { url: "/icons/icon-192.svg", sizes: "192x192", type: "image/svg+xml" },
+      { url: "/icons/icon-512.svg", sizes: "512x512", type: "image/svg+xml" },
+    ],
+    apple: [{ url: "/icons/icon-192.svg", type: "image/svg+xml" }],
+  },
   openGraph: {
     title: "Mongolian National Caterer | Crafted for Unforgettable Moments",
     description:
@@ -40,6 +48,10 @@ export const metadata: Metadata = {
     title: "Mongolian National Caterer",
     description: "Premium luxury catering services.",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#111827",
 };
 
 export default async function RootLayout({

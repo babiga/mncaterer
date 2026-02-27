@@ -154,6 +154,7 @@ model User {
   bookings      Booking[]
   reviews       Review[]
   notifications Notification[]
+  pushSubscriptions PushSubscription[]
   inquiries     Inquiry[]
 }
 
@@ -180,6 +181,7 @@ model DashboardUser {
   jobPostings    JobPosting[]
   jobInvitations JobInvitation[]
   notifications  DashboardNotification[]
+  pushSubscriptions PushSubscription[]
 }
 
 // ============================================
@@ -527,6 +529,29 @@ model DashboardNotification {
   isRead  Boolean          @default(false)
 
   createdAt DateTime @default(now())
+}
+
+model PushSubscription {
+  id String @id @default(cuid())
+
+  endpoint String @unique
+  p256dh   String
+  auth     String
+
+  userAgent String?
+
+  userId String?
+  user   User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  dashboardUserId String?
+  dashboardUser   DashboardUser? @relation(fields: [dashboardUserId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  lastUsedAt DateTime?
+
+  @@index([userId])
+  @@index([dashboardUserId])
 }
 
 model Inquiry {
