@@ -31,14 +31,6 @@ export async function GET() {
       prisma.menu.findMany({
         where: { isActive: true },
         include: {
-          serviceTier: {
-            select: {
-              id: true,
-              name: true,
-              isVIP: true,
-              pricePerGuest: true,
-            },
-          },
           items: {
             select: { name: true, sortOrder: true },
             orderBy: { sortOrder: "asc" },
@@ -118,12 +110,6 @@ export async function GET() {
           name: menu.name,
           description: menu.description,
           downloadUrl: menu.downloadUrl,
-          serviceTier: {
-            id: menu.serviceTier.id,
-            name: menu.serviceTier.name,
-            isVIP: menu.serviceTier.isVIP,
-            pricePerGuest: Number(menu.serviceTier.pricePerGuest),
-          },
           items: menu.items.map((item) => item.name),
         })),
         chefs: chefs.map((chef) => ({

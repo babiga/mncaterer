@@ -137,7 +137,7 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      if (menu.serviceTierId !== data.serviceTierId) {
+      if (menu.serviceTierId && menu.serviceTierId !== data.serviceTierId) {
         return NextResponse.json(
           { success: false, error: "Menu does not match selected service tier" },
           { status: 400 },

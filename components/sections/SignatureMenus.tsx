@@ -23,7 +23,6 @@ type MenuType = {
   name: string;
   description: string | null;
   downloadUrl: string | null;
-  serviceTier: { id: string; name: string; isVIP: boolean; pricePerGuest: number };
   items: string[];
 };
 
@@ -33,9 +32,9 @@ export default function SignatureMenus({ menus }: { menus?: MenuType[] }) {
   const menuCards = menus && menus.length > 0
     ? menus.map((menu) => ({
       id: menu.id,
-      tier: menu.serviceTier.name,
+      tier: t("standardTier"),
       title: menu.name,
-      price: new Intl.NumberFormat().format(menu.serviceTier.pricePerGuest),
+      price: "",
       items: menu.items,
       downloadUrl: menu.downloadUrl,
     }))
@@ -80,7 +79,11 @@ export default function SignatureMenus({ menus }: { menus?: MenuType[] }) {
                 >
                   <span className="text-xs uppercase tracking-[0.2em] text-primary mb-4 block">{menu.tier}</span>
                   <h3 className="text-2xl text-white mb-2">{menu.title}</h3>
-                  <p className="text-xl text-foreground/80 mb-8 font-light">{menu.price} <span className="text-sm">{t("perGuest")}</span></p>
+                  {menu.price ? (
+                    <p className="text-xl text-foreground/80 mb-8 font-light">
+                      {menu.price} <span className="text-sm">{t("perGuest")}</span>
+                    </p>
+                  ) : null}
 
                   <ul className="space-y-4 mb-10">
                     {menu.items.map((item) => (

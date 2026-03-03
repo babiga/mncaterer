@@ -20,15 +20,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
-interface ServiceTierOption {
-  id: string;
-  name: string;
-  isVIP: boolean;
-}
-
 export default function MenusPage() {
   const [menus, setMenus] = useState<MenuRecord[]>([]);
-  const [serviceTiers, setServiceTiers] = useState<ServiceTierOption[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -44,7 +37,7 @@ export default function MenusPage() {
 
     try {
       const response = await fetch(
-        "/api/menus?limit=100&sortBy=createdAt&sortOrder=desc&includeServiceTiers=true",
+        "/api/menus?limit=100&sortBy=createdAt&sortOrder=desc",
       );
       const result = await response.json();
 
@@ -54,7 +47,6 @@ export default function MenusPage() {
       }
 
       setMenus(result.data || []);
-      setServiceTiers(result.serviceTiers || []);
     } catch {
       toast.error("Failed to load menus");
     } finally {
@@ -67,15 +59,10 @@ export default function MenusPage() {
   }, [fetchMenus]);
 
   const handleCreate = useCallback(() => {
-    if (serviceTiers.length === 0) {
-      toast.error("Create at least one service tier before adding menus");
-      return;
-    }
-
     setSelectedMenu(null);
     setSheetMode("create");
     setSheetOpen(true);
-  }, [serviceTiers.length]);
+  }, []);
 
   const handleView = useCallback((menu: MenuRecord) => {
     setSelectedMenu(menu);
@@ -169,7 +156,7 @@ export default function MenusPage() {
           <h1 className="text-2xl font-bold">Menus Management</h1>
           <p className="text-muted-foreground">Create and manage your service menus</p>
         </div>
-        <Button onClick={handleCreate} disabled={serviceTiers.length === 0}>
+        <Button onClick={handleCreate}>
           <PlusIcon className="mr-2 h-4 w-4" />
           Add Menu
         </Button>
@@ -189,7 +176,6 @@ export default function MenusPage() {
         onOpenChange={setSheetOpen}
         menu={selectedMenu}
         mode={sheetMode}
-        serviceTiers={serviceTiers}
         onSuccess={fetchMenus}
       />
 

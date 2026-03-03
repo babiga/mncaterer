@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: "Invalid input",
+          error: "INVALID_INPUT",
           details: result.error.flatten(),
         },
         { status: 400 },
@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Signup error:", error);
     return NextResponse.json(
-      { success: false, error: "Internal server error" },
+      { success: false, error: "INTERNAL_SERVER_ERROR" },
       { status: 500 },
     );
   }

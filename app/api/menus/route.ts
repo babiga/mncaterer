@@ -15,9 +15,7 @@ export async function GET(request: NextRequest) {
       page: searchParams.get("page") || 1,
       limit: searchParams.get("limit") || 10,
       search: searchParams.get("search") || undefined,
-      serviceTierId: searchParams.get("serviceTierId") || undefined,
       isActive: searchParams.get("isActive") || "all",
-      includeServiceTiers: searchParams.get("includeServiceTiers") || "false",
       sortBy: searchParams.get("sortBy") || "createdAt",
       sortOrder: searchParams.get("sortOrder") || "desc",
     });
@@ -37,9 +35,7 @@ export async function GET(request: NextRequest) {
       page,
       limit,
       search,
-      serviceTierId,
       isActive,
-      includeServiceTiers,
       sortBy,
       sortOrder,
     } = queryResult.data;
@@ -53,26 +49,15 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    if (serviceTierId) {
-      where.serviceTierId = serviceTierId;
-    }
-
     if (isActive !== "all") {
       where.isActive = isActive === "true";
     }
 
-    const [total, menus, serviceTiers] = await Promise.all([
+    const [total, menus] = await Promise.all([
       prisma.menu.count({ where }),
       prisma.menu.findMany({
         where,
         include: {
-          serviceTier: {
-            select: {
-              id: true,
-              name: true,
-              isVIP: true,
-            },
-          },
           _count: {
             select: {
               items: true,
@@ -84,22 +69,11 @@ export async function GET(request: NextRequest) {
         skip: (page - 1) * limit,
         take: limit,
       }),
-      includeServiceTiers
-        ? prisma.serviceTier.findMany({
-            select: {
-              id: true,
-              name: true,
-              isVIP: true,
-            },
-            orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
-          })
-        : Promise.resolve(null),
     ]);
 
     return NextResponse.json({
       success: true,
       data: menus,
-      serviceTiers: serviceTiers ?? undefined,
       pagination: {
         page,
         limit,
@@ -137,28 +111,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const tier = await prisma.serviceTier.findUnique({
-      where: { id: result.data.serviceTierId },
-      select: { id: true },
-    });
-
-    if (!tier) {
-      return NextResponse.json(
-        { success: false, error: "Service tier not found" },
-        { status: 400 },
-      );
-    }
-
     const menu = await prisma.menu.create({
       data: result.data,
       include: {
-        serviceTier: {
-          select: {
-            id: true,
-            name: true,
-            isVIP: true,
-          },
-        },
         _count: {
           select: {
             items: true,

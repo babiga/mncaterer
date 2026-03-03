@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/routing";
 import { useRouter as useBaseRouter } from "next/navigation";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
 
 import { getLoginSchema, type LoginFormData } from "@/lib/validations/auth";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,7 @@ export function LoginForm() {
   const baseRouter = useBaseRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const vt = useTranslations("Auth.validation");
   const form = useForm<LoginFormData>({
@@ -47,6 +49,7 @@ export function LoginForm() {
   async function onSubmit(data: LoginFormData) {
     setIsLoading(true);
     setError(null);
+    setSuccess(null);
 
     try {
       const response = await fetch("/api/auth/login", {
@@ -58,15 +61,32 @@ export function LoginForm() {
       const result = await response.json();
 
       if (!response.ok) {
-        setError(result.error || t("errors.serverError"));
+        const code = result.error as string | undefined;
+        const mappedError =
+          code === "INVALID_CREDENTIALS"
+            ? t("errors.invalidCredentials")
+            : code === "ACCOUNT_DEACTIVATED"
+              ? t("errors.accountDeactivated")
+              : code === "PASSWORD_NOT_SET"
+                ? t("errors.passwordNotSet")
+                : code === "INVALID_INPUT"
+                  ? t("errors.invalidInput")
+                  : t("errors.serverError");
+        setError(mappedError);
         return;
       }
 
       // Redirect based on user type
       if (result.userType === "dashboard") {
-        baseRouter.push("/dashboard");
+        setSuccess(t("success.dashboard"));
+        setTimeout(() => {
+          baseRouter.push("/dashboard");
+        }, 700);
       } else {
-        router.push("/profile");
+        setSuccess(t("success.customer"));
+        setTimeout(() => {
+          router.push("/profile");
+        }, 700);
       }
     } catch {
       setError(t("errors.serverError"));
@@ -90,8 +110,15 @@ export function LoginForm() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {error && (
-              <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-md text-destructive text-sm">
-                {error}
+              <div className="flex items-start gap-3 p-4 bg-destructive/10 border border-destructive/20 rounded-md text-destructive text-sm">
+                <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                <p>{error}</p>
+              </div>
+            )}
+            {success && (
+              <div className="flex items-start gap-3 p-4 bg-green-500/10 border border-green-500/20 rounded-md text-green-700 dark:text-green-300 text-sm">
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+                <p>{success}</p>
               </div>
             )}
 

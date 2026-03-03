@@ -10,7 +10,6 @@ export const createMenuSchema = z.object({
     .max(5000, "Description must be less than 5000 characters")
     .optional()
     .nullable(),
-  serviceTierId: z.string().min(1, "Service tier is required"),
   downloadUrl: z
     .string()
     .max(2048, "Download URL must be less than 2048 characters")
@@ -30,7 +29,6 @@ export const updateMenuSchema = z.object({
     .max(5000, "Description must be less than 5000 characters")
     .optional()
     .nullable(),
-  serviceTierId: z.string().min(1, "Service tier is required").optional(),
   downloadUrl: z
     .string()
     .max(2048, "Download URL must be less than 2048 characters")
@@ -43,12 +41,7 @@ export const menusQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(100).default(10),
   search: z.string().optional(),
-  serviceTierId: z.string().optional(),
   isActive: z.enum(["true", "false", "all"]).default("all"),
-  includeServiceTiers: z
-    .enum(["true", "false"]) 
-    .default("false")
-    .transform((val) => val === "true"),
   sortBy: z
     .enum(["name", "createdAt", "updatedAt", "isActive"])
     .default("createdAt"),

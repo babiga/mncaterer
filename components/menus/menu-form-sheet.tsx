@@ -29,22 +29,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-
-interface ServiceTierOption {
-  id: string;
-  name: string;
-  isVIP: boolean;
-}
 
 type MenuFormValues = z.input<typeof createMenuSchema>;
 
@@ -53,7 +40,6 @@ interface MenuFormSheetProps {
   onOpenChange: (open: boolean) => void;
   menu: MenuRecord | null;
   mode: "create" | "edit" | "view";
-  serviceTiers: ServiceTierOption[];
   onSuccess: () => void;
 }
 
@@ -62,7 +48,6 @@ export function MenuFormSheet({
   onOpenChange,
   menu,
   mode,
-  serviceTiers,
   onSuccess,
 }: MenuFormSheetProps) {
   const [isPending, setIsPending] = useState(false);
@@ -76,7 +61,6 @@ export function MenuFormSheet({
     defaultValues: {
       name: "",
       description: undefined,
-      serviceTierId: "",
       downloadUrl: undefined,
       isActive: true,
     },
@@ -87,7 +71,6 @@ export function MenuFormSheet({
       form.reset({
         name: "",
         description: undefined,
-        serviceTierId: serviceTiers[0]?.id ?? "",
         downloadUrl: undefined,
         isActive: true,
       });
@@ -98,12 +81,11 @@ export function MenuFormSheet({
       form.reset({
         name: menu.name,
         description: menu.description ?? "",
-        serviceTierId: menu.serviceTierId,
         downloadUrl: menu.downloadUrl ?? "",
         isActive: menu.isActive,
       });
     }
-  }, [form, isCreate, menu, serviceTiers]);
+  }, [form, isCreate, menu]);
 
   async function onSubmit(values: MenuFormValues) {
     setIsPending(true);
@@ -159,7 +141,6 @@ export function MenuFormSheet({
             <div className="flex items-center justify-between py-4">
               <div>
                 <h3 className="text-lg font-semibold">{menu.name}</h3>
-                <p className="text-sm text-muted-foreground">{menu.serviceTier.name}</p>
               </div>
               <Badge variant={menu.isActive ? "default" : "secondary"}>
                 {menu.isActive ? "Active" : "Inactive"}
@@ -238,31 +219,6 @@ export function MenuFormSheet({
 
               <FormField
                 control={form.control}
-                name="serviceTierId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Service Tier</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a service tier" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {serviceTiers.map((tier) => (
-                          <SelectItem key={tier.id} value={tier.id}>
-                            {tier.name}{tier.isVIP ? " (VIP)" : ""}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
                 name="description"
                 render={({ field }) => (
                   <FormItem>
@@ -313,7 +269,7 @@ export function MenuFormSheet({
                     Cancel
                   </Button>
                 </SheetClose>
-                <Button type="submit" disabled={isPending || serviceTiers.length === 0}>
+                <Button type="submit" disabled={isPending}>
                   {isPending ? "Saving..." : isCreate ? "Create Menu" : "Save Changes"}
                 </Button>
               </SheetFooter>

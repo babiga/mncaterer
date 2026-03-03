@@ -251,8 +251,8 @@ model Menu {
   id            String      @id @default(cuid())
   name          String
   description   String?     @db.Text
-  serviceTierId String
-  serviceTier   ServiceTier @relation(fields: [serviceTierId], references: [id])
+  serviceTierId String?
+  serviceTier   ServiceTier? @relation(fields: [serviceTierId], references: [id], onDelete: SetNull)
   downloadUrl   String?
   isActive      Boolean     @default(true)
 

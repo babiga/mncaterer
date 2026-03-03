@@ -19,16 +19,10 @@ export type MenuRecord = {
   id: string;
   name: string;
   description: string | null;
-  serviceTierId: string;
   downloadUrl: string | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-  serviceTier: {
-    id: string;
-    name: string;
-    isVIP: boolean;
-  };
   _count: {
     items: number;
     bookings: number;
@@ -96,16 +90,6 @@ export function getMenusColumns({
         );
       },
       enableHiding: false,
-    },
-    {
-      id: "serviceTier",
-      header: "Service Tier",
-      cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          <span className="text-sm">{row.original.serviceTier.name}</span>
-          {row.original.serviceTier.isVIP ? <Badge variant="secondary">VIP</Badge> : null}
-        </div>
-      ),
     },
     {
       accessorKey: "isActive",

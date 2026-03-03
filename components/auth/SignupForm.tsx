@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/routing";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
 
 import {
   getIndividualSignupSchema,
@@ -42,7 +43,7 @@ export function SignupForm() {
   const [activeTab, setActiveTab] = useState<UserType>("individual");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const vt = useTranslations("Auth.validation");
   // Individual form
@@ -76,11 +77,13 @@ export function SignupForm() {
   const handleTabChange = (value: string) => {
     setActiveTab(value as UserType);
     setError(null);
+    setSuccess(null);
   };
 
   async function onIndividualSubmit(data: IndividualSignupFormData) {
     setIsLoading(true);
     setError(null);
+    setSuccess(null);
 
     try {
       const response = await fetch("/api/auth/signup", {
@@ -99,15 +102,18 @@ export function SignupForm() {
       const result = await response.json();
 
       if (!response.ok) {
-        if (result.error === "EMAIL_EXISTS") {
-          setError(t("errors.emailExists"));
-        } else {
-          setError(t("errors.serverError"));
-        }
+        const code = result.error as string | undefined;
+        const mappedError =
+          code === "EMAIL_EXISTS"
+            ? t("errors.emailExists")
+            : code === "INVALID_INPUT"
+              ? t("errors.invalidInput")
+              : t("errors.serverError");
+        setError(mappedError);
         return;
       }
 
-      setSuccess(true);
+      setSuccess(t("success"));
       setTimeout(() => {
         router.push("/login");
       }, 2000);
@@ -121,6 +127,7 @@ export function SignupForm() {
   async function onCompanySubmit(data: CompanySignupFormData) {
     setIsLoading(true);
     setError(null);
+    setSuccess(null);
 
     try {
       const response = await fetch("/api/auth/signup", {
@@ -139,15 +146,18 @@ export function SignupForm() {
       const result = await response.json();
 
       if (!response.ok) {
-        if (result.error === "EMAIL_EXISTS") {
-          setError(t("errors.emailExists"));
-        } else {
-          setError(t("errors.serverError"));
-        }
+        const code = result.error as string | undefined;
+        const mappedError =
+          code === "EMAIL_EXISTS"
+            ? t("errors.emailExists")
+            : code === "INVALID_INPUT"
+              ? t("errors.invalidInput")
+              : t("errors.serverError");
+        setError(mappedError);
         return;
       }
 
-      setSuccess(true);
+      setSuccess(t("success"));
       setTimeout(() => {
         router.push("/login");
       }, 2000);
@@ -165,9 +175,16 @@ export function SignupForm() {
   if (success) {
     return (
       <AuthCard className="max-w-none">
-        <div className="text-center py-20">
-          <div className="text-green-500 text-xl font-semibold">
-            {t("success")}
+        <div className="py-20 px-2">
+          <div className="mx-auto max-w-lg rounded-md border border-green-500/25 bg-green-500/10 p-6 text-green-700 dark:text-green-300">
+            <div className="flex items-start gap-3">
+              <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" />
+              <div>
+                <p className="text-base font-semibold">{t("successTitle")}</p>
+                <p className="mt-1 text-sm">{success}</p>
+                <p className="mt-2 text-sm">{t("successRedirect")}</p>
+              </div>
+            </div>
           </div>
         </div>
       </AuthCard>
@@ -197,8 +214,9 @@ export function SignupForm() {
           </TabsList>
 
           {error && (
-            <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-md text-destructive text-sm">
-              {error}
+            <div className="mb-4 flex items-start gap-3 p-3 bg-destructive/10 border border-destructive/20 rounded-md text-destructive text-sm">
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+              <p>{error}</p>
             </div>
           )}
 
@@ -369,7 +387,8 @@ export function SignupForm() {
                             className="text-primary hover:text-primary/80 transition-colors"
                           >
                             {t("privacyPolicy")}
-                          </Link>
+                          </Link>{" "}
+                          {t("agreementSuffix")}
                         </FormLabel>
                         <FormMessage />
                       </div>
@@ -555,7 +574,8 @@ export function SignupForm() {
                             className="text-primary hover:text-primary/80 transition-colors"
                           >
                             {t("privacyPolicy")}
-                          </Link>
+                          </Link>{" "}
+                          {t("agreementSuffix")}
                         </FormLabel>
                         <FormMessage />
                       </div>

@@ -18,13 +18,6 @@ export async function GET(
     const menu = await prisma.menu.findUnique({
       where: { id },
       include: {
-        serviceTier: {
-          select: {
-            id: true,
-            name: true,
-            isVIP: true,
-          },
-        },
         _count: {
           select: {
             items: true,
@@ -84,31 +77,10 @@ export async function PUT(
       );
     }
 
-    if (result.data.serviceTierId) {
-      const tier = await prisma.serviceTier.findUnique({
-        where: { id: result.data.serviceTierId },
-        select: { id: true },
-      });
-
-      if (!tier) {
-        return NextResponse.json(
-          { success: false, error: "Service tier not found" },
-          { status: 400 },
-        );
-      }
-    }
-
     const menu = await prisma.menu.update({
       where: { id },
       data: result.data,
       include: {
-        serviceTier: {
-          select: {
-            id: true,
-            name: true,
-            isVIP: true,
-          },
-        },
         _count: {
           select: {
             items: true,

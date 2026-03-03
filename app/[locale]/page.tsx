@@ -24,7 +24,6 @@ type HomeData = {
     name: string;
     description: string | null;
     downloadUrl: string | null;
-    serviceTier: { id: string; name: string; isVIP: boolean; pricePerGuest: number };
     items: string[];
   }[];
   chefs: {

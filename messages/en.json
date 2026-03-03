@@ -16,7 +16,18 @@
             "submit": "Sign In",
             "submitting": "Signing In...",
             "noAccount": "Don't have an account?",
-            "signUp": "Sign up"
+            "signUp": "Sign up",
+            "success": {
+                "dashboard": "Signed in successfully. Redirecting to dashboard...",
+                "customer": "Signed in successfully. Redirecting to your profile..."
+            },
+            "errors": {
+                "invalidCredentials": "Incorrect email or password.",
+                "accountDeactivated": "Your account is deactivated. Please contact support.",
+                "passwordNotSet": "This account does not have a password. Use social login or reset your password.",
+                "invalidInput": "Please check your input and try again.",
+                "serverError": "Something went wrong. Please try again."
+            }
         },
         "signup": {
             "title": "Join Mongolian National Caterer",
@@ -45,13 +56,17 @@
             "termsOfService": "Terms of Service",
             "and": "and",
             "privacyPolicy": "Privacy Policy",
+            "agreementSuffix": "",
             "submit": "Create Account",
             "submitting": "Creating Account...",
             "hasAccount": "Already have an account?",
             "signIn": "Sign in",
             "success": "Account created successfully! Redirecting to login...",
+            "successTitle": "Registration complete",
+            "successRedirect": "You will be redirected to the login page shortly.",
             "errors": {
                 "emailExists": "An account with this email already exists",
+                "invalidInput": "Please check your input and try again.",
                 "serverError": "Something went wrong. Please try again."
             }
         },
@@ -420,6 +435,102 @@
             "lastNameMax": "Last name must be less than 50 characters",
             "phoneInvalid": "Please enter a valid phone number",
             "addressMax": "Address must be less than 500 characters"
+        }
+    },
+    "UserOrders": {
+        "page": {
+            "title": "Orders",
+            "description": "Create a booking request and manage your event orders."
+        },
+        "form": {
+            "title": "Create Order",
+            "description": "Choose your menu, guest count, event details, location, and contact info.",
+            "fields": {
+                "serviceTier": "Service Tier",
+                "menuOptional": "Menu (Optional)",
+                "chefOptional": "Chef (Optional)",
+                "guestCount": "Guest Count",
+                "eventDate": "Event Date",
+                "eventTime": "Event Time",
+                "eventType": "Event Type",
+                "locationName": "Location Name",
+                "addressOptional": "Address (Optional)",
+                "contactName": "Contact Name",
+                "contactPhone": "Contact Phone",
+                "contactEmail": "Contact Email",
+                "specialRequestsOptional": "Special Requests (Optional)"
+            },
+            "placeholders": {
+                "serviceTier": "Select a tier",
+                "menu": "Select a menu",
+                "chef": "Select a chef",
+                "eventType": "Select event type",
+                "locationName": "Venue or location name",
+                "address": "Street, district, city",
+                "specialRequests": "Dietary requirements, setup notes, additional details..."
+            },
+            "none": {
+                "menu": "No specific menu",
+                "chef": "No preference"
+            },
+            "perGuest": "/ guest"
+        },
+        "summary": {
+            "estimatedTotal": "Estimated total",
+            "total": "Total"
+        },
+        "actions": {
+            "submitting": "Submitting...",
+            "createBooking": "Create Booking"
+        },
+        "list": {
+            "title": "My Orders",
+            "description": "Track your submitted booking requests.",
+            "empty": "No bookings yet.",
+            "orderNumber": "Order #{bookingNumber}",
+            "guests": "{count} guests",
+            "at": "at",
+            "menu": "Menu",
+            "notSelected": "Not selected",
+            "chef": "Chef",
+            "submitted": "Submitted"
+        },
+        "messages": {
+            "createSuccess": "Booking request submitted successfully.",
+            "createError": "Failed to create booking."
+        },
+        "serviceTypes": {
+            "CORPORATE": "Corporate",
+            "PRIVATE": "Private",
+            "WEDDING": "Wedding",
+            "VIP": "VIP"
+        },
+        "statuses": {
+            "PENDING": "Pending",
+            "CONFIRMED": "Confirmed",
+            "DEPOSIT_PAID": "Deposit Paid",
+            "IN_PROGRESS": "In Progress",
+            "COMPLETED": "Completed",
+            "CANCELLED": "Cancelled"
+        },
+        "validation": {
+            "serviceTierRequired": "Please select a service tier",
+            "serviceTypeRequired": "Please select an event type",
+            "eventDateInvalid": "Please enter a valid event date",
+            "eventDateFuture": "Event date cannot be in the past",
+            "eventTimeInvalid": "Please enter a valid event time",
+            "guestCountInteger": "Guest count must be a whole number",
+            "guestCountMin": "Guest count must be at least 1",
+            "guestCountMax": "Guest count is too large",
+            "venueMin": "Location must be at least 2 characters",
+            "venueMax": "Location must be less than 300 characters",
+            "venueAddressMax": "Address must be less than 500 characters",
+            "specialRequestsMax": "Special requests must be less than 2000 characters",
+            "contactNameMin": "Contact name must be at least 2 characters",
+            "contactNameMax": "Contact name must be less than 100 characters",
+            "contactPhoneInvalid": "Please enter a valid phone number",
+            "contactEmailInvalid": "Please enter a valid email address",
+            "contactEmailMax": "Email must be less than 320 characters"
         }
     },
     "ServiceDetails": {

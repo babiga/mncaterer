@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: "Invalid input",
+          error: "INVALID_INPUT",
           details: result.error.flatten(),
         },
         { status: 400 },
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     if (dashboardUser) {
       if (!dashboardUser.isActive) {
         return NextResponse.json(
-          { success: false, error: "Account is deactivated" },
+          { success: false, error: "ACCOUNT_DEACTIVATED" },
           { status: 403 },
         );
       }
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
       );
       if (!isValidPassword) {
         return NextResponse.json(
-          { success: false, error: "Invalid email or password" },
+          { success: false, error: "INVALID_CREDENTIALS" },
           { status: 401 },
         );
       }
@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(
           {
             success: false,
-            error: "Please use social login or set a password",
+            error: "PASSWORD_NOT_SET",
           },
           { status: 401 },
         );
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
       const isValidPassword = await verifyPassword(password, user.password);
       if (!isValidPassword) {
         return NextResponse.json(
-          { success: false, error: "Invalid email or password" },
+          { success: false, error: "INVALID_CREDENTIALS" },
           { status: 401 },
         );
       }
@@ -126,13 +126,13 @@ export async function POST(request: NextRequest) {
 
     // No user found
     return NextResponse.json(
-      { success: false, error: "Invalid email or password" },
+      { success: false, error: "INVALID_CREDENTIALS" },
       { status: 401 },
     );
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json(
-      { success: false, error: "Internal server error" },
+      { success: false, error: "INTERNAL_SERVER_ERROR" },
       { status: 500 },
     );
   }

@@ -16,7 +16,18 @@
             "submit": "Нэвтрэх",
             "submitting": "Нэвтэрч байна...",
             "noAccount": "Бүртгэл байхгүй юу?",
-            "signUp": "Бүртгүүлэх"
+            "signUp": "Бүртгүүлэх",
+            "success": {
+                "dashboard": "Амжилттай нэвтэрлээ. Удирдлагын самбар руу шилжиж байна...",
+                "customer": "Амжилттай нэвтэрлээ. Профайл хуудас руу шилжиж байна..."
+            },
+            "errors": {
+                "invalidCredentials": "И-мэйл эсвэл нууц үг буруу байна.",
+                "accountDeactivated": "Таны бүртгэл идэвхгүй байна. Тусламжтай холбогдоно уу.",
+                "passwordNotSet": "Энэ бүртгэлд нууц үг тохируулаагүй байна. Social login ашиглах эсвэл нууц үгээ сэргээнэ үү.",
+                "invalidInput": "Оруулсан мэдээллээ шалгаад дахин оролдоно уу.",
+                "serverError": "Алдаа гарлаа. Дахин оролдоно уу."
+            }
         },
         "signup": {
             "title": "Mongolian National Caterer-д нэгдэх",
@@ -52,8 +63,12 @@
             "success": "Бүртгэл амжилттай үүслээ! Нэвтрэх хуудас руу шилжиж байна...",
             "errors": {
                 "emailExists": "Энэ имэйл хаягаар бүртгэл аль хэдийн үүссэн байна",
-                "serverError": "Алдаа гарлаа. Дахин оролдоно уу."
-            }
+                "serverError": "Алдаа гарлаа. Дахин оролдоно уу.",
+                "invalidInput": "Оруулсан мэдээллээ шалгаад дахин оролдоно уу."
+            },
+            "successTitle": "Бүртгэл амжилттай",
+            "successRedirect": "Удахгүй нэвтрэх хуудас руу автоматаар шилжинэ.",
+            "agreementSuffix": "зөвшөөрч байна"
         },
         "validation": {
             "emailRequired": "Имэйл хаяг заавал байх ёстой",
@@ -365,61 +380,157 @@
         }
     },
     "UserArea": {
-        "brand": "My Account",
+        "brand": "Миний бүртгэл",
         "nav": {
-            "profile": "Profile",
-            "orders": "Orders",
-            "feedbacks": "Feedbacks"
+            "profile": "Профайл",
+            "orders": "Захиалгууд",
+            "feedbacks": "Сэтгэгдлүүд"
         },
         "actions": {
-            "logout": "Log out",
-            "loggingOut": "Logging out..."
+            "logout": "Гарах",
+            "loggingOut": "Гарч байна..."
         }
     },
     "UserProfile": {
         "page": {
-            "title": "Profile Settings",
-            "description": "Manage your personal account information."
+            "title": "Профайл тохиргоо",
+            "description": "Хувийн бүртгэлийн мэдээллээ удирдана."
         },
-        "title": "Basic Information",
-        "description": "Update your profile details used for bookings and contact.",
+        "title": "Үндсэн мэдээлэл",
+        "description": "Захиалга болон холбоо барихад ашиглагдах профайлын мэдээллээ шинэчилнэ үү.",
         "fields": {
-            "name": "Display Name",
-            "email": "Email",
-            "firstName": "First Name",
-            "lastName": "Last Name",
-            "phone": "Phone",
-            "address": "Address",
-            "userType": "Account Type",
-            "organizationName": "Organization",
-            "companyLegalNo": "Registration Number"
+            "name": "Харагдах нэр",
+            "email": "И-мэйл",
+            "firstName": "Нэр",
+            "lastName": "Овог",
+            "phone": "Утас",
+            "address": "Хаяг",
+            "userType": "Бүртгэлийн төрөл",
+            "organizationName": "Байгууллага",
+            "companyLegalNo": "Регистрийн дугаар"
         },
         "placeholders": {
-            "name": "Enter your display name",
-            "firstName": "Enter your first name",
-            "lastName": "Enter your last name",
+            "name": "Харагдах нэрээ оруулна уу",
+            "firstName": "Нэрээ оруулна уу",
+            "lastName": "Овгоо оруулна уу",
             "phone": "+976 XXXX XXXX",
-            "address": "Enter your address"
+            "address": "Хаягаа оруулна уу"
         },
         "userType": {
-            "INDIVIDUAL": "Individual",
-            "CORPORATE": "Corporate"
+            "INDIVIDUAL": "Хувь хүн",
+            "CORPORATE": "Байгууллага"
         },
         "actions": {
-            "save": "Save Changes",
-            "saving": "Saving..."
+            "save": "Өөрчлөлт хадгалах",
+            "saving": "Хадгалж байна..."
         },
         "messages": {
-            "updateSuccess": "Profile updated successfully.",
-            "updateError": "Failed to update profile."
+            "updateSuccess": "Профайл амжилттай шинэчлэгдлээ.",
+            "updateError": "Профайл шинэчлэхэд алдаа гарлаа."
         },
         "validation": {
-            "nameMin": "Name must be at least 2 characters",
-            "nameMax": "Name must be less than 100 characters",
-            "firstNameMax": "First name must be less than 50 characters",
-            "lastNameMax": "Last name must be less than 50 characters",
-            "phoneInvalid": "Please enter a valid phone number",
-            "addressMax": "Address must be less than 500 characters"
+            "nameMin": "Нэр хамгийн багадаа 2 тэмдэгттэй байна",
+            "nameMax": "Нэр 100-аас бага тэмдэгттэй байна",
+            "firstNameMax": "Нэр 50-аас бага тэмдэгттэй байна",
+            "lastNameMax": "Овог 50-аас бага тэмдэгттэй байна",
+            "phoneInvalid": "Зөв утасны дугаар оруулна уу",
+            "addressMax": "Хаяг 500-аас бага тэмдэгттэй байна"
+        }
+    },
+    "UserOrders": {
+        "page": {
+            "title": "Захиалгууд",
+            "description": "Арга хэмжээний захиалга үүсгэж, захиалгуудаа удирдана уу."
+        },
+        "form": {
+            "title": "Захиалга үүсгэх",
+            "description": "Цэс, зочдын тоо, арга хэмжээний дэлгэрэнгүй, байршил болон холбоо барих мэдээллээ сонгоно уу.",
+            "fields": {
+                "serviceTier": "Үйлчилгээний түвшин",
+                "menuOptional": "Цэс (заавал биш)",
+                "chefOptional": "Тогооч (заавал биш)",
+                "guestCount": "Зочдын тоо",
+                "eventDate": "Арга хэмжээний огноо",
+                "eventTime": "Арга хэмжээний цаг",
+                "eventType": "Арга хэмжээний төрөл",
+                "locationName": "Байршлын нэр",
+                "addressOptional": "Хаяг (заавал биш)",
+                "contactName": "Холбоо барих нэр",
+                "contactPhone": "Холбоо барих утас",
+                "contactEmail": "Холбоо барих и-мэйл",
+                "specialRequestsOptional": "Тусгай хүсэлт (заавал биш)"
+            },
+            "placeholders": {
+                "serviceTier": "Түвшин сонгох",
+                "menu": "Цэс сонгох",
+                "chef": "Тогооч сонгох",
+                "eventType": "Төрөл сонгох",
+                "locationName": "Байршлын нэр",
+                "address": "Гудамж, дүүрэг, хот",
+                "specialRequests": "Хоолны онцгой шаардлага, зохион байгуулалтын тэмдэглэл болон нэмэлт мэдээлэл..."
+            },
+            "none": {
+                "menu": "Тодорхой цэс сонгоогүй",
+                "chef": "Сонголтгүй"
+            },
+            "perGuest": "/ хүн"
+        },
+        "summary": {
+            "estimatedTotal": "Тооцоолсон нийт дүн",
+            "total": "Нийт"
+        },
+        "actions": {
+            "submitting": "Илгээж байна...",
+            "createBooking": "Захиалга үүсгэх"
+        },
+        "list": {
+            "title": "Миний захиалгууд",
+            "description": "Илгээсэн захиалгын хүсэлтүүдээ хянах.",
+            "empty": "Одоогоор захиалга алга.",
+            "orderNumber": "Захиалга #{bookingNumber}",
+            "guests": "{count} зочин",
+            "at": "цагт",
+            "menu": "Цэс",
+            "notSelected": "Сонгоогүй",
+            "chef": "Тогооч",
+            "submitted": "Илгээсэн"
+        },
+        "messages": {
+            "createSuccess": "Захиалгын хүсэлт амжилттай илгээгдлээ.",
+            "createError": "Захиалга үүсгэхэд алдаа гарлаа."
+        },
+        "serviceTypes": {
+            "CORPORATE": "Компанийн",
+            "PRIVATE": "Хувийн",
+            "WEDDING": "Хурим",
+            "VIP": "VIP"
+        },
+        "statuses": {
+            "PENDING": "Хүлээгдэж байна",
+            "CONFIRMED": "Баталгаажсан",
+            "DEPOSIT_PAID": "Урьдчилгаа төлөгдсөн",
+            "IN_PROGRESS": "Хийгдэж байна",
+            "COMPLETED": "Дууссан",
+            "CANCELLED": "Цуцлагдсан"
+        },
+        "validation": {
+            "serviceTierRequired": "Үйлчилгээний түвшин сонгоно уу",
+            "serviceTypeRequired": "Арга хэмжээний төрөл сонгоно уу",
+            "eventDateInvalid": "Зөв огноо оруулна уу",
+            "eventDateFuture": "Арга хэмжээний огноо өнгөрсөн байж болохгүй",
+            "eventTimeInvalid": "Зөв цаг оруулна уу",
+            "guestCountInteger": "Зочдын тоо бүхэл тоо байх ёстой",
+            "guestCountMin": "Зочдын тоо хамгийн багадаа 1 байна",
+            "guestCountMax": "Зочдын тоо хэт их байна",
+            "venueMin": "Байршлын нэр хамгийн багадаа 2 тэмдэгттэй байна",
+            "venueMax": "Байршлын нэр 300-аас бага тэмдэгттэй байна",
+            "venueAddressMax": "Хаяг 500-аас бага тэмдэгттэй байна",
+            "specialRequestsMax": "Тусгай хүсэлт 2000-аас бага тэмдэгттэй байна",
+            "contactNameMin": "Холбоо барих нэр хамгийн багадаа 2 тэмдэгттэй байна",
+            "contactNameMax": "Холбоо барих нэр 100-аас бага тэмдэгттэй байна",
+            "contactPhoneInvalid": "Зөв утасны дугаар оруулна уу",
+            "contactEmailInvalid": "Зөв и-мэйл хаяг оруулна уу",
+            "contactEmailMax": "И-мэйл 320-аас бага тэмдэгттэй байна"
         }
     },
     "ServiceDetails": {
@@ -573,52 +684,52 @@
         }
     },
     "InquiryPage": {
-        "eyebrow": "Consultation",
-        "title": "Inquiry Request",
-        "description": "Tell us about your event and our team will contact you shortly.",
-        "cardTitle": "Request Consultation",
+        "eyebrow": "Зөвлөгөө",
+        "title": "Лавлагаа илгээх",
+        "description": "Арга хэмжээнийхээ талаар мэдээллээ үлдээгээрэй. Манай баг тантай удахгүй холбогдоно.",
+        "cardTitle": "Зөвлөгөө хүсэх",
         "fields": {
             "type": {
-                "label": "Type",
-                "placeholder": "Select type",
+                "label": "Төрөл",
+                "placeholder": "Төрөл сонгох",
                 "options": {
-                    "INDIVIDUAL": "Individual",
-                    "ORG": "Organization"
+                    "INDIVIDUAL": "Хувь хүн",
+                    "ORG": "Байгууллага"
                 }
             },
             "serviceType": {
-                "label": "Service Type",
-                "placeholder": "Select service",
+                "label": "Үйлчилгээний төрөл",
+                "placeholder": "Үйлчилгээ сонгох",
                 "options": {
-                    "CORPORATE": "Corporate",
-                    "PRIVATE": "Private",
-                    "WEDDING": "Wedding",
+                    "CORPORATE": "Компанийн",
+                    "PRIVATE": "Хувийн",
+                    "WEDDING": "Хурим",
                     "VIP": "VIP",
-                    "OTHER": "Other"
+                    "OTHER": "Бусад"
                 }
             },
             "name": {
-                "label": "Name"
+                "label": "Нэр"
             },
             "phone": {
-                "label": "Phone"
+                "label": "Утас"
             },
             "email": {
-                "label": "Email"
+                "label": "И-мэйл"
             },
             "message": {
-                "label": "Message (Optional)",
-                "placeholder": "Share any details about your event..."
+                "label": "Мессеж (заавал биш)",
+                "placeholder": "Арга хэмжээний талаарх нэмэлт мэдээллээ бичнэ үү..."
             }
         },
         "actions": {
-            "submit": "Submit Inquiry",
-            "submitting": "Submitting...",
-            "backHome": "Back to Home"
+            "submit": "Лавлагаа илгээх",
+            "submitting": "Илгээж байна...",
+            "backHome": "Нүүр хуудас руу буцах"
         },
         "messages": {
-            "submitSuccess": "Consultation inquiry sent successfully",
-            "submitError": "Failed to submit inquiry"
+            "submitSuccess": "Лавлагаа амжилттай илгээгдлээ",
+            "submitError": "Лавлагаа илгээхэд алдаа гарлаа"
         }
     }
 }
