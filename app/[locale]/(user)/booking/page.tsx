@@ -2,6 +2,7 @@ import { getCurrentCustomer } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { UserBookingForm } from "@/components/user/user-booking-form";
+import { getTranslations } from "next-intl/server";
 
 export default async function UserBookingPage({
   params,
@@ -9,6 +10,7 @@ export default async function UserBookingPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const t = await getTranslations("UserBooking.page");
   const user = await getCurrentCustomer();
 
   if (!user) {
@@ -61,10 +63,8 @@ export default async function UserBookingPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Booking</h1>
-        <p className="text-muted-foreground mt-1">
-          Create a new order by selecting your event and service details.
-        </p>
+        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
+        <p className="text-muted-foreground mt-1">{t("description")}</p>
       </div>
 
       <UserBookingForm

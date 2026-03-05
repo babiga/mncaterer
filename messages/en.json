@@ -438,6 +438,12 @@
             "addressMax": "Address must be less than 500 characters"
         }
     },
+    "UserBooking": {
+        "page": {
+            "title": "Booking",
+            "description": "Create a new order by selecting your event and service details."
+        }
+    },
     "UserOrders": {
         "page": {
             "title": "Orders",
@@ -446,6 +452,24 @@
         "form": {
             "title": "Create Order",
             "description": "Choose your menu, guest count, event details, location, and contact info.",
+            "steps": {
+                "serviceSelection": {
+                    "title": "Service Selection",
+                    "description": "Choose your event type, preferred menu, and chef."
+                },
+                "eventDetails": {
+                    "title": "Event Details",
+                    "description": "Set guest count, schedule, and venue details."
+                },
+                "contactAndNotes": {
+                    "title": "Contact and Notes",
+                    "description": "Confirm contact details and any special requests."
+                },
+                "reviewAndSubmit": {
+                    "title": "Review and Submit",
+                    "description": "Verify all information before submitting."
+                }
+            },
             "fields": {
                 "serviceTier": "Service Tier",
                 "menuOptional": "Menu (Optional)",
@@ -478,11 +502,20 @@
         },
         "summary": {
             "estimatedTotal": "Estimated total",
-            "total": "Total"
+            "total": "Total",
+            "serviceType": "Service Type",
+            "assignedPackage": "Assigned Package",
+            "autoSelectUnavailable": "Auto-select unavailable",
+            "guests": "Guests",
+            "eventDateTime": "Event Date and Time",
+            "venue": "Venue",
+            "contact": "Contact"
         },
         "actions": {
             "submitting": "Submitting...",
-            "createBooking": "Create Booking"
+            "createBooking": "Create Booking",
+            "back": "Back",
+            "continue": "Continue"
         },
         "list": {
             "title": "My Orders",
@@ -504,7 +537,8 @@
             "CORPORATE": "Corporate",
             "PRIVATE": "Private",
             "WEDDING": "Wedding",
-            "VIP": "VIP"
+            "VIP": "VIP",
+            "OTHER": "Other"
         },
         "statuses": {
             "PENDING": "Pending",

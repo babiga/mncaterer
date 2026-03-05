@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useForm, type Path } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Calendar, Check, ChefHat, FileSignature, type LucideIcon } from "lucide-react";
@@ -64,26 +65,6 @@ type UserBookingFormProps = {
 
 type BookingServiceType = "CORPORATE" | "PRIVATE" | "WEDDING" | "VIP" | "OTHER";
 
-const validationMessages = {
-  serviceTierRequired: "Please select a service tier",
-  serviceTypeRequired: "Please select an event type",
-  eventDateInvalid: "Please enter a valid event date",
-  eventDateFuture: "Event date cannot be in the past",
-  eventTimeInvalid: "Please enter a valid event time",
-  guestCountInteger: "Guest count must be a whole number",
-  guestCountMin: "Guest count must be at least 1",
-  guestCountMax: "Guest count is too large",
-  venueMin: "Location must be at least 2 characters",
-  venueMax: "Location must be less than 300 characters",
-  venueAddressMax: "Address must be less than 500 characters",
-  specialRequestsMax: "Special requests must be less than 2000 characters",
-  contactNameMin: "Contact name must be at least 2 characters",
-  contactNameMax: "Contact name must be less than 100 characters",
-  contactPhoneInvalid: "Please enter a valid phone number",
-  contactEmailInvalid: "Please enter a valid email address",
-  contactEmailMax: "Email must be less than 320 characters",
-};
-
 function formatPrice(amount: number) {
   return amount.toLocaleString("en-US", {
     minimumFractionDigits: 0,
@@ -105,12 +86,14 @@ export function UserBookingForm({
   chefs,
   initialCustomer,
 }: UserBookingFormProps) {
+  const t = useTranslations("UserOrders");
+  const vt = useTranslations("UserOrders.validation");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const form = useForm<CreateBookingData>({
-    resolver: zodResolver(getCreateBookingSchema((key) => validationMessages[key as keyof typeof validationMessages])),
+    resolver: zodResolver(getCreateBookingSchema((key) => vt(key))),
     defaultValues: {
       menuId: "",
       chefProfileId: "",
@@ -178,11 +161,11 @@ export function UserBookingForm({
       const result = await response.json();
 
       if (!response.ok) {
-        setErrorMessage(result.error || "Failed to create booking.");
+        setErrorMessage(result.error || t("messages.createError"));
         return;
       }
 
-      setStatusMessage("Booking request submitted successfully.");
+      setStatusMessage(t("messages.createSuccess"));
       form.reset({
         ...values,
         serviceTierId: "",
@@ -192,7 +175,7 @@ export function UserBookingForm({
       });
       setCurrentStep(0);
     } catch {
-      setErrorMessage("Failed to create booking.");
+      setErrorMessage(t("messages.createError"));
     } finally {
       setIsSubmitting(false);
     }
@@ -209,29 +192,29 @@ export function UserBookingForm({
   const bookingSteps: BookingStep[] = [
     {
       id: 1,
-      title: "Service Selection",
-      description: "Choose your event type, preferred menu, and chef.",
+      title: t("form.steps.serviceSelection.title"),
+      description: t("form.steps.serviceSelection.description"),
       icon: Check,
       fields: ["serviceType"],
     },
     {
       id: 2,
-      title: "Event Details",
-      description: "Set guest count, schedule, and venue details.",
+      title: t("form.steps.eventDetails.title"),
+      description: t("form.steps.eventDetails.description"),
       icon: Calendar,
       fields: ["guestCount", "eventDate", "eventTime", "venue"],
     },
     {
       id: 3,
-      title: "Contact & Notes",
-      description: "Confirm contact details and any special requests.",
+      title: t("form.steps.contactAndNotes.title"),
+      description: t("form.steps.contactAndNotes.description"),
       icon: ChefHat,
       fields: ["contactName", "contactPhone", "contactEmail"],
     },
     {
       id: 4,
-      title: "Review & Submit",
-      description: "Verify all information before submitting.",
+      title: t("form.steps.reviewAndSubmit.title"),
+      description: t("form.steps.reviewAndSubmit.description"),
       icon: FileSignature,
       fields: [],
     },
@@ -283,10 +266,8 @@ export function UserBookingForm({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Create Order</CardTitle>
-        <CardDescription>
-          Complete each step to submit a reliable booking request.
-        </CardDescription>
+        <CardTitle>{t("form.title")}</CardTitle>
+        <CardDescription>{t("form.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -338,22 +319,22 @@ export function UserBookingForm({
                   name="serviceType"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Service Type</FormLabel>
+                      <FormLabel>{t("form.fields.eventType")}</FormLabel>
                       <Select value={field.value} onValueChange={(value: BookingServiceType) => {
                         field.onChange(value);
                         form.setValue("menuId", "");
                       }}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select service type" />
+                            <SelectValue placeholder={t("form.placeholders.eventType")} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="WEDDING">Wedding</SelectItem>
-                          <SelectItem value="CORPORATE">Corporate</SelectItem>
-                          <SelectItem value="VIP">VIP</SelectItem>
-                          <SelectItem value="PRIVATE">Private</SelectItem>
-                          <SelectItem value="OTHER">Other</SelectItem>
+                          <SelectItem value="WEDDING">{t("serviceTypes.WEDDING")}</SelectItem>
+                          <SelectItem value="CORPORATE">{t("serviceTypes.CORPORATE")}</SelectItem>
+                          <SelectItem value="VIP">{t("serviceTypes.VIP")}</SelectItem>
+                          <SelectItem value="PRIVATE">{t("serviceTypes.PRIVATE")}</SelectItem>
+                          <SelectItem value="OTHER">{t("serviceTypes.OTHER")}</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -366,18 +347,18 @@ export function UserBookingForm({
                   name="menuId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Menu (Optional)</FormLabel>
+                      <FormLabel>{t("form.fields.menuOptional")}</FormLabel>
                       <Select
                         value={field.value || "none"}
                         onValueChange={(value) => field.onChange(value === "none" ? "" : value)}
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select a menu" />
+                            <SelectValue placeholder={t("form.placeholders.menu")} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="none">No specific menu</SelectItem>
+                          <SelectItem value="none">{t("form.none.menu")}</SelectItem>
                           {filteredMenus.map((menu) => (
                             <SelectItem key={menu.id} value={menu.id}>
                               {menu.name}
@@ -395,18 +376,18 @@ export function UserBookingForm({
                   name="chefProfileId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Chef (Optional)</FormLabel>
+                      <FormLabel>{t("form.fields.chefOptional")}</FormLabel>
                       <Select
                         value={field.value || "none"}
                         onValueChange={(value) => field.onChange(value === "none" ? "" : value)}
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select a chef" />
+                            <SelectValue placeholder={t("form.placeholders.chef")} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="none">No preference</SelectItem>
+                          <SelectItem value="none">{t("form.none.chef")}</SelectItem>
                           {chefs.map((chef) => (
                             <SelectItem key={chef.id} value={chef.id}>
                               {chef.name} ({chef.specialty})
@@ -429,7 +410,7 @@ export function UserBookingForm({
                     name="guestCount"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Guest Count</FormLabel>
+                        <FormLabel>{t("form.fields.guestCount")}</FormLabel>
                         <FormControl>
                           <Input
                             type="number"
@@ -448,7 +429,7 @@ export function UserBookingForm({
                     name="eventDate"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Event Date</FormLabel>
+                        <FormLabel>{t("form.fields.eventDate")}</FormLabel>
                         <FormControl>
                           <Input type="date" min={getTodayDate()} {...field} />
                         </FormControl>
@@ -462,7 +443,7 @@ export function UserBookingForm({
                     name="eventTime"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Event Time</FormLabel>
+                        <FormLabel>{t("form.fields.eventTime")}</FormLabel>
                         <FormControl>
                           <Input type="time" {...field} />
                         </FormControl>
@@ -478,9 +459,9 @@ export function UserBookingForm({
                     name="venue"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Location Name</FormLabel>
+                        <FormLabel>{t("form.fields.locationName")}</FormLabel>
                         <FormControl>
-                          <Input placeholder="Venue or location name" {...field} />
+                          <Input placeholder={t("form.placeholders.locationName")} {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -492,9 +473,9 @@ export function UserBookingForm({
                     name="venueAddress"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Address (Optional)</FormLabel>
+                        <FormLabel>{t("form.fields.addressOptional")}</FormLabel>
                         <FormControl>
-                          <Input placeholder="Street, district, city" {...field} />
+                          <Input placeholder={t("form.placeholders.address")} {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -512,7 +493,7 @@ export function UserBookingForm({
                     name="contactName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Contact Name</FormLabel>
+                        <FormLabel>{t("form.fields.contactName")}</FormLabel>
                         <FormControl>
                           <Input {...field} />
                         </FormControl>
@@ -526,7 +507,7 @@ export function UserBookingForm({
                     name="contactPhone"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Contact Phone</FormLabel>
+                        <FormLabel>{t("form.fields.contactPhone")}</FormLabel>
                         <FormControl>
                           <Input placeholder="+976XXXXXXXX" {...field} />
                         </FormControl>
@@ -540,7 +521,7 @@ export function UserBookingForm({
                     name="contactEmail"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Contact Email</FormLabel>
+                        <FormLabel>{t("form.fields.contactEmail")}</FormLabel>
                         <FormControl>
                           <Input type="email" {...field} />
                         </FormControl>
@@ -555,11 +536,11 @@ export function UserBookingForm({
                   name="specialRequests"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Special Requests (Optional)</FormLabel>
+                      <FormLabel>{t("form.fields.specialRequestsOptional")}</FormLabel>
                       <FormControl>
                         <Textarea
                           rows={4}
-                          placeholder="Dietary requirements, setup notes, additional details..."
+                          placeholder={t("form.placeholders.specialRequests")}
                           {...field}
                         />
                       </FormControl>
@@ -574,58 +555,58 @@ export function UserBookingForm({
               <div className="space-y-4">
                 <div className="grid grid-cols-1 gap-3 rounded-md border bg-muted/20 p-4 text-sm md:grid-cols-2">
                   <div>
-                    <p className="text-muted-foreground">Service Type</p>
-                    <p className="font-medium">{form.getValues("serviceType")}</p>
+                    <p className="text-muted-foreground">{t("summary.serviceType")}</p>
+                    <p className="font-medium">{t(`serviceTypes.${form.getValues("serviceType")}`)}</p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Assigned Package</p>
-                    <p className="font-medium">{selectedTier?.name ?? "Auto-select unavailable"}</p>
+                    <p className="text-muted-foreground">{t("summary.assignedPackage")}</p>
+                    <p className="font-medium">{selectedTier?.name ?? t("summary.autoSelectUnavailable")}</p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Menu</p>
-                    <p className="font-medium">{selectedMenu?.name ?? "No specific menu"}</p>
+                    <p className="text-muted-foreground">{t("list.menu")}</p>
+                    <p className="font-medium">{selectedMenu?.name ?? t("form.none.menu")}</p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Chef</p>
-                    <p className="font-medium">{selectedChef ? `${selectedChef.name} (${selectedChef.specialty})` : "No preference"}</p>
+                    <p className="text-muted-foreground">{t("list.chef")}</p>
+                    <p className="font-medium">{selectedChef ? `${selectedChef.name} (${selectedChef.specialty})` : t("form.none.chef")}</p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Guests</p>
-                    <p className="font-medium">{guestCount}</p>
+                    <p className="text-muted-foreground">{t("summary.guests")}</p>
+                    <p className="font-medium">{t("list.guests", { count: guestCount })}</p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Event Date & Time</p>
-                    <p className="font-medium">{form.getValues("eventDate")} at {form.getValues("eventTime")}</p>
+                    <p className="text-muted-foreground">{t("summary.eventDateTime")}</p>
+                    <p className="font-medium">{form.getValues("eventDate")} {t("list.at")} {form.getValues("eventTime")}</p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Venue</p>
+                    <p className="text-muted-foreground">{t("summary.venue")}</p>
                     <p className="font-medium">{form.getValues("venue")}</p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Contact</p>
+                    <p className="text-muted-foreground">{t("summary.contact")}</p>
                     <p className="font-medium">{form.getValues("contactName")} | {form.getValues("contactPhone")}</p>
                     <p className="text-muted-foreground">{form.getValues("contactEmail")}</p>
                   </div>
                 </div>
 
                 <div className="rounded-md border bg-muted/30 px-3 py-2 text-sm">
-                  Estimated total: <strong>{formatPrice(estimatedTotal)}</strong>
+                  {t("summary.estimatedTotal")}: <strong>{formatPrice(estimatedTotal)}</strong>
                 </div>
               </div>
             )}
 
             <div className="flex items-center justify-between gap-3 border-t pt-4">
               <Button type="button" variant="outline" onClick={handleBackStep} disabled={currentStep === 0 || isSubmitting}>
-                Back
+                {t("actions.back")}
               </Button>
 
               {isFinalStep ? (
                 <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Submitting..." : "Create Booking"}
+                  {isSubmitting ? t("actions.submitting") : t("actions.createBooking")}
                 </Button>
               ) : (
                 <Button type="button" onClick={() => void handleNextStep()} disabled={isSubmitting}>
-                  Continue
+                  {t("actions.continue")}
                 </Button>
               )}
             </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
+import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -31,14 +32,6 @@ type UserOrdersListProps = {
   bookings: BookingListItem[];
 };
 
-const serviceTypeLabelMap: Record<BookingListItem["serviceType"], string> = {
-  CORPORATE: "Corporate",
-  PRIVATE: "Private",
-  WEDDING: "Wedding",
-  VIP: "VIP",
-  OTHER: "Other",
-};
-
 const bookingStatusVariant: Record<BookingListItem["status"], string> = {
   PENDING: "bg-amber-500/10 text-amber-700 border-amber-500/20",
   CONFIRMED: "bg-blue-500/10 text-blue-700 border-blue-500/20",
@@ -56,43 +49,59 @@ function formatPrice(amount: number) {
 }
 
 export function UserOrdersList({ bookings }: UserOrdersListProps) {
+  const t = useTranslations("UserOrders");
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>My Orders</CardTitle>
-        <CardDescription>Track your submitted booking requests.</CardDescription>
+        <CardTitle>{t("list.title")}</CardTitle>
+        <CardDescription>{t("list.description")}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {bookings.length === 0 ? (
           <div className="rounded-md border border-dashed p-6 text-sm text-muted-foreground">
-            No bookings yet.
+            {t("list.empty")}
           </div>
         ) : (
           bookings.map((booking) => (
             <div key={booking.id} className="rounded-lg border p-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <p className="text-sm text-muted-foreground">Order #{booking.bookingNumber}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("list.orderNumber", { bookingNumber: booking.bookingNumber })}
+                  </p>
                   <p className="font-medium">{booking.serviceTier.name}</p>
                 </div>
                 <Badge variant="outline" className={bookingStatusVariant[booking.status]}>
-                  {booking.status.replaceAll("_", " ")}
+                  {t(`statuses.${booking.status}`)}
                 </Badge>
               </div>
               <div className="mt-3 grid grid-cols-1 gap-2 text-sm text-muted-foreground md:grid-cols-2">
                 <p>
-                  {serviceTypeLabelMap[booking.serviceType]} | {booking.guestCount} guests
+                  {t(`serviceTypes.${booking.serviceType}`)} | {t("list.guests", { count: booking.guestCount })}
                 </p>
                 <p>
-                  {format(new Date(booking.eventDate), "PPP")} at {booking.eventTime}
+                  {format(new Date(booking.eventDate), "PPP")} {t("list.at")} {booking.eventTime}
                 </p>
                 <p>{booking.venue}</p>
-                <p>Total: {formatPrice(booking.totalPrice)}</p>
-                {booking.menu ? <p>Menu: {booking.menu.name}</p> : <p>Menu: Not selected</p>}
                 <p>
-                  Chef: {booking.chefProfile?.dashboardUser.name ?? "No preference"}
+                  {t("summary.total")}: {formatPrice(booking.totalPrice)}
                 </p>
-                <p>Submitted: {format(new Date(booking.createdAt), "PPP")}</p>
+                {booking.menu ? (
+                  <p>
+                    {t("list.menu")}: {booking.menu.name}
+                  </p>
+                ) : (
+                  <p>
+                    {t("list.menu")}: {t("list.notSelected")}
+                  </p>
+                )}
+                <p>
+                  {t("list.chef")}: {booking.chefProfile?.dashboardUser.name ?? t("form.none.chef")}
+                </p>
+                <p>
+                  {t("list.submitted")}: {format(new Date(booking.createdAt), "PPP")}
+                </p>
               </div>
             </div>
           ))
