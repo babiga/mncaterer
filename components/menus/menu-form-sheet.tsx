@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
+import { PlusIcon, Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -29,11 +30,25 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
 type MenuFormValues = z.input<typeof createMenuSchema>;
+type ServiceTierOption = {
+  id: string;
+  name: string;
+  description: string | null;
+  isVIP: boolean;
+  sortOrder: number;
+};
 
 interface MenuFormSheetProps {
   open: boolean;
@@ -51,6 +66,7 @@ export function MenuFormSheet({
   onSuccess,
 }: MenuFormSheetProps) {
   const [isPending, setIsPending] = useState(false);
+  const [serviceTiers, setServiceTiers] = useState<ServiceTierOption[]>([]);
 
   const isCreate = mode === "create";
   const isEdit = mode === "edit";
@@ -62,9 +78,44 @@ export function MenuFormSheet({
       name: "",
       description: undefined,
       downloadUrl: undefined,
+      serviceTierId: null,
+      items: [],
       isActive: true,
     },
   });
+
+  useEffect(() => {
+    if (!open || isView) {
+      return;
+    }
+
+    let isMounted = true;
+
+    async function loadServiceTiers() {
+      try {
+        const response = await fetch("/api/service-tiers");
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(result.error || "Failed to load service tiers");
+        }
+
+        if (isMounted) {
+          setServiceTiers(result.data ?? []);
+        }
+      } catch {
+        if (isMounted) {
+          toast.error("Failed to load service tiers");
+        }
+      }
+    }
+
+    void loadServiceTiers();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isView, open]);
 
   useEffect(() => {
     if (isCreate) {
@@ -72,6 +123,8 @@ export function MenuFormSheet({
         name: "",
         description: undefined,
         downloadUrl: undefined,
+        serviceTierId: null,
+        items: [],
         isActive: true,
       });
       return;
@@ -82,6 +135,16 @@ export function MenuFormSheet({
         name: menu.name,
         description: menu.description ?? "",
         downloadUrl: menu.downloadUrl ?? "",
+        serviceTierId: menu.serviceTierId,
+        items: menu.items.map((item) => ({
+          name: item.name,
+          description: item.description ?? "",
+          price: Number(item.price),
+          ingredients: item.ingredients,
+          allergens: item.allergens,
+          imageUrl: item.imageUrl ?? "",
+          sortOrder: item.sortOrder,
+        })),
         isActive: menu.isActive,
       });
     }
@@ -94,6 +157,15 @@ export function MenuFormSheet({
       ...values,
       description: values.description || null,
       downloadUrl: values.downloadUrl || null,
+      serviceTierId: values.serviceTierId || null,
+      items: (values.items ?? []).map((item, index) => ({
+        ...item,
+        description: item.description || null,
+        imageUrl: item.imageUrl || null,
+        ingredients: (item.ingredients ?? []).map((value) => value.trim()).filter(Boolean),
+        allergens: (item.allergens ?? []).map((value) => value.trim()).filter(Boolean),
+        sortOrder: item.sortOrder ?? index,
+      })),
     };
 
     try {
@@ -141,6 +213,9 @@ export function MenuFormSheet({
             <div className="flex items-center justify-between py-4">
               <div>
                 <h3 className="text-lg font-semibold">{menu.name}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {menu.serviceTier ? `${menu.serviceTier.name} tier` : "Available across all tiers"}
+                </p>
               </div>
               <Badge variant={menu.isActive ? "default" : "secondary"}>
                 {menu.isActive ? "Active" : "Inactive"}
@@ -155,6 +230,12 @@ export function MenuFormSheet({
             <div>
               <label className="text-muted-foreground">Description</label>
               <p className="mt-1 font-medium">{menu.description || "-"}</p>
+            </div>
+            <div>
+              <label className="text-muted-foreground">Service Tier</label>
+              <p className="mt-1 font-medium">
+                {menu.serviceTier ? menu.serviceTier.name : "All tiers"}
+              </p>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -177,6 +258,28 @@ export function MenuFormSheet({
                 >
                   {menu.downloadUrl}
                 </a>
+              ) : (
+                <p className="mt-1 font-medium">-</p>
+              )}
+            </div>
+            <div>
+              <label className="text-muted-foreground">Menu Items</label>
+              {menu.items.length > 0 ? (
+                <div className="mt-2 space-y-2">
+                  {menu.items.map((item) => (
+                    <div key={item.id} className="rounded-md border p-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="font-medium">{item.name}</p>
+                        <span className="text-xs text-muted-foreground">
+                          {Number(item.price).toLocaleString("en-US")}
+                        </span>
+                      </div>
+                      {item.description ? (
+                        <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
               ) : (
                 <p className="mt-1 font-medium">-</p>
               )}
@@ -212,6 +315,38 @@ export function MenuFormSheet({
                     <FormControl>
                       <Input placeholder="Dinner Menu" {...field} />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="serviceTierId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Service Tier</FormLabel>
+                    <Select
+                      value={field.value ?? "all"}
+                      onValueChange={(value) => field.onChange(value === "all" ? null : value)}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select an optional service tier" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="all">All tiers</SelectItem>
+                        {serviceTiers.map((tier) => (
+                          <SelectItem key={tier.id} value={tier.id}>
+                            {tier.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-muted-foreground">
+                      Leave unset to make this menu available across all tiers.
+                    </p>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -262,6 +397,219 @@ export function MenuFormSheet({
                   </FormItem>
                 )}
               />
+
+              <div className="space-y-3 rounded-lg border p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <h3 className="font-medium">Menu Items</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Add and reorder dishes included in this menu.
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const items = form.getValues("items") ?? [];
+                      form.setValue("items", [
+                        ...items,
+                        {
+                          name: "",
+                          description: "",
+                          price: 0,
+                          ingredients: [],
+                          allergens: [],
+                          imageUrl: "",
+                          sortOrder: items.length,
+                        },
+                      ], { shouldDirty: true });
+                    }}
+                  >
+                    <PlusIcon className="mr-2 h-4 w-4" />
+                    Add Item
+                  </Button>
+                </div>
+
+                {(form.watch("items") ?? []).length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No items added yet.</p>
+                ) : (
+                  <div className="space-y-4">
+                    {(form.watch("items") ?? []).map((item, index) => (
+                      <div key={`${index}-${item.name}`} className="space-y-3 rounded-md border p-3">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="text-sm font-medium">Item {index + 1}</p>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                              const items = [...(form.getValues("items") ?? [])];
+                              items.splice(index, 1);
+                              form.setValue(
+                                "items",
+                                items.map((existingItem, itemIndex) => ({
+                                  ...existingItem,
+                                  sortOrder: itemIndex,
+                                })),
+                                { shouldDirty: true },
+                              );
+                            }}
+                          >
+                            <Trash2Icon className="h-4 w-4" />
+                            <span className="sr-only">Remove item</span>
+                          </Button>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                          <FormField
+                            control={form.control}
+                            name={`items.${index}.name`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Item Name</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Roasted lamb" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name={`items.${index}.price`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Price</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    min={0}
+                                    step="0.01"
+                                    {...field}
+                                    value={field.value ?? 0}
+                                    onChange={(event) => field.onChange(Number(event.target.value))}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.description`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Item Description</FormLabel>
+                              <FormControl>
+                                <Textarea
+                                  rows={2}
+                                  placeholder="Brief description"
+                                  {...field}
+                                  value={field.value ?? ""}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                          <FormField
+                            control={form.control}
+                            name={`items.${index}.ingredients`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Ingredients</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="Beef, onion, flour"
+                                    value={(field.value ?? []).join(", ")}
+                                    onChange={(event) => field.onChange(
+                                      event.target.value
+                                        .split(",")
+                                        .map((value) => value.trim())
+                                        .filter(Boolean),
+                                    )}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name={`items.${index}.allergens`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Allergens</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="Dairy, gluten"
+                                    value={(field.value ?? []).join(", ")}
+                                    onChange={(event) => field.onChange(
+                                      event.target.value
+                                        .split(",")
+                                        .map((value) => value.trim())
+                                        .filter(Boolean),
+                                    )}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                          <FormField
+                            control={form.control}
+                            name={`items.${index}.imageUrl`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Image URL</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="https://..."
+                                    {...field}
+                                    value={field.value ?? ""}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name={`items.${index}.sortOrder`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Sort Order</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    min={0}
+                                    step={1}
+                                    {...field}
+                                    value={field.value ?? index}
+                                    onChange={(event) => field.onChange(Number(event.target.value))}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
 
               <SheetFooter className="mt-auto pt-4">
                 <SheetClose asChild>

@@ -20,7 +20,25 @@ export type MenuRecord = {
   name: string;
   description: string | null;
   downloadUrl: string | null;
+  serviceTierId: string | null;
+  serviceTier: {
+    id: string;
+    name: string;
+    isVIP: boolean;
+  } | null;
   isActive: boolean;
+  items: {
+    id: string;
+    name: string;
+    description: string | null;
+    price: number;
+    ingredients: string[];
+    allergens: string[];
+    imageUrl: string | null;
+    sortOrder: number;
+    createdAt: string;
+    updatedAt: string;
+  }[];
   createdAt: string;
   updatedAt: string;
   _count: {
@@ -90,6 +108,19 @@ export function getMenusColumns({
         );
       },
       enableHiding: false,
+    },
+    {
+      id: "tier",
+      header: "Tier",
+      cell: ({ row }) => (
+        row.original.serviceTier ? (
+          <Badge variant="secondary">
+            {row.original.serviceTier.name}
+          </Badge>
+        ) : (
+          <span className="text-xs text-muted-foreground">All tiers</span>
+        )
+      ),
     },
     {
       accessorKey: "isActive",

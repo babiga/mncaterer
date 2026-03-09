@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { format, parseISO } from "date-fns";
 import { useTranslations } from "next-intl";
 import { useForm, type Path } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Calendar, Check, ChefHat, FileSignature, type LucideIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Check, ChefHat, FileSignature, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Card,
   CardContent,
@@ -22,9 +24,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import {
   getCreateBookingSchema,
   type CreateBookingData,
@@ -225,7 +229,7 @@ export function UserBookingForm({
       id: 2,
       title: t("form.steps.eventDetails.title"),
       description: t("form.steps.eventDetails.description"),
-      icon: Calendar,
+      icon: CalendarIcon,
       fields: ["guestCount", "eventDate", "eventTime", "venue"],
     },
     {
@@ -246,6 +250,17 @@ export function UserBookingForm({
 
   const [currentStep, setCurrentStep] = useState(0);
   const isFinalStep = currentStep === bookingSteps.length - 1;
+
+  const submitBooking = form.handleSubmit(onSubmit);
+
+  async function handleFormSubmit(event: FormEvent<HTMLFormElement>) {
+    if (!isFinalStep) {
+      event.preventDefault();
+      return;
+    }
+
+    await submitBooking(event);
+  }
 
   async function handleNextStep() {
     const step = bookingSteps[currentStep];
@@ -297,7 +312,7 @@ export function UserBookingForm({
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+          <form onSubmit={(event) => void handleFormSubmit(event)} className="space-y-5">
             {statusMessage && (
               <div className="rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-700">
                 {statusMessage}
@@ -476,9 +491,34 @@ export function UserBookingForm({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>{t("form.fields.eventDate")}</FormLabel>
-                        <FormControl>
-                          <Input type="date" min={getTodayDate()} {...field} />
-                        </FormControl>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                className={cn(
+                                  "w-full justify-between text-left font-normal",
+                                  !field.value && "text-muted-foreground",
+                                )}
+                              >
+                                {field.value
+                                  ? format(parseISO(field.value), "PPP")
+                                  : t("form.placeholders.eventDate")}
+                                <CalendarIcon className="h-4 w-4 opacity-60" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value ? parseISO(field.value) : undefined}
+                              onSelect={(date) => field.onChange(date ? format(date, "yyyy-MM-dd") : "")}
+                              disabled={(date) => date < new Date(getTodayDate())}
+                              captionLayout="dropdown"
+                            />
+                          </PopoverContent>
+                        </Popover>
                         <FormMessage />
                       </FormItem>
                     )}

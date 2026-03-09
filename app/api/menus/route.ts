@@ -3,6 +3,29 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { createMenuSchema, menusQuerySchema } from "@/lib/validations/menus";
 
+function serializeMenu(menu: any) {
+  return {
+    ...menu,
+    items: menu.items.map((item: any) => ({
+      ...item,
+      price: Number(item.price),
+    })),
+  };
+}
+
+async function validateServiceTier(serviceTierId: string | null | undefined) {
+  if (!serviceTierId) {
+    return null;
+  }
+
+  const serviceTier = await prisma.serviceTier.findUnique({
+    where: { id: serviceTierId },
+    select: { id: true },
+  });
+
+  return serviceTier;
+}
+
 export async function GET(request: NextRequest) {
   try {
     const session = await getSession();
@@ -58,6 +81,16 @@ export async function GET(request: NextRequest) {
       prisma.menu.findMany({
         where,
         include: {
+          serviceTier: {
+            select: {
+              id: true,
+              name: true,
+              isVIP: true,
+            },
+          },
+          items: {
+            orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+          },
           _count: {
             select: {
               items: true,
@@ -73,7 +106,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: menus,
+      data: menus.map(serializeMenu),
       pagination: {
         page,
         limit,
@@ -111,9 +144,71 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const serviceTierId = result.data.serviceTierId?.trim() || null;
+    const serviceTier = await validateServiceTier(serviceTierId);
+    if (serviceTierId && !serviceTier) {
+      return NextResponse.json(
+        { success: false, error: "Selected service tier does not exist" },
+        { status: 400 },
+      );
+    }
+
     const menu = await prisma.menu.create({
-      data: result.data,
+      data: {
+        name: result.data.name,
+        description: result.data.description || null,
+        downloadUrl: result.data.downloadUrl || null,
+        serviceTierId,
+        isActive: result.data.isActive,
+      },
       include: {
+        serviceTier: {
+          select: {
+            id: true,
+            name: true,
+            isVIP: true,
+          },
+        },
+        items: {
+          orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+        },
+        _count: {
+          select: {
+            items: true,
+            bookings: true,
+          },
+        },
+      },
+    });
+
+    if (result.data.items.length > 0) {
+      await prisma.menuItem.createMany({
+        data: result.data.items.map((item) => ({
+          menuId: menu.id,
+          name: item.name,
+          description: item.description || null,
+          price: item.price,
+          ingredients: item.ingredients,
+          allergens: item.allergens,
+          imageUrl: item.imageUrl || null,
+          sortOrder: item.sortOrder,
+        })),
+      });
+    }
+
+    const fullMenu = await prisma.menu.findUnique({
+      where: { id: menu.id },
+      include: {
+        serviceTier: {
+          select: {
+            id: true,
+            name: true,
+            isVIP: true,
+          },
+        },
+        items: {
+          orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+        },
         _count: {
           select: {
             items: true,
@@ -126,7 +221,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: "Menu created successfully",
-      data: menu,
+      data: fullMenu ? serializeMenu(fullMenu) : null,
     });
   } catch (error) {
     console.error("Create menu error:", error);
