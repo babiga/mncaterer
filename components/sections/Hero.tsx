@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -42,7 +42,8 @@ export default function Hero({ banners }: { banners?: BannerType[] }) {
   }, [banners]);
 
   // Shuffle images on component mount
-  const shuffledImages = useMemo(() => shuffleArray(heroImages), [heroImages]);
+  // const shuffledImages = useMemo(() => shuffleArray(heroImages), [heroImages]);
+  const shuffledImages = heroImages;
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -60,26 +61,27 @@ export default function Hero({ banners }: { banners?: BannerType[] }) {
       {/* Background Images with Dissolve Effect */}
       <div className="absolute inset-0 z-0">
         <AnimatePresence mode="sync">
-          {shuffledImages.map((image, index) => (
-            index === currentImageIndex && (
-              <motion.img
-                key={`${image}-${index}`}
-                src={image}
-                alt={`Mongolian National Caterer ${index + 1}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.6 }}
-                exit={{ opacity: 0 }}
-                transition={{
-                  duration: 1.5,
-                  ease: "easeInOut"
-                }}
-                className="absolute inset-0 w-full h-full object-cover scale-105"
-                style={{
-                  animation: 'ken-burns 20s ease-in-out infinite alternate'
-                }}
-              />
-            )
-          ))}
+          {shuffledImages.map(
+            (image, index) =>
+              index === currentImageIndex && (
+                <motion.img
+                  key={`${image}-${index}`}
+                  src={image}
+                  alt={`Mongolian National Caterer ${index + 1}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 0.6 }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    duration: 1.5,
+                    ease: "easeInOut",
+                  }}
+                  className="absolute inset-0 w-full h-full object-cover scale-105"
+                  style={{
+                    animation: "ken-burns 20s ease-in-out infinite alternate",
+                  }}
+                />
+              ),
+          )}
         </AnimatePresence>
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/20" />
       </div>
@@ -130,7 +132,9 @@ export default function Hero({ banners }: { banners?: BannerType[] }) {
           className="text-5xl md:text-7xl lg:text-8xl text-white mb-6 leading-tight"
         >
           {t("title1")} <br />
-          <span className="italic font-light text-foreground/90 text-4xl md:text-6xl lg:text-7xl font-serif">{t("title2")}</span>
+          <span className="italic font-light text-foreground/90 text-4xl md:text-6xl lg:text-7xl font-serif">
+            {t("title2")}
+          </span>
         </motion.h1>
 
         <motion.div
@@ -162,7 +166,9 @@ export default function Hero({ banners }: { banners?: BannerType[] }) {
         transition={{ delay: 1.5, duration: 1 }}
         className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
       >
-        <span className="text-xs tracking-widest text-white/50 uppercase">{t("scroll")}</span>
+        <span className="text-xs tracking-widest text-white/50 uppercase">
+          {t("scroll")}
+        </span>
         <div className="w-[1px] h-12 bg-gradient-to-b from-primary to-transparent" />
       </motion.div>
     </section>

@@ -5,6 +5,7 @@ import { Link } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";
 import {
   ArrowLeft,
+  CircleCheck,
   Crown,
   Gem,
   ShieldCheck,
@@ -17,9 +18,21 @@ export default async function VipServicePage() {
   const t = await getTranslations("ServiceDetails.vip");
   const s = await getTranslations("Services");
   const pillars = [
-    { title: t("pillars.0.title"), description: t("pillars.0.description"), icon: Gem },
-    { title: t("pillars.1.title"), description: t("pillars.1.description"), icon: ShieldCheck },
-    { title: t("pillars.2.title"), description: t("pillars.2.description"), icon: Sparkles },
+    {
+      title: t("pillars.0.title"),
+      description: t("pillars.0.description"),
+      icon: Gem,
+    },
+    {
+      title: t("pillars.1.title"),
+      description: t("pillars.1.description"),
+      icon: ShieldCheck,
+    },
+    {
+      title: t("pillars.2.title"),
+      description: t("pillars.2.description"),
+      icon: Sparkles,
+    },
   ];
   const signatureMoments = t.raw("signatureMoments") as string[];
   const serviceNav = [
@@ -33,7 +46,11 @@ export default async function VipServicePage() {
       <Navbar trimmed />
       <main className="container mx-auto px-6 pb-20 pt-28 space-y-12">
         <div className="flex flex-wrap items-center gap-4">
-          <Button asChild variant="ghost" className="text-amber-100 hover:bg-amber-100/10">
+          <Button
+            asChild
+            variant="ghost"
+            className="text-amber-100 hover:bg-amber-100/10"
+          >
             <Link href="/#services">
               <ArrowLeft className="mr-2 h-4 w-4" />
               {t("backToServices")}
@@ -41,7 +58,11 @@ export default async function VipServicePage() {
           </Button>
           <div className="flex flex-wrap items-center gap-4 text-xs uppercase tracking-[0.16em] text-amber-100/80">
             {serviceNav.map((item) => (
-              <Link key={item.href} href={item.href} className="hover:text-amber-50 transition-colors">
+              <Link
+                key={item.href}
+                href={item.href}
+                className="hover:text-amber-50 transition-colors"
+              >
                 {item.label}
               </Link>
             ))}
@@ -57,14 +78,17 @@ export default async function VipServicePage() {
             <h1 className="text-4xl font-semibold leading-tight md:text-5xl">
               {t("title")}
             </h1>
-            <p className="max-w-xl text-amber-50/85">
-              {t("description")}
-            </p>
-            <Button asChild className="bg-amber-200 text-[#1f1a11] hover:bg-amber-100">
+            <p className="max-w-xl text-amber-50/85">{t("description")}</p>
+            <Button
+              asChild
+              className="bg-amber-200 text-[#1f1a11] hover:bg-amber-100 text-lg"
+            >
               <Link href="/inquiry">{t("cta")}</Link>
             </Button>
             <div className="rounded-2xl border border-amber-200/20 bg-[#1f1a11]/75 p-4">
-              <h2 className="mb-3 text-lg font-semibold">{t("cadenceTitle")}</h2>
+              <h2 className="mb-3 text-lg font-semibold">
+                {t("cadenceTitle")}
+              </h2>
               <div className="space-y-2 text-sm text-amber-50/80">
                 <p>{t("cadence.0")}</p>
                 <p>{t("cadence.1")}</p>
@@ -75,13 +99,20 @@ export default async function VipServicePage() {
 
           <div className="grid gap-6">
             <div className="relative min-h-72 overflow-hidden rounded-3xl border border-amber-100/25">
-              <img src="/hero-food.png" alt={t("heroAlt")} className="h-full w-full object-cover" />
+              <img
+                src="/hero-food.png"
+                alt={t("heroAlt")}
+                className="h-full w-full object-cover"
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0b0906]/90 via-[#1f1a11]/40 to-transparent" />
             </div>
 
             <div className="grid gap-6 md:grid-cols-3">
               {pillars.map((item) => (
-                <article key={item.title} className="rounded-2xl border border-amber-200/20 bg-[#1f1a11]/75 p-6">
+                <article
+                  key={item.title}
+                  className="rounded-2xl border border-amber-200/20 bg-[#1f1a11]/75 p-6"
+                >
                   <item.icon className="mb-4 h-6 w-6 text-amber-200" />
                   <h2 className="mb-2 text-xl font-semibold">{item.title}</h2>
                   <p className="text-sm text-amber-50/80">{item.description}</p>
@@ -96,8 +127,11 @@ export default async function VipServicePage() {
               </h2>
               <ul className="grid gap-3 text-sm text-amber-50/80 sm:grid-cols-2">
                 {signatureMoments.map((item) => (
-                  <li key={item} className="flex items-start gap-3 rounded-xl border border-amber-200/15 bg-[#1f1a11]/70 p-3">
-                    <Wine className="mt-0.5 h-4 w-4 text-amber-200" />
+                  <li
+                    key={item}
+                    className="flex items-start gap-3 rounded-xl border border-amber-200/15 bg-[#1f1a11]/70 p-3"
+                  >
+                    <CircleCheck className="mt-0.5 h-4 w-4 text-amber-200" />
                     <span>{item}</span>
                   </li>
                 ))}

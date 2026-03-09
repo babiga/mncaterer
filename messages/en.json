@@ -571,7 +571,7 @@
     },
     "ServiceDetails": {
         "corporate": {
-            "backToServices": "Back to services",
+            "backToServices": "Back",
             "eyebrow": "Corporate Catering",
             "title": "Business events with polished culinary execution.",
             "description": "From private leadership dinners to high-volume company functions, this service is built for reliability, speed, and premium guest experience.",
@@ -615,7 +615,7 @@
             ]
         },
         "private": {
-            "backToServices": "Back to services",
+            "backToServices": "Back",
             "eyebrow": "Private Occasions",
             "title": "Intimate events designed around your personal style.",
             "description": "Private service is built for comfort and character. Menus, pacing, and table presentation are tailored to your guests and setting so hosting feels effortless.",
@@ -652,7 +652,7 @@
             ]
         },
         "wedding": {
-            "backToServices": "Back to services",
+            "backToServices": "Back",
             "eyebrow": "Wedding Catering",
             "title": "Romantic, warm service for your most important day.",
             "description": "This page is intentionally beige and soft-toned to match wedding styling. Every service detail is planned around ceremony flow, emotional moments, and elegant guest comfort.",
@@ -684,7 +684,7 @@
             ]
         },
         "vip": {
-            "backToServices": "Back to services",
+            "backToServices": "Back",
             "eyebrow": "VIP Premiere",
             "title": "Bespoke service for high-stakes and high-visibility events.",
             "description": "VIP is engineered for hosts who need precision, discretion, and unmistakable quality at every touchpoint from first briefing to final guest departure.",

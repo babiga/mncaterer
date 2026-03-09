@@ -10,21 +10,46 @@ import {
   Presentation,
   UtensilsCrossed,
   Users,
+  CircleCheck,
 } from "lucide-react";
 
 export default async function CorporateServicePage() {
   const t = await getTranslations("ServiceDetails.corporate");
   const s = await getTranslations("Services");
   const highlights = [
-    { title: t("highlights.0.title"), description: t("highlights.0.description"), icon: UtensilsCrossed },
-    { title: t("highlights.1.title"), description: t("highlights.1.description"), icon: CalendarClock },
-    { title: t("highlights.2.title"), description: t("highlights.2.description"), icon: Presentation },
+    {
+      title: t("highlights.0.title"),
+      description: t("highlights.0.description"),
+      icon: UtensilsCrossed,
+    },
+    {
+      title: t("highlights.1.title"),
+      description: t("highlights.1.description"),
+      icon: CalendarClock,
+    },
+    {
+      title: t("highlights.2.title"),
+      description: t("highlights.2.description"),
+      icon: Presentation,
+    },
   ];
   const formats = t.raw("formats") as string[];
   const process = [
-    { step: "01", title: t("process.0.title"), description: t("process.0.description") },
-    { step: "02", title: t("process.1.title"), description: t("process.1.description") },
-    { step: "03", title: t("process.2.title"), description: t("process.2.description") },
+    {
+      step: "01",
+      title: t("process.0.title"),
+      description: t("process.0.description"),
+    },
+    {
+      step: "02",
+      title: t("process.1.title"),
+      description: t("process.1.description"),
+    },
+    {
+      step: "03",
+      title: t("process.2.title"),
+      description: t("process.2.description"),
+    },
   ];
   const serviceNav = [
     { href: "/services/private", label: s("private.title") },
@@ -37,7 +62,11 @@ export default async function CorporateServicePage() {
       <Navbar trimmed />
       <main className="container mx-auto px-6 pb-20 pt-28 space-y-14">
         <div className="flex flex-wrap items-center gap-4">
-          <Button asChild variant="ghost" className="text-slate-200 hover:bg-white/10">
+          <Button
+            asChild
+            variant="ghost"
+            className="text-slate-200 hover:bg-white/10"
+          >
             <Link href="/#services">
               <ArrowLeft className="mr-2 h-4 w-4" />
               {t("backToServices")}
@@ -45,7 +74,11 @@ export default async function CorporateServicePage() {
           </Button>
           <div className="flex flex-wrap items-center gap-4 text-xs uppercase tracking-[0.16em] text-blue-100/80">
             {serviceNav.map((item) => (
-              <Link key={item.href} href={item.href} className="hover:text-blue-100 transition-colors">
+              <Link
+                key={item.href}
+                href={item.href}
+                className="hover:text-blue-100 transition-colors"
+              >
                 {item.label}
               </Link>
             ))}
@@ -58,30 +91,47 @@ export default async function CorporateServicePage() {
               <BriefcaseBusiness className="h-4 w-4" />
               {t("eyebrow")}
             </p>
-            <h1 className="text-4xl font-semibold leading-tight md:text-6xl">{t("title")}</h1>
-            <p className="max-w-xl text-base text-slate-200/90 md:text-lg">{t("description")}</p>
+            <h1 className="text-4xl font-semibold leading-tight md:text-6xl">
+              {t("title")}
+            </h1>
+            <p className="max-w-xl text-base text-slate-200/90 md:text-lg">
+              {t("description")}
+            </p>
             <div className="grid gap-3 sm:grid-cols-3">
               {highlights.map((item) => (
-                <div key={item.title} className="rounded-xl border border-blue-200/20 bg-[#12284b]/70 p-4">
+                <div
+                  key={item.title}
+                  className="rounded-xl border border-blue-200/20 bg-[#12284b]/70 p-4"
+                >
                   <item.icon className="mb-2 h-5 w-5 text-blue-200" />
-                  <p className="text-xs font-medium text-blue-100">{item.title}</p>
+                  <p className="text-xs font-medium text-blue-100">
+                    {item.title}
+                  </p>
                 </div>
               ))}
             </div>
-            <Button asChild size="lg" className="bg-blue-200 text-[#0b1a33] hover:bg-blue-100">
+            <Button
+              asChild
+              size="lg"
+              className="bg-blue-200 text-[#0b1a33] hover:bg-blue-100 text-lg mt-4"
+            >
               <Link href="/inquiry">{t("cta")}</Link>
             </Button>
           </div>
 
           <div className="grid gap-4">
             <div className="relative min-h-72 overflow-hidden rounded-2xl border border-blue-100/25">
-              <img src="/event-corporate.png" alt={t("heroAlt")} className="h-full w-full object-cover" />
+              <img
+                src="/event-corporate.png"
+                alt={t("heroAlt")}
+                className="h-full w-full object-cover"
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-[#081222]/90 via-[#081222]/35 to-transparent" />
             </div>
-            <div className="rounded-2xl border border-blue-200/25 bg-[#12284b]/80 p-5">
+            {/* <div className="rounded-2xl border border-blue-200/25 bg-[#12284b]/80 p-5">
               <p className="mb-1 text-xs uppercase tracking-[0.2em] text-blue-200">{t("deliveryTitle")}</p>
               <p className="text-sm text-slate-200/90">{process[0].description}</p>
-            </div>
+            </div> */}
           </div>
         </section>
 
@@ -91,7 +141,7 @@ export default async function CorporateServicePage() {
             <ul className="space-y-3 text-sm text-slate-200/90">
               {formats.map((item) => (
                 <li key={item} className="flex items-start gap-3">
-                  <Users className="mt-0.5 h-4 w-4 text-blue-200" />
+                  <CircleCheck className="mt-0.5 h-4 w-4 text-blue-200" />
                   <span>{item}</span>
                 </li>
               ))}
@@ -99,7 +149,9 @@ export default async function CorporateServicePage() {
           </article>
 
           <article className="rounded-2xl border border-blue-200/20 bg-[#0e213d]/70 p-7">
-            <h2 className="mb-6 text-2xl font-semibold">{t("deliveryTitle")}</h2>
+            <h2 className="mb-6 text-2xl font-semibold">
+              {t("deliveryTitle")}
+            </h2>
             <div className="space-y-6">
               {process.map((item, index) => (
                 <div key={item.step} className="relative pl-12">
@@ -110,7 +162,9 @@ export default async function CorporateServicePage() {
                     {item.step}
                   </span>
                   <h3 className="text-lg font-medium">{item.title}</h3>
-                  <p className="mt-1 text-sm text-slate-200/85">{item.description}</p>
+                  <p className="mt-1 text-sm text-slate-200/85">
+                    {item.description}
+                  </p>
                 </div>
               ))}
             </div>
