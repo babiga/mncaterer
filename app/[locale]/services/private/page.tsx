@@ -54,7 +54,7 @@ export default async function PrivateServicePage() {
           </div>
         </div>
 
-        <section className="grid gap-6 rounded-3xl border border-rose-200/25 bg-[#2f1932]/70 p-8 md:grid-cols-[0.95fr_1.05fr] md:p-12">
+        <section className="grid gap-6 rounded-3xl border border-rose-200/25 bg-[#2f1932]/70 p-8 grid-cols-1 md:grid-cols-[0.95fr_1.05fr] md:p-12">
           <div className="relative min-h-80 overflow-hidden rounded-[1.75rem] border border-rose-100/20">
             <img
               src="/service-private.png"
@@ -76,7 +76,7 @@ export default async function PrivateServicePage() {
               <Sparkles className="h-4 w-4" />
               {t("eyebrow")}
             </p>
-            <h1 className="text-4xl font-semibold leading-tight md:text-6xl">
+            <h1 className="text-2xl font-semibold leading-tight md:text-6xl">
               {t("title")}
             </h1>
             <p className="max-w-xl text-rose-100/85 md:text-lg">
@@ -85,7 +85,7 @@ export default async function PrivateServicePage() {
             <Button
               asChild
               size="lg"
-              className="bg-rose-200 text-[#2b1230] hover:bg-rose-100 text-lg mt-4"
+              className="bg-rose-200 text-[#2b1230] hover:bg-rose-100 lg:text-lg mt-4"
             >
               <Link href="/inquiry">{t("cta")}</Link>
             </Button>

@@ -73,18 +73,18 @@ export default async function WeddingServicePage() {
               <Heart className="h-4 w-4" />
               {t("eyebrow")}
             </p>
-            <h1 className="text-4xl font-semibold leading-tight text-[#4a3221] md:text-5xl">
+            <h1 className="text-2xl font-semibold leading-tight text-[#4a3221] md:text-5xl">
               {t("title")}
             </h1>
             <p className="text-[#6f4d2f] md:text-lg">{t("description")}</p>
             <Button
               asChild
-              className="bg-[#8a5b35] text-amber-50 hover:bg-[#764c2d] text-lg"
+              className="bg-[#8a5b35] text-amber-50 hover:bg-[#764c2d] lg:text-lg"
             >
               <Link href="/inquiry">{t("cta")}</Link>
             </Button>
           </div>
-          <div className="relative mt-8 min-h-80 overflow-hidden rounded-2xl border border-[#d7c2a6]">
+          <div className="relative mt-8 overflow-hidden rounded-2xl border border-[#d7c2a6]">
             <img
               src="/service-wedding.png"
               alt={t("heroAlt")}

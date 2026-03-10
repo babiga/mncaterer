@@ -86,12 +86,12 @@ export default async function CorporateServicePage() {
         </div>
 
         <section className="grid gap-8 rounded-3xl border border-blue-200/25 bg-[#0e213d]/75 p-8 lg:grid-cols-[1.05fr_0.95fr] lg:p-12">
-          <div className="space-y-7">
+          <div className="space-y-7 overflow-hidden">
             <p className="inline-flex items-center gap-2 rounded-full border border-blue-200/30 bg-blue-200/15 px-4 py-1 text-xs uppercase tracking-[0.2em] text-blue-100">
               <BriefcaseBusiness className="h-4 w-4" />
               {t("eyebrow")}
             </p>
-            <h1 className="text-4xl font-semibold leading-tight md:text-6xl">
+            <h1 className="text-2xl font-semibold leading-tight md:text-6xl">
               {t("title")}
             </h1>
             <p className="max-w-xl text-base text-slate-200/90 md:text-lg">
@@ -113,7 +113,7 @@ export default async function CorporateServicePage() {
             <Button
               asChild
               size="lg"
-              className="bg-blue-200 text-[#0b1a33] hover:bg-blue-100 text-lg mt-4"
+              className="bg-blue-200 text-[#0b1a33] hover:bg-blue-100 lg:text-lg mt-4"
             >
               <Link href="/inquiry">{t("cta")}</Link>
             </Button>
@@ -141,7 +141,7 @@ export default async function CorporateServicePage() {
             <ul className="space-y-3 text-sm text-slate-200/90">
               {formats.map((item) => (
                 <li key={item} className="flex items-start gap-3">
-                  <CircleCheck className="mt-0.5 h-4 w-4 text-blue-200" />
+                  <CircleCheck className="mt-0.5 h-4 w-4 min-w-4 text-blue-200" />
                   <span>{item}</span>
                 </li>
               ))}

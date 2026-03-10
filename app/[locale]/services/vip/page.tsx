@@ -75,13 +75,13 @@ export default async function VipServicePage() {
               <Crown className="h-4 w-4" />
               {t("eyebrow")}
             </p>
-            <h1 className="text-4xl font-semibold leading-tight md:text-5xl">
+            <h1 className="text-2xl font-semibold leading-tight md:text-5xl">
               {t("title")}
             </h1>
             <p className="max-w-xl text-amber-50/85">{t("description")}</p>
             <Button
               asChild
-              className="bg-amber-200 text-[#1f1a11] hover:bg-amber-100 text-lg"
+              className="bg-amber-200 text-[#1f1a11] hover:bg-amber-100 lg:text-lg"
             >
               <Link href="/inquiry">{t("cta")}</Link>
             </Button>
