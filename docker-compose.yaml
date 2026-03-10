@@ -3,11 +3,11 @@ version: "3.8"
 services:
   postgres:
     image: postgres:latest
-    container_name: postgres_db2
+    container_name: postgres_db3
     environment:
       POSTGRES_USER: babiga
       POSTGRES_PASSWORD: dbpassword
-      POSTGRES_DB: tenx_db
+      POSTGRES_DB: mncaterer_db
     ports:
       - "5432:5432"
     volumes:

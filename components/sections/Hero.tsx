@@ -7,11 +7,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 
 // Static hero images fallback
-const staticHeroImages = [
-  "/tenx-hero.png",
-  "/tenx-hero-2.jpg",
-  "/tenx-hero-3.jpg",
-];
+const staticHeroImages = ["/hero.png", "/hero-2.jpg", "/hero-3.jpg"];
 
 // Fisher-Yates shuffle algorithm
 function shuffleArray<T>(array: T[]): T[] {
@@ -43,7 +39,7 @@ export default function Hero({ banners }: { banners?: BannerType[] }) {
 
   // Shuffle images on component mount
   // const shuffledImages = useMemo(() => shuffleArray(heroImages), [heroImages]);
-  const shuffledImages = heroImages;
+  const shuffledImages = staticHeroImages;
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -120,7 +116,7 @@ export default function Hero({ banners }: { banners?: BannerType[] }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2 }}
         >
-          <h2 className="text-primary tracking-[0.2em] text-sm uppercase mb-4 font-medium">
+          <h2 className="text-primary tracking-[0.2em] text-xs md:text-sm uppercase mb-4 font-medium">
             {t("tagline")}
           </h2>
         </motion.div>
@@ -129,10 +125,10 @@ export default function Hero({ banners }: { banners?: BannerType[] }) {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.4 }}
-          className="text-5xl md:text-7xl lg:text-8xl text-white mb-6 leading-tight"
+          className="text-3xl md:text-6xl lg:text-8xl text-white mb-6 leading-tight"
         >
           {t("title1")} <br />
-          <span className="italic font-light text-foreground/90 text-4xl md:text-6xl lg:text-7xl font-serif">
+          <span className="italic font-light text-foreground/90 text-3xl md:text-5xl lg:text-7xl font-serif">
             {t("title2")}
           </span>
         </motion.h1>

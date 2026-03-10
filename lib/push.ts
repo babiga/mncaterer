@@ -19,7 +19,8 @@ function ensureVapidConfigured() {
 
   const publicKey = process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY;
   const privateKey = process.env.WEB_PUSH_PRIVATE_KEY;
-  const subject = process.env.WEB_PUSH_SUBJECT || "mailto:support@tenx.local";
+  const subject =
+    process.env.WEB_PUSH_SUBJECT || "mailto:support@mncaterer.local";
 
   if (!publicKey || !privateKey) {
     throw new Error("Missing web push VAPID keys in environment");
@@ -48,7 +49,9 @@ export async function sendPushNotification(
   ensureVapidConfigured();
   const filters = [
     target.userId ? { userId: target.userId } : undefined,
-    target.dashboardUserId ? { dashboardUserId: target.dashboardUserId } : undefined,
+    target.dashboardUserId
+      ? { dashboardUserId: target.dashboardUserId }
+      : undefined,
   ].filter(Boolean) as Array<{ userId?: string; dashboardUserId?: string }>;
 
   if (!filters.length) {

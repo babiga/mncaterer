@@ -1,25 +1,11 @@
 {
-  "name": "TenX Catering",
-  "short_name": "TenX",
+  "name": "Mongolian National Caterer",
+  "short_name": "MNCaterer",
   "description": "Premium high-end catering for private events, corporate functions, and VIP occasions.",
   "start_url": "/en",
   "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#111827",
-  "icons": [
-    {
-      "src": "/icons/icon-192.svg",
-      "sizes": "192x192",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/icons/icon-512.svg",
-      "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
-  ]
+  "icons": []
 }
-

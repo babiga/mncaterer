@@ -1,33 +1,8 @@
-# CLAUDE.md
-
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides simple guidance when working with code in this repository.
 
 ## Project Overview
 
 Mongolian National Caterer is a high-end catering platform built with Next.js 16. The platform serves customers booking catering services and has a separate dashboard for chefs, companies, and admins.
-
-## Development Commands
-
-```bash
-npm run dev      # Start development server
-npm run build    # Production build
-npm run start    # Start production server
-npm run lint     # Run ESLint
-npm run check    # Run TypeScript type checking (tsc)
-```
-
-### Database Commands
-
-```bash
-# Start PostgreSQL database
-docker compose up -d
-
-# Prisma commands
-npx prisma generate    # Generate Prisma client (outputs to generated/prisma)
-npx prisma migrate dev # Run migrations in development
-npx prisma db push     # Push schema changes without migration
-npx prisma studio      # Open Prisma Studio GUI
-```
 
 ### Directory Structure
 
@@ -64,7 +39,3 @@ npx prisma studio      # Open Prisma Studio GUI
 
 - Zod schemas in `lib/validations/`
 - React Hook Form with `@hookform/resolvers`
-
-**Environment Variables**
-
-- `DATABASE_URL` - PostgreSQL connection string

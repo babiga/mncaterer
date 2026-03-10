@@ -99,7 +99,9 @@ async function upsertEvent(data: {
   companyProfileId?: string | null;
   isFeatured?: boolean;
 }) {
-  const existing = await prisma.event.findFirst({ where: { title: data.title } });
+  const existing = await prisma.event.findFirst({
+    where: { title: data.title },
+  });
 
   if (existing) {
     return prisma.event.update({
@@ -120,7 +122,7 @@ async function main() {
   const in365Days = new Date(now);
   in365Days.setDate(now.getDate() + 365);
 
-  const adminEmail = process.env.ADMIN_EMAIL || "admin@tenx.mn";
+  const adminEmail = process.env.ADMIN_EMAIL || "admin@mncaterer.mn";
   const adminPassword = process.env.ADMIN_PASSWORD || "Admin123!";
   const adminName = process.env.ADMIN_NAME || "System Admin";
   const adminPasswordHash = await bcrypt.hash(adminPassword, 10);
@@ -146,7 +148,7 @@ async function main() {
 
   const chefPasswordHash = await bcrypt.hash("Chef123!", 10);
   const chefUser = await prisma.dashboardUser.upsert({
-    where: { email: "chef@tenx.mn" },
+    where: { email: "chef@mncaterer.mn" },
     update: {
       name: "Chef Altan",
       password: chefPasswordHash,
@@ -155,7 +157,7 @@ async function main() {
       isActive: true,
     },
     create: {
-      email: "chef@tenx.mn",
+      email: "chef@mncaterer.mn",
       password: chefPasswordHash,
       name: "Chef Altan",
       role: "CHEF",
@@ -166,7 +168,7 @@ async function main() {
 
   const companyPasswordHash = await bcrypt.hash("Company123!", 10);
   const companyUser = await prisma.dashboardUser.upsert({
-    where: { email: "company@tenx.mn" },
+    where: { email: "company@mncaterer.mn" },
     update: {
       name: "Nomad Events LLC",
       password: companyPasswordHash,
@@ -175,7 +177,7 @@ async function main() {
       isActive: true,
     },
     create: {
-      email: "company@tenx.mn",
+      email: "company@mncaterer.mn",
       password: companyPasswordHash,
       name: "Nomad Events LLC",
       role: "COMPANY",
@@ -185,14 +187,14 @@ async function main() {
   });
 
   const customer = await prisma.user.upsert({
-    where: { email: "customer@tenx.mn" },
+    where: { email: "customer@mncaterer.mn" },
     update: {
       name: "Bat Erdene",
       phone: "+976-99119911",
       userType: "INDIVIDUAL",
     },
     create: {
-      email: "customer@tenx.mn",
+      email: "customer@mncaterer.mn",
       name: "Bat Erdene",
       firstName: "Bat",
       lastName: "Erdene",
@@ -212,7 +214,8 @@ async function main() {
       rating: 4.9,
       reviewCount: 34,
       hourlyRate: 180000,
-      coverImage: "https://images.unsplash.com/photo-1607631568010-a87245c0daf8",
+      coverImage:
+        "https://images.unsplash.com/photo-1607631568010-a87245c0daf8",
     },
     create: {
       dashboardUserId: chefUser.id,
@@ -223,7 +226,8 @@ async function main() {
       rating: 4.9,
       reviewCount: 34,
       hourlyRate: 180000,
-      coverImage: "https://images.unsplash.com/photo-1607631568010-a87245c0daf8",
+      coverImage:
+        "https://images.unsplash.com/photo-1607631568010-a87245c0daf8",
     },
   });
 
@@ -304,7 +308,6 @@ async function main() {
     type: "PARTNER",
     sortOrder: 1,
     title: "Blue Sky Hotel",
-    imageUrl: "https://images.unsplash.com/photo-1455587734955-081b22074882",
     isActive: true,
   });
 
@@ -312,7 +315,6 @@ async function main() {
     type: "PARTNER",
     sortOrder: 2,
     title: "Steppe Convention Hall",
-    imageUrl: "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17",
     isActive: true,
   });
 
@@ -320,7 +322,7 @@ async function main() {
     type: "SOCIAL_LINK",
     sortOrder: 1,
     title: "Facebook",
-    link: "https://facebook.com/tenx",
+    link: "https://facebook.com/MNCaterer",
     icon: "facebook",
     isActive: true,
   });
@@ -329,7 +331,7 @@ async function main() {
     type: "SOCIAL_LINK",
     sortOrder: 2,
     title: "Instagram",
-    link: "https://instagram.com/tenx",
+    link: "https://instagram.com/MNCaterer",
     icon: "instagram",
     isActive: true,
   });
@@ -543,7 +545,9 @@ async function main() {
     where: { invoiceNumber: "INV-SEED-001" },
     update: {
       paymentId: payment.id,
-      items: [{ name: "Premium catering package", quantity: 120, unitPrice: 145000 }],
+      items: [
+        { name: "Premium catering package", quantity: 120, unitPrice: 145000 },
+      ],
       subtotal: 17400000,
       tax: 1740000,
       total: 19140000,
@@ -552,7 +556,9 @@ async function main() {
     create: {
       paymentId: payment.id,
       invoiceNumber: "INV-SEED-001",
-      items: [{ name: "Premium catering package", quantity: 120, unitPrice: 145000 }],
+      items: [
+        { name: "Premium catering package", quantity: 120, unitPrice: 145000 },
+      ],
       subtotal: 17400000,
       tax: 1740000,
       total: 19140000,
@@ -571,7 +577,8 @@ async function main() {
       chefProfileId: chefProfile.id,
       rating: 5,
       title: "Exceptional execution",
-      comment: "Great food quality and professional team from planning to service.",
+      comment:
+        "Great food quality and professional team from planning to service.",
     },
     create: {
       bookingId: booking.id,
@@ -579,7 +586,8 @@ async function main() {
       chefProfileId: chefProfile.id,
       rating: 5,
       title: "Exceptional execution",
-      comment: "Great food quality and professional team from planning to service.",
+      comment:
+        "Great food quality and professional team from planning to service.",
     },
   });
 
@@ -628,7 +636,8 @@ async function main() {
     description: "150-guest outdoor wedding service with full premium setup.",
     eventType: "WEDDING",
     guestCount: 150,
-    coverImageUrl: "https://images.unsplash.com/photo-1519741497674-611481863552",
+    coverImageUrl:
+      "https://images.unsplash.com/photo-1519741497674-611481863552",
     imageUrls: [
       "https://images.unsplash.com/photo-1519225421980-715cb0215aed",
       "https://images.unsplash.com/photo-1478144592103-25e218a04891",
@@ -644,7 +653,8 @@ async function main() {
     description: "Executive-level corporate banquet for enterprise clients.",
     eventType: "CORPORATE",
     guestCount: 220,
-    coverImageUrl: "https://images.unsplash.com/photo-1503428593586-e225b39bddfe",
+    coverImageUrl:
+      "https://images.unsplash.com/photo-1503428593586-e225b39bddfe",
     imageUrls: [
       "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3",
       "https://images.unsplash.com/photo-1492684223066-81342ee5ff30",
@@ -664,7 +674,8 @@ async function main() {
         where: { id: existingJobPosting.id },
         data: {
           createdById: admin.id,
-          description: "Need an experienced chef for a private residence event.",
+          description:
+            "Need an experienced chef for a private residence event.",
           eventDate: in30Days,
           eventTime: "19:30",
           guestCount: 40,
@@ -677,7 +688,8 @@ async function main() {
         data: {
           createdById: admin.id,
           title: "VIP Private Dinner - 40 Guests",
-          description: "Need an experienced chef for a private residence event.",
+          description:
+            "Need an experienced chef for a private residence event.",
           eventType: "PRIVATE",
           eventDate: in30Days,
           eventTime: "19:30",
@@ -818,7 +830,9 @@ async function main() {
 
   console.log("Database seeded successfully.");
   console.log(`Admin: ${admin.email}`);
-  console.log(`Service tiers seeded: ${staticServiceData.map((service) => service.route).join(", ")}`);
+  console.log(
+    `Service tiers seeded: ${staticServiceData.map((service) => service.route).join(", ")}`,
+  );
 }
 
 main()

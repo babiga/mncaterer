@@ -43,23 +43,23 @@ export default async function WeddingServicePage() {
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,#f6ecdc_0%,#eadcc9_45%,#dbc8af_100%)] text-stone-900">
       <Navbar trimmed />
       <main className="container mx-auto px-6 pb-20 pt-28 space-y-14">
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="flex items-center md:gap-4">
           <Button
             asChild
             variant="ghost"
             className="text-stone-700 hover:bg-stone-900/5"
           >
             <Link href="/#services">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              {t("backToServices")}
+              <ArrowLeft className="md:mr-2 h-4 w-4" />
+              <span className="hidden md:block">{t("backToServices")}</span>
             </Link>
           </Button>
-          <div className="flex flex-wrap items-center gap-4 text-xs uppercase tracking-[0.16em] text-[#8a5b35]/85">
+          <div className="flex items-center gap-4 text-xs uppercase tracking-[0.16em] text-[#8a5b35]/85 overflow-x-auto no-scrollbar">
             {serviceNav.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="hover:text-[#6f4d2f] transition-colors"
+                className="hover:text-[#6f4d2f] transition-colors text-nowrap"
               >
                 {item.label}
               </Link>

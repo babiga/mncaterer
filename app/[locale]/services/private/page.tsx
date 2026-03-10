@@ -30,23 +30,23 @@ export default async function PrivateServicePage() {
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,#50324f_0%,#2d1830_45%,#170d1b_100%)] text-rose-50">
       <Navbar trimmed />
       <main className="container mx-auto px-6 pb-20 pt-28 space-y-14">
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="flex items-center md:gap-4">
           <Button
             asChild
             variant="ghost"
             className="text-rose-100 hover:bg-white/10"
           >
             <Link href="/#services">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              {t("backToServices")}
+              <ArrowLeft className="md:mr-2 h-4 w-4" />
+              <span className="hidden md:block">{t("backToServices")}</span>
             </Link>
           </Button>
-          <div className="flex flex-wrap items-center gap-4 text-xs uppercase tracking-[0.16em] text-rose-100/80">
+          <div className="flex items-center gap-4 text-xs uppercase tracking-[0.16em] text-rose-100/80 overflow-x-auto no-scrollbar">
             {serviceNav.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="hover:text-rose-100 transition-colors"
+                className="hover:text-rose-100 transition-colors text-nowrap"
               >
                 {item.label}
               </Link>

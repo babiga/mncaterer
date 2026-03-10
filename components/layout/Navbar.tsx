@@ -98,7 +98,7 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
 
   return (
     <nav
-      className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+      className={`fixed top-0 w-full z-50  ${
         scrolled
           ? "bg-background/90 backdrop-blur-md py-4 border-b border-white/5"
           : "bg-transparent py-6"

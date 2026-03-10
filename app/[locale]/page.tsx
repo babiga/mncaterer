@@ -15,9 +15,19 @@ import Events from "@/components/sections/Events";
 import Footer from "@/components/layout/Footer";
 
 type HomeData = {
-  banners: { id: string; title: string | null; subtitle: string | null; imageUrl: string | null }[];
+  banners: {
+    id: string;
+    title: string | null;
+    subtitle: string | null;
+    imageUrl: string | null;
+  }[];
   partners: { id: string; title: string | null; imageUrl: string | null }[];
-  socialLinks: { id: string; title: string | null; link: string | null; icon: string | null }[];
+  socialLinks: {
+    id: string;
+    title: string | null;
+    link: string | null;
+    icon: string | null;
+  }[];
   menus: {
     id: string;
     name: string;
@@ -77,7 +87,9 @@ export default function Home() {
   return (
     <div className="min-h-screen text-foreground overflow-x-hidden">
       <Navbar />
-      <Hero banners={homeData?.banners} />
+      <Hero
+      // banners={homeData?.banners}
+      />
       <Services />
       <HowItWorks />
       <SignatureMenus menus={homeData?.menus} />
@@ -85,16 +97,32 @@ export default function Home() {
       <Chefs chefs={homeData?.chefs} />
       <Events events={homeData?.events} />
 
-      <section id="ctaSection" className="py-24 bg-white/5 border-y border-white/5 relative overflow-hidden">
+      <section
+        id="ctaSection"
+        className="py-24 bg-white/5 border-y border-white/5 relative overflow-hidden"
+      >
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,hsl(222,40%,25%,0.3),transparent)]" />
         <div className="container mx-auto px-6 text-center relative z-10">
-          <h2 className="text-4xl md:text-5xl font-serif mb-6 text-white">{t("ctaTitle")}</h2>
-          <p className="text-muted-foreground mb-10 max-w-2xl mx-auto text-lg leading-relaxed">{t("ctaDescription")}</p>
+          <h2 className="text-4xl md:text-5xl font-serif mb-6 text-white">
+            {t("ctaTitle")}
+          </h2>
+          <p className="text-muted-foreground mb-10 max-w-2xl mx-auto text-lg leading-relaxed">
+            {t("ctaDescription")}
+          </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" className="bg-primary text-black hover:bg-white px-10 py-6 text-lg rounded-none transition-all btn-glow">
+            <Button
+              asChild
+              size="lg"
+              className="bg-primary text-black hover:bg-white px-10 py-6 text-lg rounded-none transition-all btn-glow"
+            >
               <Link href="/profile">{t("startJourney")}</Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="border-white/10 hover:border-primary px-10 py-6 text-lg rounded-none">
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="border-white/10 hover:border-primary px-10 py-6 text-lg rounded-none"
+            >
               <Link href="/inquiry">{t("consultation")}</Link>
             </Button>
           </div>
@@ -105,7 +133,7 @@ export default function Home() {
         <div className="py-20 border-t border-white/5 overflow-hidden">
           <div className="container mx-auto px-6">
             <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-30 grayscale hover:grayscale-0 transition-all duration-700">
-              {partners.map((partner) => (
+              {partners.map((partner) =>
                 partner.imageUrl ? (
                   <img
                     key={partner.id}
@@ -114,11 +142,14 @@ export default function Home() {
                     className="h-12 object-contain"
                   />
                 ) : (
-                  <span key={partner.id} className="text-2xl font-serif font-bold tracking-[0.3em] uppercase">
+                  <span
+                    key={partner.id}
+                    className="text-2xl font-serif font-bold tracking-[0.3em] uppercase"
+                  >
                     {partner.title}
                   </span>
-                )
-              ))}
+                ),
+              )}
             </div>
           </div>
         </div>
@@ -126,11 +157,21 @@ export default function Home() {
         <div className="py-20 border-t border-white/5 overflow-hidden">
           <div className="container mx-auto px-6">
             <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-30 grayscale hover:grayscale-0 transition-all duration-700">
-              <span className="text-2xl font-serif font-bold tracking-[0.3em]">VOGUE</span>
-              <span className="text-2xl font-serif font-bold tracking-[0.3em]">FORBES</span>
-              <span className="text-2xl font-serif font-bold tracking-[0.3em]">EATER</span>
-              <span className="text-2xl font-serif font-bold tracking-[0.3em]">MICHELIN</span>
-              <span className="text-2xl font-serif font-bold tracking-[0.3em]">ROBB REPORT</span>
+              <span className="text-2xl font-serif font-bold tracking-[0.3em]">
+                VOGUE
+              </span>
+              <span className="text-2xl font-serif font-bold tracking-[0.3em]">
+                FORBES
+              </span>
+              <span className="text-2xl font-serif font-bold tracking-[0.3em]">
+                EATER
+              </span>
+              <span className="text-2xl font-serif font-bold tracking-[0.3em]">
+                MICHELIN
+              </span>
+              <span className="text-2xl font-serif font-bold tracking-[0.3em]">
+                ROBB REPORT
+              </span>
             </div>
           </div>
         </div>
