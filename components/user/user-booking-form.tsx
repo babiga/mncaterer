@@ -325,7 +325,7 @@ export function UserBookingForm({
             )}
 
             <div className="grid grid-cols-2 gap-4 relative lg:grid-cols-4">
-              <div className="absolute left-0 top-8 hidden h-px w-full bg-gradient-to-r from-transparent via-primary/30 to-transparent lg:block" />
+              <div className="absolute left-0 top-8 hidden h-px w-full bg-linear-to-r from-transparent via-primary/30 to-transparent lg:block" />
               {bookingSteps.map((step, index) => {
                 const isCompleted = index < currentStep;
                 const isCurrent = index === currentStep;
@@ -509,9 +509,10 @@ export function UserBookingForm({
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
+                          <PopoverContent className="w-auto p-0 min-w-3xs" align="start">
                             <Calendar
                               mode="single"
+                              className="w-full [--cell-size:2.5rem] sm:[--cell-size:2.8rem]"
                               selected={field.value ? parseISO(field.value) : undefined}
                               onSelect={(date) => field.onChange(date ? format(date, "yyyy-MM-dd") : "")}
                               disabled={(date) => date < new Date(getTodayDate())}

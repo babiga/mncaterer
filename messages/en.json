@@ -490,6 +490,7 @@
                 "menu": "Select a menu",
                 "chef": "Select a chef",
                 "eventType": "Select event type",
+                "eventDate": "Select event date",
                 "locationName": "Venue or location name",
                 "address": "Street, district, city",
                 "specialRequests": "Dietary requirements, setup notes, additional details..."

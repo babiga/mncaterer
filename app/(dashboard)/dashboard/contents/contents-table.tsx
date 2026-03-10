@@ -119,7 +119,7 @@ export function SiteContentTable({ type }: SiteContentTableProps) {
               <TableHead>Status</TableHead>
               <TableHead>Order</TableHead>
               <TableHead>Created At</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -154,7 +154,7 @@ export function SiteContentTable({ type }: SiteContentTableProps) {
                   <TableCell>
                     {format(new Date(item.createdAt), "MMM d, yyyy")}
                   </TableCell>
-                  <TableCell className="text-right space-x-2">
+                  <TableCell className="space-x-2">
                     <Button
                       variant="ghost"
                       size="icon"

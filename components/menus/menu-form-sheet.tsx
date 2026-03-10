@@ -248,21 +248,6 @@ export function MenuFormSheet({
               </div>
             </div>
             <div>
-              <label className="text-muted-foreground">Download URL</label>
-              {menu.downloadUrl ? (
-                <a
-                  href={menu.downloadUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-1 block font-medium text-primary hover:underline"
-                >
-                  {menu.downloadUrl}
-                </a>
-              ) : (
-                <p className="mt-1 font-medium">-</p>
-              )}
-            </div>
-            <div>
               <label className="text-muted-foreground">Menu Items</label>
               {menu.items.length > 0 ? (
                 <div className="mt-2 space-y-2">
@@ -359,26 +344,12 @@ export function MenuFormSheet({
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                        <Textarea
-                          rows={3}
-                          placeholder="Short menu description"
-                          {...field}
-                          value={field.value ?? ""}
-                        />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="downloadUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Download URL</FormLabel>
-                    <FormControl>
-                      <Input placeholder="https://..." {...field} value={field.value ?? ""} />
+                      <Textarea
+                        rows={3}
+                        placeholder="Short menu description"
+                        {...field}
+                        value={field.value ?? ""}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -418,10 +389,6 @@ export function MenuFormSheet({
                           name: "",
                           description: "",
                           price: 0,
-                          ingredients: [],
-                          allergens: [],
-                          imageUrl: "",
-                          sortOrder: items.length,
                         },
                       ], { shouldDirty: true });
                     }}
@@ -516,95 +483,6 @@ export function MenuFormSheet({
                             </FormItem>
                           )}
                         />
-
-                        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                          <FormField
-                            control={form.control}
-                            name={`items.${index}.ingredients`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Ingredients</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder="Beef, onion, flour"
-                                    value={(field.value ?? []).join(", ")}
-                                    onChange={(event) => field.onChange(
-                                      event.target.value
-                                        .split(",")
-                                        .map((value) => value.trim())
-                                        .filter(Boolean),
-                                    )}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name={`items.${index}.allergens`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Allergens</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder="Dairy, gluten"
-                                    value={(field.value ?? []).join(", ")}
-                                    onChange={(event) => field.onChange(
-                                      event.target.value
-                                        .split(",")
-                                        .map((value) => value.trim())
-                                        .filter(Boolean),
-                                    )}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-
-                        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                          <FormField
-                            control={form.control}
-                            name={`items.${index}.imageUrl`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Image URL</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder="https://..."
-                                    {...field}
-                                    value={field.value ?? ""}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name={`items.${index}.sortOrder`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Sort Order</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="number"
-                                    min={0}
-                                    step={1}
-                                    {...field}
-                                    value={field.value ?? index}
-                                    onChange={(event) => field.onChange(Number(event.target.value))}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
                       </div>
                     ))}
                   </div>

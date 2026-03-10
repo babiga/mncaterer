@@ -2,6 +2,7 @@
 
 import { format } from "date-fns";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -64,7 +65,7 @@ export function UserOrdersList({ bookings }: UserOrdersListProps) {
           </div>
         ) : (
           bookings.map((booking) => (
-            <div key={booking.id} className="rounded-lg border p-4">
+            <Link href={`/orders/${booking.id}`} key={booking.id} className="block rounded-lg border p-4 hover:border-primary transition-colors">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="text-sm text-muted-foreground">
@@ -103,7 +104,7 @@ export function UserOrdersList({ bookings }: UserOrdersListProps) {
                   {t("list.submitted")}: {format(new Date(booking.createdAt), "PPP")}
                 </p>
               </div>
-            </div>
+            </Link>
           ))
         )}
       </CardContent>

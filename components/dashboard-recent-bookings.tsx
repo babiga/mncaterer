@@ -71,7 +71,7 @@ export function DashboardRecentBookings() {
                 <TableHead>Customer</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Event Date</TableHead>
-                <TableHead className="text-right">Total</TableHead>
+                <TableHead>Total</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -94,7 +94,7 @@ export function DashboardRecentBookings() {
                       <Badge variant="outline">{booking.status}</Badge>
                     </TableCell>
                     <TableCell>{formatDate(booking.eventDate)}</TableCell>
-                    <TableCell className="text-right">{formatAmount(booking.totalPrice)}</TableCell>
+                    <TableCell>{formatAmount(booking.totalPrice)}</TableCell>
                   </TableRow>
                 ))
               )}

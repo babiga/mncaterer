@@ -95,7 +95,7 @@ export function getEventsColumns({
                     <div className="flex flex-col">
                         <Button
                             variant="link"
-                            className="h-auto p-0 text-left font-medium"
+                            className="h-auto p-0 text-left justify-start font-medium"
                             onClick={() => onView(event)}
                         >
                             {event.title}

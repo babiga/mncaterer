@@ -95,7 +95,7 @@ export function getDashboardUsersColumns({
             <div className="flex flex-col">
               <Button
                 variant="link"
-                className="h-auto p-0 text-left font-medium"
+                className="h-auto p-0 text-left justify-start font-medium"
                 onClick={() => onView(user)}
               >
                 {user.name}
@@ -138,8 +138,8 @@ export function getDashboardUsersColumns({
         <span className="text-muted-foreground">
           {row.original.lastLoginAt
             ? formatDistanceToNow(new Date(row.original.lastLoginAt), {
-                addSuffix: true,
-              })
+              addSuffix: true,
+            })
             : "Never"}
         </span>
       ),
