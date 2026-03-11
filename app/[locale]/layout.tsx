@@ -6,6 +6,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
+import { WebVitals } from "@/components/analytics/web-vitals";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -82,7 +83,10 @@ export default async function RootLayout({
         id="landing-body"
       >
         <NextIntlClientProvider messages={messages}>
-          <Providers>{children}</Providers>
+          <Providers>
+            <WebVitals />
+            {children}
+          </Providers>
         </NextIntlClientProvider>
       </body>
     </html>

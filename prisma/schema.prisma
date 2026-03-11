@@ -607,11 +607,22 @@ model BankTransferSetting {
   accountNumber       String
   accountHolderName   String
   iban                String?
-  swiftCode           String?
-  branchName          String?
   paymentInstructions String?  @db.Text
   isActive            Boolean  @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+}
+
+model VisitorMetric {
+  id         String   @id @default(cuid())
+  path       String
+  deviceType String   @default("desktop")
+  browser    String?
+  os         String?
+  referer    String?
+  timestamp  DateTime @default(now())
+
+  @@index([timestamp])
 }

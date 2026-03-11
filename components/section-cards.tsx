@@ -13,28 +13,30 @@ import {
 } from "@/components/ui/card"
 
 type DashboardAnalytics = {
-  totalRevenue: number
   newCustomers: number
   activeAccounts: number
-  growthRate: number
+  visitors: number
+  visitorDelta: number
+  visitorsWeek: number
+  visitorsWeekDelta: number
   deltas: {
-    totalRevenue: number
     newCustomers: number
     activeAccounts: number
-    growthRate: number
+    visitors: number
   }
 }
 
 const initialAnalytics: DashboardAnalytics = {
-  totalRevenue: 0,
   newCustomers: 0,
   activeAccounts: 0,
-  growthRate: 0,
+  visitors: 0,
+  visitorDelta: 0,
+  visitorsWeek: 0,
+  visitorsWeekDelta: 0,
   deltas: {
-    totalRevenue: 0,
     newCustomers: 0,
     activeAccounts: 0,
-    growthRate: 0,
+    visitors: 0,
   },
 }
 
@@ -48,10 +50,7 @@ function DeltaBadge({ value }: { value: number }) {
   const Icon = isPositive ? TrendingUpIcon : TrendingDownIcon
 
   return (
-    <Badge variant="outline" className="flex gap-1 rounded-lg text-xs">
-      <Icon className="size-3" />
-      {formatDelta(value)}
-    </Badge>
+    <Icon className="size-4" />
   )
 }
 
@@ -75,16 +74,6 @@ export function SectionCards() {
     loadAnalytics()
   }, [])
 
-  const formattedRevenue = useMemo(
-    () =>
-      new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-        minimumFractionDigits: 2,
-      }).format(analytics.totalRevenue),
-    [analytics.totalRevenue],
-  )
-
   const formattedCustomers = useMemo(
     () => new Intl.NumberFormat("en-US").format(analytics.newCustomers),
     [analytics.newCustomers],
@@ -95,24 +84,34 @@ export function SectionCards() {
     [analytics.activeAccounts],
   )
 
+  const formattedVisitors = useMemo(
+    () => new Intl.NumberFormat("en-US").format(analytics.visitors),
+    [analytics.visitors],
+  )
+
+  const formattedVisitorsWeek = useMemo(
+    () => new Intl.NumberFormat("en-US").format(analytics.visitorsWeek),
+    [analytics.visitorsWeek],
+  )
+
   return (
-    <div className="*:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card lg:px-6">
+    <div className="*:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card lg:px-6">
       <Card className="@container/card">
         <CardHeader className="relative">
-          <CardDescription>Total Revenue</CardDescription>
+          <CardDescription>Total Visitors</CardDescription>
           <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-            {formattedRevenue}
+            {formattedVisitors}
           </CardTitle>
           <div className="absolute right-4 top-4">
-            <DeltaBadge value={analytics.deltas.totalRevenue} />
+            <DeltaBadge value={analytics.visitorDelta} />
           </div>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Month-over-month revenue
+            Overall site traffic
           </div>
           <div className="text-muted-foreground">
-            Completed bookings only
+            Mobile and desktop combined
           </div>
         </CardFooter>
       </Card>
@@ -154,19 +153,19 @@ export function SectionCards() {
       </Card>
       <Card className="@container/card">
         <CardHeader className="relative">
-          <CardDescription>Growth Rate</CardDescription>
+          <CardDescription>Visitors of Week</CardDescription>
           <CardTitle className="@[250px]/card:text-3xl text-2xl font-semibold tabular-nums">
-            {formatDelta(analytics.growthRate)}
+            {formattedVisitorsWeek}
           </CardTitle>
           <div className="absolute right-4 top-4">
-            <DeltaBadge value={analytics.deltas.growthRate} />
+            <DeltaBadge value={analytics.visitorsWeekDelta} />
           </div>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Booking growth rate
+            Last 7 days traffic
           </div>
-          <div className="text-muted-foreground">Current month vs previous month</div>
+          <div className="text-muted-foreground">Compared to previous week</div>
         </CardFooter>
       </Card>
     </div>

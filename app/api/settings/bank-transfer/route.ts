@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { randomUUID } from "node:crypto";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { bankTransferSettingsSchema } from "@/lib/validations/settings";
@@ -14,22 +13,9 @@ export async function GET() {
       );
     }
 
-    const [setting] = await prisma.$queryRaw<
-      Array<{
-        id: string;
-        key: string;
-        bankName: string;
-        accountNumber: string;
-        accountHolderName: string;
-        iban: string | null;
-        swiftCode: string | null;
-        branchName: string | null;
-        paymentInstructions: string | null;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
-      }>
-    >`SELECT * FROM "BankTransferSetting" WHERE "key" = 'default' LIMIT 1`;
+    const setting = await prisma.bankTransferSetting.findUnique({
+      where: { key: "default" },
+    });
 
     return NextResponse.json({
       success: true,
@@ -40,8 +26,6 @@ export async function GET() {
             accountNumber: "",
             accountHolderName: "",
             iban: "",
-            swiftCode: "",
-            branchName: "",
             paymentInstructions: "",
             isActive: true,
           },
@@ -83,64 +67,27 @@ export async function PUT(request: NextRequest) {
     }
 
     const data = result.data;
-    const id = randomUUID();
-    const [setting] = await prisma.$queryRaw<
-      Array<{
-        id: string;
-        key: string;
-        bankName: string;
-        accountNumber: string;
-        accountHolderName: string;
-        iban: string | null;
-        swiftCode: string | null;
-        branchName: string | null;
-        paymentInstructions: string | null;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
-      }>
-    >`
-      INSERT INTO "BankTransferSetting" (
-        "id",
-        "key",
-        "bankName",
-        "accountNumber",
-        "accountHolderName",
-        "iban",
-        "swiftCode",
-        "branchName",
-        "paymentInstructions",
-        "isActive",
-        "createdAt",
-        "updatedAt"
-      )
-      VALUES (
-        ${id},
-        'default',
-        ${data.bankName},
-        ${data.accountNumber},
-        ${data.accountHolderName},
-        ${data.iban || null},
-        ${data.swiftCode || null},
-        ${data.branchName || null},
-        ${data.paymentInstructions || null},
-        ${data.isActive},
-        NOW(),
-        NOW()
-      )
-      ON CONFLICT ("key")
-      DO UPDATE SET
-        "bankName" = EXCLUDED."bankName",
-        "accountNumber" = EXCLUDED."accountNumber",
-        "accountHolderName" = EXCLUDED."accountHolderName",
-        "iban" = EXCLUDED."iban",
-        "swiftCode" = EXCLUDED."swiftCode",
-        "branchName" = EXCLUDED."branchName",
-        "paymentInstructions" = EXCLUDED."paymentInstructions",
-        "isActive" = EXCLUDED."isActive",
-        "updatedAt" = NOW()
-      RETURNING *;
-    `;
+    
+    const setting = await prisma.bankTransferSetting.upsert({
+      where: { key: "default" },
+      update: {
+        bankName: data.bankName,
+        accountNumber: data.accountNumber,
+        accountHolderName: data.accountHolderName,
+        iban: data.iban || null,
+        paymentInstructions: data.paymentInstructions || null,
+        isActive: data.isActive,
+      },
+      create: {
+        key: "default",
+        bankName: data.bankName,
+        accountNumber: data.accountNumber,
+        accountHolderName: data.accountHolderName,
+        iban: data.iban || null,
+        paymentInstructions: data.paymentInstructions || null,
+        isActive: data.isActive,
+      },
+    });
 
     return NextResponse.json({
       success: true,

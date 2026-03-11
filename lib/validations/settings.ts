@@ -13,8 +13,6 @@ export const bankTransferSettingsSchema = z.object({
     .min(1, "Account holder name is required")
     .max(120),
   iban: z.string().trim().max(60).optional().or(z.literal("")),
-  swiftCode: z.string().trim().max(60).optional().or(z.literal("")),
-  branchName: z.string().trim().max(120).optional().or(z.literal("")),
   paymentInstructions: z
     .string()
     .trim()

@@ -31,6 +31,10 @@ export async function GET() {
       1,
     );
 
+    // Weekly stats
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const fourteenDaysAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+
     const [
       totalRevenueAgg,
       currentRevenueAgg,
@@ -43,6 +47,11 @@ export async function GET() {
       dashboardCreatedPrevious,
       bookingsCurrent,
       bookingsPrevious,
+      visitorCountTotal,
+      visitorCountCurrent,
+      visitorCountPrevious,
+      visitorCountWeek,
+      visitorCountWeekPrevious,
     ] = await Promise.all([
       prisma.booking.aggregate({
         where: { status: "COMPLETED" },
@@ -84,6 +93,19 @@ export async function GET() {
       prisma.booking.count({
         where: { createdAt: { gte: previousMonthStart, lt: currentMonthStart } },
       }),
+      prisma.visitorMetric.count(),
+      prisma.visitorMetric.count({
+        where: { timestamp: { gte: currentMonthStart } },
+      }),
+      prisma.visitorMetric.count({
+        where: { timestamp: { gte: previousMonthStart, lt: currentMonthStart } },
+      }),
+      prisma.visitorMetric.count({
+        where: { timestamp: { gte: sevenDaysAgo } },
+      }),
+      prisma.visitorMetric.count({
+        where: { timestamp: { gte: fourteenDaysAgo, lt: sevenDaysAgo } },
+      }),
     ]);
 
     const totalRevenue = toNumber(totalRevenueAgg._sum.totalPrice);
@@ -104,11 +126,16 @@ export async function GET() {
         newCustomers: newCustomersCurrent,
         activeAccounts: customerCountTotal + dashboardActiveCountTotal,
         growthRate: bookingsGrowthRate,
+        visitors: visitorCountTotal,
+        visitorDelta: percentageDelta(visitorCountCurrent, visitorCountPrevious),
+        visitorsWeek: visitorCountWeek,
+        visitorsWeekDelta: percentageDelta(visitorCountWeek, visitorCountWeekPrevious),
         deltas: {
           totalRevenue: revenueDelta,
           newCustomers: customersDelta,
           activeAccounts: activeAccountsDelta,
           growthRate: bookingsGrowthRate,
+          visitors: percentageDelta(visitorCountCurrent, visitorCountPrevious),
         },
       },
     });

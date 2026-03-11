@@ -89,23 +89,7 @@ export function BankTransferSettingsForm({
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="branchName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Branch Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Central Branch" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <FormField
+               <FormField
                 control={form.control}
                 name="accountHolderName"
                 render={({ field }) => (
@@ -118,6 +102,9 @@ export function BankTransferSettingsForm({
                   </FormItem>
                 )}
               />
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="accountNumber"
@@ -131,9 +118,6 @@ export function BankTransferSettingsForm({
                   </FormItem>
                 )}
               />
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="iban"
@@ -142,19 +126,6 @@ export function BankTransferSettingsForm({
                     <FormLabel>IBAN</FormLabel>
                     <FormControl>
                       <Input placeholder="MN00BANK000000000000" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="swiftCode"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>SWIFT Code</FormLabel>
-                    <FormControl>
-                      <Input placeholder="KHAAMNUBXXX" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -38,26 +38,15 @@ export default async function SettingsPage() {
     );
   }
 
-  const [settings] = await prisma.$queryRaw<
-    Array<{
-      bankName: string;
-      accountNumber: string;
-      accountHolderName: string;
-      iban: string | null;
-      swiftCode: string | null;
-      branchName: string | null;
-      paymentInstructions: string | null;
-      isActive: boolean;
-    }>
-  >`SELECT * FROM "BankTransferSetting" WHERE "key" = 'default' LIMIT 1`;
+  const settings = await prisma.bankTransferSetting.findUnique({
+    where: { key: "default" },
+  });
 
   const initialData: BankTransferSettingsInput = {
     bankName: settings?.bankName ?? "",
     accountNumber: settings?.accountNumber ?? "",
     accountHolderName: settings?.accountHolderName ?? "",
     iban: settings?.iban ?? "",
-    swiftCode: settings?.swiftCode ?? "",
-    branchName: settings?.branchName ?? "",
     paymentInstructions: settings?.paymentInstructions ?? "",
     isActive: settings?.isActive ?? true,
   };

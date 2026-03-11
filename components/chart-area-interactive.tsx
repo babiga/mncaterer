@@ -30,21 +30,22 @@ import {
 } from "@/components/ui/toggle-group"
 type TrendPoint = {
   date: string
-  bookings: number
-  customers: number
+  visitors: number
+  mobileVisitors: number
+  desktopVisitors: number
 }
 
 const chartConfig = {
   totals: {
     label: "Totals",
   },
-  bookings: {
-    label: "Bookings",
-    color: "hsl(var(--chart-1))",
+  mobileVisitors: {
+    label: "Mobile",
+    color: "hsl(var(--chart-3))",
   },
-  customers: {
-    label: "Customers",
-    color: "hsl(var(--chart-2))",
+  desktopVisitors: {
+    label: "Desktop",
+    color: "hsl(var(--chart-4))",
   },
 } satisfies ChartConfig
 
@@ -95,12 +96,12 @@ export function ChartAreaInteractive() {
   return (
     <Card className="@container/card">
       <CardHeader className="relative">
-        <CardTitle>Bookings and Customers</CardTitle>
+        <CardTitle>Visitor Traffic</CardTitle>
         <CardDescription>
           <span className="@[540px]/card:block hidden">
-            Daily totals for the last 3 months
+            Daily visitor totals by device type
           </span>
-          <span className="@[540px]/card:hidden">Last 3 months</span>
+          <span className="@[540px]/card:hidden">Visitor trends</span>
         </CardDescription>
         <div className="absolute right-4 top-4">
           <ToggleGroup
@@ -148,27 +149,27 @@ export function ChartAreaInteractive() {
         >
           <AreaChart data={filteredData}>
             <defs>
-              <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillVisitorsMobile" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
-                  stopColor="var(--color-bookings)"
-                  stopOpacity={1.0}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-bookings)"
-                  stopOpacity={0.1}
-                />
-              </linearGradient>
-              <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-customers)"
+                  stopColor="var(--color-mobileVisitors)"
                   stopOpacity={0.8}
                 />
                 <stop
                   offset="95%"
-                  stopColor="var(--color-customers)"
+                  stopColor="var(--color-mobileVisitors)"
+                  stopOpacity={0.1}
+                />
+              </linearGradient>
+              <linearGradient id="fillVisitorsDesktop" x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="5%"
+                  stopColor="var(--color-desktopVisitors)"
+                  stopOpacity={0.8}
+                />
+                <stop
+                  offset="95%"
+                  stopColor="var(--color-desktopVisitors)"
                   stopOpacity={0.1}
                 />
               </linearGradient>
@@ -203,17 +204,17 @@ export function ChartAreaInteractive() {
               }
             />
             <Area
-              dataKey="customers"
+              dataKey="mobileVisitors"
               type="natural"
-              fill="url(#fillMobile)"
-              stroke="var(--color-customers)"
+              fill="url(#fillVisitorsMobile)"
+              stroke="var(--color-mobileVisitors)"
               stackId="a"
             />
             <Area
-              dataKey="bookings"
+              dataKey="desktopVisitors"
               type="natural"
-              fill="url(#fillDesktop)"
-              stroke="var(--color-bookings)"
+              fill="url(#fillVisitorsDesktop)"
+              stroke="var(--color-desktopVisitors)"
               stackId="a"
             />
           </AreaChart>
