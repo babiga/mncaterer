@@ -7,6 +7,7 @@ import {
   UserCircleIcon,
 } from "lucide-react";
 
+import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -112,9 +113,11 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <UserCircleIcon />
-                Profile
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard/profile">
+                  <UserCircleIcon />
+                  Profile
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

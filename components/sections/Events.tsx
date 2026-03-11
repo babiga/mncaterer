@@ -9,18 +9,9 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Drawer,
-  DrawerContent,
-} from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 
 const events = [
   {
@@ -92,8 +83,6 @@ const EVENT_HIGHLIGHTS: Record<EventCard["type"], string[]> = {
 export default function Events({ events: apiEvents }: { events?: EventType[] }) {
   const t = useTranslations("Events");
   const isMobile = useIsMobile();
-  const [open, setOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<EventCard | null>(null);
 
   const eventCards: EventCard[] =
     apiEvents && apiEvents.length > 0
@@ -110,47 +99,7 @@ export default function Events({ events: apiEvents }: { events?: EventType[] }) 
         })
       : events.map((event) => ({ ...event }));
 
-  const handleOpenDetails = (event: EventCard) => {
-    setSelectedEvent(event);
-    setOpen(true);
-  };
-
-  const detailContent = selectedEvent ? (
-    <>
-      <div className="relative aspect-[16/9] overflow-hidden rounded-md">
-        <img src={selectedEvent.image} alt={selectedEvent.title} className="h-full w-full object-cover" />
-      </div>
-      <div className="space-y-4">
-        <div className="space-y-1">
-          <DialogTitle className="text-2xl text-white">{selectedEvent.title}</DialogTitle>
-          <DialogDescription className="text-muted-foreground">
-            {t("detailDescription", {
-              type: t(`types.${selectedEvent.type}`),
-              guests: selectedEvent.guests.replace("Guests", t("guests")),
-            })}
-          </DialogDescription>
-        </div>
-        <div className="flex flex-wrap items-center gap-2 text-sm text-white/90">
-          <span className="rounded-sm border border-white/10 bg-white/5 px-2 py-1">
-            {t("types." + selectedEvent.type)}
-          </span>
-          <span className="rounded-sm border border-white/10 bg-white/5 px-2 py-1">
-            {selectedEvent.guests.replace("Guests", t("guests"))}
-          </span>
-        </div>
-        <div className="space-y-2">
-          <p className="text-sm uppercase tracking-wider text-primary">{t("highlights")}</p>
-          <ul className="space-y-2 text-sm text-white/80">
-            {selectedEvent.highlights.map((highlight) => (
-              <li key={highlight} className="border-l-2 border-primary/60 pl-3">
-                {highlight}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </>
-  ) : null;
+  // Detail content removed in favor of detail page
 
   return (
     <section id="events" className="py-24">
@@ -170,28 +119,28 @@ export default function Events({ events: apiEvents }: { events?: EventType[] }) 
           <CarouselContent className="-ml-4">
             {eventCards.map((event) => (
               <CarouselItem key={event.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                <motion.button
-                  type="button"
-                  whileHover={{ y: -10 }}
-                  onClick={() => handleOpenDetails(event)}
-                  className="bg-card border border-white/5 overflow-hidden group text-left w-full"
-                >
-                  <div className="relative aspect-[4/3] overflow-hidden">
-                    <img
-                      src={event.image}
-                      alt={event.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute top-4 left-4 bg-black/50 backdrop-blur-md px-3 py-1 rounded-sm border border-white/10">
-                      <span className="text-xs uppercase tracking-wider text-white">{t(`types.${event.type}`)}</span>
+                <Link href={`/events/${event.id}`} className="block w-full">
+                  <motion.div
+                    whileHover={{ y: -10 }}
+                    className="bg-card border border-white/5 overflow-hidden group text-left w-full h-full"
+                  >
+                    <div className="relative aspect-[4/3] overflow-hidden">
+                      <img
+                        src={event.image}
+                        alt={event.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute top-4 left-4 bg-black/50 backdrop-blur-md px-3 py-1 rounded-sm border border-white/10">
+                        <span className="text-xs uppercase tracking-wider text-white">{t(`types.${event.type}`)}</span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-xl text-white mb-2">{event.title}</h3>
-                    <p className="text-sm text-muted-foreground">{event.guests.replace("Guests", t("guests"))}</p>
-                    <p className="mt-3 text-xs uppercase tracking-wider text-primary">{t("openDetails")}</p>
-                  </div>
-                </motion.button>
+                    <div className="p-6">
+                      <h3 className="text-xl text-white mb-2">{event.title}</h3>
+                      <p className="text-sm text-muted-foreground">{event.guests.replace("Guests", t("guests"))}</p>
+                      <p className="mt-3 text-xs uppercase tracking-wider text-primary">{t("openDetails")}</p>
+                    </div>
+                  </motion.div>
+                </Link>
               </CarouselItem>
             ))}
           </CarouselContent>
@@ -202,19 +151,7 @@ export default function Events({ events: apiEvents }: { events?: EventType[] }) 
         </Carousel>
       </div>
 
-      {isMobile ? (
-        <Drawer open={open} onOpenChange={setOpen}>
-          <DrawerContent className="max-h-[85vh] border-white/10 bg-card">
-            <div className="overflow-y-auto p-6 space-y-6">{detailContent}</div>
-          </DrawerContent>
-        </Drawer>
-      ) : (
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent className="max-w-2xl border-white/10 bg-card text-white">
-            <div className="space-y-6">{detailContent}</div>
-          </DialogContent>
-        </Dialog>
-      )}
+      {/* Modals removed in favor of detail page */}
     </section>
   );
 }

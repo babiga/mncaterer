@@ -1,5 +1,4 @@
-import * as LucideIcons from "lucide-react";
-import { Facebook, Instagram, Twitter } from "lucide-react";
+import { Facebook, Instagram, Twitter, Youtube, Linkedin, Github } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 
@@ -17,9 +16,22 @@ export default function Footer({ socialLinks }: { socialLinks?: SocialLinkType[]
   const renderIcon = (iconName: string | null) => {
     if (!iconName) return <Facebook className="w-5 h-5" />;
 
-    // Default to Facebook if icon not found
-    const IconComponent = (LucideIcons as any)[iconName] || Facebook;
-    return <IconComponent className="w-5 h-5" />;
+    switch (iconName.toLowerCase()) {
+      case "instagram":
+        return <Instagram className="w-5 h-5" />;
+      case "twitter":
+      case "x":
+        return <Twitter className="w-5 h-5" />;
+      case "youtube":
+        return <Youtube className="w-5 h-5" />;
+      case "linkedin":
+        return <Linkedin className="w-5 h-5" />;
+      case "github":
+        return <Github className="w-5 h-5" />;
+      case "facebook":
+      default:
+        return <Facebook className="w-5 h-5" />;
+    }
   };
 
   return (

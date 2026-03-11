@@ -139,11 +139,21 @@ export function SiteContentTable({ type }: SiteContentTableProps) {
               contents.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell className="font-medium">
-                    {type === "BANNER"
-                      ? item.imageUrl
-                        ? "Uploaded"
-                        : "No image"
-                      : item.title || "Untitled"}
+                    {type === "BANNER" ? (
+                      item.imageUrl ? (
+                        <div className="relative w-32 h-16 rounded-md overflow-hidden border">
+                          <img
+                            src={item.imageUrl}
+                            alt="Banner"
+                            className="object-cover w-full h-full"
+                          />
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">No image</span>
+                      )
+                    ) : (
+                      item.title || "Untitled"
+                    )}
                   </TableCell>
                   <TableCell>
                     <Badge variant={item.isActive ? "default" : "secondary"}>

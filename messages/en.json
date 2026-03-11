@@ -229,6 +229,7 @@
     "Chefs": {
         "title": "Masters of the Kitchen",
         "description": "Meet the artisans behind your next unforgettable meal.",
+        "role": "Executive Chef",
         "viewAll": "Meet All Our Chefs",
         "back": "Back",
         "reviews": "reviews",

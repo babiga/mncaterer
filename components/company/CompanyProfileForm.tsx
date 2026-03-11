@@ -5,8 +5,8 @@ import { useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Loader2, Plus, Trash2 } from "lucide-react";
-import { chefProfileSchema, type ChefProfileData } from "@/lib/validations/chef";
-import { updateChefProfile } from "@/lib/actions/chef-profile";
+import { companyProfileSchema, type CompanyProfileData } from "@/lib/validations/company";
+import { updateCompanyProfile } from "@/lib/actions/company-profile";
 
 import {
     Form,
@@ -24,22 +24,22 @@ import { ImageUpload } from "@/components/ui/image-upload";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
-interface ChefProfileFormProps {
-    initialData: ChefProfileData;
+interface CompanyProfileFormProps {
+    initialData: CompanyProfileData;
 }
 
-export function ChefProfileForm({ initialData }: ChefProfileFormProps) {
+export function CompanyProfileForm({ initialData }: CompanyProfileFormProps) {
     const [isPending, setIsPending] = useState(false);
 
-    const form: UseFormReturn<ChefProfileData> = useForm<ChefProfileData>({
-        resolver: zodResolver(chefProfileSchema),
+    const form: UseFormReturn<CompanyProfileData> = useForm<CompanyProfileData>({
+        resolver: zodResolver(companyProfileSchema),
         defaultValues: initialData,
     });
 
-    async function onSubmit(data: ChefProfileData) {
+    async function onSubmit(data: CompanyProfileData) {
         setIsPending(true);
         try {
-            const result = await updateChefProfile(data);
+            const result = await updateCompanyProfile(data);
             if (result.success) {
                 toast.success("Profile updated successfully");
             } else {
@@ -53,16 +53,17 @@ export function ChefProfileForm({ initialData }: ChefProfileFormProps) {
         }
     }
 
-    const certifications = form.watch("certifications") || [];
+    const services = form.watch("services") || [];
+    const portfolioImages = form.watch("portfolioImages") || [];
 
-    const addCertification = () => {
-        form.setValue("certifications", [...certifications, ""]);
+    const addService = () => {
+        form.setValue("services", [...services, ""]);
     };
 
-    const removeCertification = (index: number) => {
+    const removeService = (index: number) => {
         form.setValue(
-            "certifications",
-            certifications.filter((_, i) => i !== index)
+            "services",
+            services.filter((_, i) => i !== index)
         );
     };
 
@@ -76,33 +77,10 @@ export function ChefProfileForm({ initialData }: ChefProfileFormProps) {
                             <CardHeader>
                                 <CardTitle>Profile Visuals</CardTitle>
                                 <CardDescription>
-                                    Update your profile photo and cover image to make a great first impression.
+                                    Update your company avatar/logo.
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
-                                {/* <FormField
-                                    control={form.control as any}
-                                    name="coverImage"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Cover Image</FormLabel>
-                                            <FormControl>
-                                                <ImageUpload
-                                                    aspectRatio="video"
-                                                    value={field.value}
-                                                    disabled={isPending}
-                                                    onChange={field.onChange}
-                                                    onRemove={() => field.onChange("")}
-                                                />
-                                            </FormControl>
-                                            <FormDescription>
-                                                A widescreen image displayed at the top of your profile.
-                                            </FormDescription>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                /> */}
-
                                 <div className="flex justify-center relative z-10">
                                     <FormField
                                         control={form.control as any}
@@ -113,7 +91,7 @@ export function ChefProfileForm({ initialData }: ChefProfileFormProps) {
                                                     <FormControl>
                                                         <ImageUpload
                                                             className="w-32 h-32 rounded-full"
-                                                            value={field.value}
+                                                            value={field.value || ""}
                                                             disabled={isPending}
                                                             onChange={field.onChange}
                                                             onRemove={() => field.onChange("")}
@@ -138,9 +116,9 @@ export function ChefProfileForm({ initialData }: ChefProfileFormProps) {
                                     name="name"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Full Name</FormLabel>
+                                            <FormLabel>Contact Name</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="Chef Name" {...field} />
+                                                <Input placeholder="John Doe" {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -163,50 +141,35 @@ export function ChefProfileForm({ initialData }: ChefProfileFormProps) {
                         </Card>
                     </div>
 
-                    {/* Professional details section */}
+                    {/* Company details section */}
                     <div className="space-y-6">
                         <Card>
                             <CardHeader>
-                                <CardTitle>Professional Details</CardTitle>
+                                <CardTitle>Company Details</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <FormField
                                     control={form.control as any}
-                                    name="specialty"
+                                    name="companyName"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Specialty</FormLabel>
+                                            <FormLabel>Company Name</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="e.g. Italian Cuisine, Pastry" {...field} />
+                                                <Input placeholder="Catering Co." {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
-                                <div className="grid grid-cols-1 gap-4">
-                                    <FormField
-                                        control={form.control as any}
-                                        name="yearsExperience"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Years of Experience</FormLabel>
-                                                <FormControl>
-                                                    <Input type="number" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
                                 <FormField
                                     control={form.control as any}
-                                    name="bio"
+                                    name="description"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Bio</FormLabel>
+                                            <FormLabel>Description</FormLabel>
                                             <FormControl>
                                                 <Textarea
-                                                    placeholder="Tell potential clients about yourself..."
+                                                    placeholder="Tell potential clients about your company..."
                                                     className="min-h-32"
                                                     {...field}
                                                     value={field.value || ""}
@@ -222,29 +185,29 @@ export function ChefProfileForm({ initialData }: ChefProfileFormProps) {
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between">
                                 <div>
-                                    <CardTitle>Certifications</CardTitle>
-                                    <CardDescription>Add your relevant culinary certifications.</CardDescription>
+                                    <CardTitle>Services</CardTitle>
+                                    <CardDescription>Add the services your company provides.</CardDescription>
                                 </div>
                                 <Button
                                     type="button"
                                     variant="outline"
                                     size="sm"
-                                    onClick={addCertification}
+                                    onClick={addService}
                                 >
                                     <Plus className="h-4 w-4 mr-2" />
                                     Add
                                 </Button>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                {certifications.map((_, index) => (
+                                {services.map((_, index) => (
                                     <div key={index} className="flex gap-2">
                                         <FormField
                                             control={form.control as any}
-                                            name={`certifications.${index}`}
+                                            name={`services.${index}`}
                                             render={({ field }) => (
                                                 <FormItem className="flex-1">
                                                     <FormControl>
-                                                        <Input placeholder="Certification name" {...field} />
+                                                        <Input placeholder="Service name" {...field} />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
@@ -255,15 +218,15 @@ export function ChefProfileForm({ initialData }: ChefProfileFormProps) {
                                             variant="ghost"
                                             size="icon"
                                             className="text-destructive"
-                                            onClick={() => removeCertification(index)}
+                                            onClick={() => removeService(index)}
                                         >
                                             <Trash2 className="h-4 w-4" />
                                         </Button>
                                     </div>
                                 ))}
-                                {certifications.length === 0 && (
+                                {services.length === 0 && (
                                     <p className="text-sm text-muted-foreground text-center py-4">
-                                        No certifications added yet.
+                                        No services added yet.
                                     </p>
                                 )}
                             </CardContent>

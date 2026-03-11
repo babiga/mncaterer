@@ -206,7 +206,11 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
         <div className="md:hidden">
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-foreground">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className={isWeddingServicePage ? "text-[#8a5b35]" : "text-foreground"}
+              >
                 <Menu className="h-6 w-6" />
               </Button>
             </SheetTrigger>

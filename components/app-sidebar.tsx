@@ -37,21 +37,25 @@ const data = {
       title: "Dashboard",
       url: "/dashboard",
       icon: LayoutDashboardIcon,
+      hiddenFrom: [],
     },
     {
       title: "Bookings",
       url: "/dashboard/bookings",
       icon: CalendarIcon,
+      hiddenFrom: [],
     },
     {
       title: "Events",
       url: "/dashboard/events",
       icon: PartyPopperIcon,
+      hiddenFrom: [],
     },
     {
       title: "Contents",
       url: "/dashboard/contents",
       icon: LayoutDashboardIcon,
+      hiddenFrom: ["CHEF", "COMPANY"],
     },
     // {
     //   title: "Jobs",
@@ -69,21 +73,25 @@ const data = {
       name: "Menus",
       url: "/dashboard/menus",
       icon: UtensilsIcon,
+      hiddenFrom: ["COMPANY"],
     },
     {
       name: "Chefs",
       url: "/dashboard/chefs",
       icon: UsersIcon,
+      hiddenFrom: ["CHEF", "COMPANY"],
     },
     {
       name: "Users",
       url: "/dashboard/users",
       icon: UsersIcon,
+      hiddenFrom: ["CHEF", "COMPANY"],
     },
     {
       name: "Inquiries",
       url: "/dashboard/inquiries",
       icon: MessageSquareIcon,
+      hiddenFrom: ["CHEF", "COMPANY"],
     },
     // {
     //   name: "Finance",
@@ -96,6 +104,7 @@ const data = {
       title: "Reviews",
       url: "/dashboard/reviews",
       icon: StarIcon,
+      hiddenFrom: [],
     },
     // {
     //   title: "Memberships",
@@ -103,9 +112,16 @@ const data = {
     //   icon: CrownIcon,
     // },
     {
+      title: "Profile",
+      url: "/dashboard/profile",
+      icon: UserCircleIcon,
+      hiddenFrom: [],
+    },
+    {
       title: "Settings",
       url: "/dashboard/settings",
       icon: SettingsIcon,
+      hiddenFrom: ["CHEF", "COMPANY"],
     },
   ],
 };
@@ -125,9 +141,9 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarContent>
         <NavUser user={navUser} />
-        <NavMain items={data.navMain} />
-        <NavDocuments items={data.navManagement} />
-        <NavSecondary items={data.navSecondary} />
+        <NavMain items={data.navMain.filter((item) => !(item.hiddenFrom as string[])?.includes(user.role))} />
+        <NavDocuments items={data.navManagement.filter((item) => !(item.hiddenFrom as string[])?.includes(user.role))} />
+        <NavSecondary items={data.navSecondary.filter((item) => !(item.hiddenFrom as string[])?.includes(user.role))} />
       </SidebarContent>
     </Sidebar>
   );

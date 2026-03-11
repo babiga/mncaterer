@@ -4,7 +4,7 @@ export const chefProfileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(100),
   phone: z.string(),
   avatar: z.string(),
-  coverImage: z.string(),
+  coverImage: z.string().optional().nullable(),
   specialty: z.string().min(2, "Specialty is required"),
   bio: z.string().max(1000, "Bio is too long"),
   yearsExperience: z.coerce.number().min(0).max(50),
