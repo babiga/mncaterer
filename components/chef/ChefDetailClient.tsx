@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { ChefReviewsSection, type ChefReviewItem } from "@/components/chef/chef-reviews-section";
 import { Link } from "@/i18n/routing";
-import { ArrowLeft, Star, Award, MapPin, Clock, Users, Calendar, ChevronRight } from "lucide-react";
+import { ArrowLeft, Star, Award, MapPin, Clock, Users, Calendar } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -42,7 +42,6 @@ export function ChefDetailClient({
 
   const displayName = chef?.name ?? fallbackChef?.name ?? "";
   const avatar = chef?.avatar ?? fallbackChef?.image ?? "/chef-1.png";
-  const coverImage = chef?.chefProfile?.coverImage ?? "/event-private.png";
   const specialty = chef?.chefProfile?.specialty ?? fallbackChef?.specialty ?? t("defaultSpecialty");
   const bio = chef?.chefProfile?.bio ?? fallbackChef?.bio ?? t("detailDescription", { name: displayName });
   const yearsExperience = chef?.chefProfile?.yearsExperience ?? 0;
@@ -57,68 +56,60 @@ export function ChefDetailClient({
 
   return (
     <div className="space-y-0">
-      {/* Hero Section */}
-      <div className="relative h-[60vh] min-h-[400px] w-full overflow-hidden">
-        <motion.img 
-          initial={{ scale: 1.1 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 1.5 }}
-          src={coverImage} 
-          alt="Cover" 
-          className="h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/20 to-black" />
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
-        
-        <div className="container relative mx-auto h-full px-6">
-          <div className="flex h-full flex-col justify-end pb-12">
-            <motion.div {...fadeIn}>
-              <Button asChild variant="ghost" className="mb-8 w-fit text-white hover:bg-white/10">
-                <Link href="/#chefs">
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  {t("back")}
-                </Link>
-              </Button>
+      {/* Dynamic Header Section - No Cover Image, Just Avatar */}
+      <div className="relative pt-32 pb-16 w-full">
+        <div className="container relative mx-auto px-6">
+          <motion.div {...fadeIn}>
+            <Button asChild variant="ghost" className="mb-12 w-fit text-white/60 hover:text-white hover:bg-white/10">
+              <Link href="/#chefs">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                {t("back")}
+              </Link>
+            </Button>
+          </motion.div>
+          
+          <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+            <motion.div 
+              {...fadeIn}
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className="flex items-center gap-8"
+            >
+              <div className="h-32 w-32 overflow-hidden rounded-full border-4 border-primary/30 shadow-2xl md:h-48 md:w-48 group relative">
+                <img 
+                  src={avatar} 
+                  alt={displayName} 
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                />
+                <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+              <div className="space-y-3">
+                <Badge variant="outline" className="border-primary/50 text-primary uppercase tracking-[0.2em] text-[10px] py-1 px-3">
+                  {t("role")}
+                </Badge>
+                <h1 className="text-5xl font-light text-white md:text-7xl tracking-tight">{displayName}</h1>
+                <p className="text-xl text-primary/80 font-medium italic">{specialty}</p>
+              </div>
             </motion.div>
             
-            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-              <motion.div 
-                {...fadeIn}
-                transition={{ delay: 0.2, duration: 0.6 }}
-                className="flex items-center gap-6"
-              >
-                <div className="h-24 w-24 overflow-hidden rounded-full border-2 border-primary/50 shadow-2xl md:h-32 md:w-32 hover:scale-105 transition-transform duration-500 cursor-pointer">
-                  <img src={avatar} alt={displayName} className="h-full w-full object-cover" />
-                </div>
-                <div className="space-y-1">
-                  <Badge variant="outline" className="border-primary/50 text-primary uppercase tracking-widest text-[10px]">
-                    {t("role")}
-                  </Badge>
-                  <h1 className="text-4xl font-light text-white md:text-6xl">{displayName}</h1>
-                  <p className="text-lg text-white/70 italic">{specialty}</p>
-                </div>
-              </motion.div>
-              
-              <motion.div 
-                {...fadeIn}
-                transition={{ delay: 0.4, duration: 0.6 }}
-                className="flex gap-4"
-              >
-                <Button asChild className="bg-primary text-black hover:bg-white px-8 h-12 rounded-full font-medium transition-all duration-300">
-                  <Link href="/inquiry">{t("bookConsultation")}</Link>
-                </Button>
-              </motion.div>
-            </div>
+            <motion.div 
+              {...fadeIn}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="mb-2"
+            >
+              <Button asChild size="lg" className="bg-primary text-black hover:bg-white px-10 h-14 rounded-full font-semibold text-base transition-all duration-300 shadow-lg shadow-primary/20">
+                <Link href="/inquiry">{t("bookConsultation")}</Link>
+              </Button>
+            </motion.div>
           </div>
         </div>
       </div>
 
       <main className="container mx-auto px-6 py-12">
-        <div className="grid gap-12 lg:grid-cols-3">
+        <div className="grid gap-16 lg:grid-cols-3">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-16">
+          <div className="lg:col-span-2 space-y-20">
             
-            {/* Stats Grid */}
+            {/* Stats Grid - All Real Data */}
             <motion.div 
               variants={{
                 animate: { transition: { staggerChildren: 0.1 } }
@@ -140,13 +131,13 @@ export function ChefDetailClient({
                     initial: { opacity: 0, scale: 0.9 },
                     animate: { opacity: 1, scale: 1 }
                   }}
-                  className="rounded-2xl border border-white/5 bg-white/5 p-6 backdrop-blur-sm hover:bg-white/10 transition-colors duration-300"
+                  className="rounded-3xl border border-white/5 bg-white/5 p-6 backdrop-blur-md hover:bg-white/10 transition-all duration-300 group"
                 >
-                  <div className="mb-2 text-primary">
-                    <stat.icon className={`h-5 w-5 ${stat.fill ? 'fill-primary' : ''}`} />
+                  <div className="mb-3 text-primary group-hover:scale-110 transition-transform">
+                    <stat.icon className={`h-6 w-6 ${stat.fill ? 'fill-primary' : ''}`} />
                   </div>
-                  <div className="text-2xl font-light text-white">{stat.value}</div>
-                  <div className="text-xs uppercase tracking-wider text-white/40">{stat.label}</div>
+                  <div className="text-3xl font-light text-white mb-1">{stat.value}</div>
+                  <div className="text-[10px] uppercase tracking-[0.15em] text-white/40">{stat.label}</div>
                 </motion.div>
               ))}
             </motion.div>
@@ -156,14 +147,14 @@ export function ChefDetailClient({
               {...fadeIn}
               whileInView="animate"
               viewport={{ once: true }}
-              className="space-y-6"
+              className="space-y-8"
             >
-              <div className="flex items-center gap-4">
-                <h2 className="text-2xl font-light text-white uppercase tracking-widest">{t("bio")}</h2>
-                <Separator className="flex-1 bg-white/10" />
+              <div className="flex items-center gap-6">
+                <h2 className="text-xl font-medium text-white uppercase tracking-[0.2em] whitespace-nowrap">{t("bio")}</h2>
+                <div className="h-px flex-1 bg-linear-to-r from-white/20 to-transparent" />
               </div>
               <div className="prose prose-invert max-w-none">
-                <p className="text-lg leading-relaxed text-white/70">
+                <p className="text-xl leading-relaxed text-white/70 font-light">
                   {bio}
                 </p>
               </div>
@@ -175,17 +166,17 @@ export function ChefDetailClient({
                 {...fadeIn}
                 whileInView="animate"
                 viewport={{ once: true }}
-                className="space-y-6"
+                className="space-y-8"
               >
-                <div className="flex items-center gap-4">
-                  <h2 className="text-2xl font-light text-white uppercase tracking-widest">{t("certifications")}</h2>
-                  <Separator className="flex-1 bg-white/10" />
+                <div className="flex items-center gap-6">
+                  <h2 className="text-xl font-medium text-white uppercase tracking-[0.2em] whitespace-nowrap">{t("certifications")}</h2>
+                  <div className="h-px flex-1 bg-linear-to-r from-white/20 to-transparent" />
                 </div>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-4">
                   {certifications.map((cert: string, idx: number) => (
-                    <div key={idx} className="flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-sm text-primary hover:bg-primary/10 transition-colors duration-300">
-                      <Award className="h-4 w-4" />
-                      {cert}
+                    <div key={idx} className="flex items-center gap-3 rounded-2xl border border-primary/20 bg-primary/5 px-6 py-3 text-sm text-primary hover:bg-primary/10 transition-colors duration-300">
+                      <Award className="h-5 w-5" />
+                      <span className="font-medium">{cert}</span>
                     </div>
                   ))}
                 </div>
@@ -198,38 +189,38 @@ export function ChefDetailClient({
                 {...fadeIn}
                 whileInView="animate"
                 viewport={{ once: true }}
-                className="space-y-8"
+                className="space-y-10"
               >
-                <div className="flex items-center justify-between gap-4">
-                  <h2 className="text-2xl font-light text-white uppercase tracking-widest">{t("portfolio")}</h2>
-                  <Separator className="flex-1 bg-white/10" />
+                <div className="flex items-center justify-between gap-6">
+                  <h2 className="text-xl font-medium text-white uppercase tracking-[0.2em] whitespace-nowrap">{t("portfolio")}</h2>
+                  <div className="h-px flex-1 bg-linear-to-r from-white/20 to-transparent" />
                 </div>
-                <div className="grid gap-6 sm:grid-cols-2">
+                <div className="grid gap-8 sm:grid-cols-2">
                   {events.map((event: PortfolioEvent) => (
-                    <Card key={event.id} className="group overflow-hidden border-white/5 bg-white/5 backdrop-blur-sm transition-all duration-500 hover:border-primary/20">
+                    <Card key={event.id} className="group overflow-hidden border-white/5 bg-white/5 backdrop-blur-xl transition-all duration-500 hover:border-primary/30 rounded-3xl">
                       <div className="relative aspect-16/10 overflow-hidden">
                         <img 
                           src={event.coverImageUrl || event.imageUrls[0] || "/event-private.png"} 
                           alt={event.title} 
                           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
-                        <div className="absolute inset-0 bg-black/40 transition-opacity duration-500 group-hover:opacity-0" />
-                        <div className="absolute top-4 left-4">
-                          <Badge className="bg-primary/90 text-black backdrop-blur-md border-none">
+                        <div className="absolute inset-0 bg-black/60 opacity-60 group-hover:opacity-20 transition-opacity duration-500" />
+                        <div className="absolute top-6 left-6">
+                          <Badge className="bg-primary text-black font-semibold border-none rounded-full px-4 py-1.5 shadow-lg">
                             {event.eventType}
                           </Badge>
                         </div>
                       </div>
-                      <CardContent className="p-6">
-                        <h3 className="text-xl font-light text-white mb-2">{event.title}</h3>
-                        <div className="flex items-center gap-4 text-sm text-white/50">
-                          <div className="flex items-center gap-1.5">
-                            <Users className="h-3.5 w-3.5 text-primary" />
+                      <CardContent className="p-8">
+                        <h3 className="text-2xl font-light text-white mb-4 group-hover:text-primary transition-colors">{event.title}</h3>
+                        <div className="flex items-center gap-6 text-sm text-white/50">
+                          <div className="flex items-center gap-2">
+                            <Users className="h-4 w-4 text-primary" />
                             <span>{event.guestCount} Guests</span>
                           </div>
-                          <div className="flex items-center gap-1.5">
-                            <MapPin className="h-3.5 w-3.5 text-primary" />
-                            <span>Private Venue</span>
+                          <div className="flex items-center gap-2">
+                            <MapPin className="h-4 w-4 text-primary" />
+                            <span>Private Event</span>
                           </div>
                         </div>
                       </CardContent>
@@ -244,7 +235,7 @@ export function ChefDetailClient({
               {...fadeIn}
               whileInView="animate"
               viewport={{ once: true }}
-              className="pt-8"
+              className="pt-12 border-t border-white/5"
             >
               <ChefReviewsSection
                 chefId={chef?.id ?? null}
@@ -258,63 +249,52 @@ export function ChefDetailClient({
             </motion.div>
           </div>
 
-          {/* Sidebar */}
+          {/* Sidebar - No Mock Content */}
           <div className="space-y-8">
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.6, duration: 0.6 }}
+              className="sticky top-32"
             >
-              <Card className="sticky top-24 overflow-hidden border-primary/20 bg-white/5 backdrop-blur-xl">
+              <Card className="overflow-hidden border-primary/20 bg-white/5 backdrop-blur-2xl rounded-3xl">
                 <CardContent className="p-8 space-y-8">
-                  <div className="space-y-2">
-                    <h3 className="text-2xl font-light text-white">Culinary Consultation</h3>
-                    <p className="text-sm text-white/50">Discuss your event vision directly with {displayName.split(' ')[0]}.</p>
+                  <div className="space-y-3">
+                    <h3 className="text-2xl font-light text-white tracking-tight">Direct Inquiry</h3>
+                    <p className="text-sm text-white/50 leading-relaxed">
+                      Connect directly with {displayName.split(' ')[0]} to discuss your upcoming event, dietary requirements, and custom menu options.
+                    </p>
                   </div>
                   
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between rounded-xl bg-white/5 p-4 border border-white/5">
-                      <span className="text-sm text-white/70">Typical Lead Time</span>
-                      <span className="text-sm font-medium text-primary">7-14 Days</span>
-                    </div>
-                    <div className="flex items-center justify-between rounded-xl bg-white/5 p-4 border border-white/5">
-                      <span className="text-sm text-white/70">Menu Customization</span>
-                      <span className="text-sm font-medium text-primary">Fully Bespoke</span>
-                    </div>
-                  </div>
-
-                  <Button asChild className="w-full bg-primary text-black hover:bg-white h-14 rounded-full font-semibold transition-all duration-300">
+                  <Button asChild className="w-full bg-primary text-black hover:bg-white h-16 rounded-full font-bold text-lg transition-all duration-300 shadow-xl shadow-primary/10">
                     <Link href="/inquiry">{t("requestConsultation")}</Link>
                   </Button>
                   
-                  <div className="text-center">
-                    <p className="text-xs text-white/30 uppercase tracking-[0.2em]">Excellence Guaranteed</p>
+                  <div className="pt-4 border-t border-white/5 text-center">
+                    <p className="text-[10px] text-white/30 uppercase tracking-[0.3em]">Official Portfolio</p>
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
 
-            {/* Quick Links / Info */}
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.8, duration: 0.6 }}
-              className="rounded-2xl border border-white/5 bg-white/5 p-8 space-y-6"
-            >
-              <h4 className="text-sm font-medium text-white uppercase tracking-widest">Why Chef {displayName.split(' ')[0]}?</h4>
-              <ul className="space-y-4">
-                {[
-                  "Specialized in luxury private dining",
-                  "Expert in seasonal ingredient sourcing",
-                  "Meticulous attention to dietary needs",
-                  "White-glove service standard"
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm text-white/60">
-                    <ChevronRight className="h-4 w-4 mt-0.5 text-primary shrink-0" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
+              {/* Minimal Info Card with Only Real Data */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8, duration: 0.6 }}
+                className="mt-8 rounded-3xl border border-white/5 bg-white/5 p-8 backdrop-blur-md"
+              >
+                <h4 className="text-[10px] font-bold text-primary uppercase tracking-[0.2em] mb-6">Culinary Identity</h4>
+                <div className="space-y-6">
+                  <div className="space-y-1">
+                    <span className="text-[10px] text-white/40 uppercase tracking-widest block">Primary Specialty</span>
+                    <span className="text-white/80 font-light">{specialty}</span>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-[10px] text-white/40 uppercase tracking-widest block">Experience Level</span>
+                    <span className="text-white/80 font-light">{yearsExperience} {t("years", { count: yearsExperience })}</span>
+                  </div>
+                </div>
+              </motion.div>
             </motion.div>
           </div>
         </div>
