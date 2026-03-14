@@ -29,16 +29,15 @@ async function validateServiceTier(serviceTierId: string | null | undefined) {
 export async function GET(request: NextRequest) {
   try {
     const session = await getSession();
-    if (!session || session.userType !== "dashboard") {
-      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
-    }
+    const isDashboard = session && session.userType === "dashboard";
 
     const searchParams = request.nextUrl.searchParams;
     const queryResult = menusQuerySchema.safeParse({
       page: searchParams.get("page") || 1,
-      limit: searchParams.get("limit") || 10,
+      limit: searchParams.get("limit") || 12,
       search: searchParams.get("search") || undefined,
-      isActive: searchParams.get("isActive") || "all",
+      serviceTierId: searchParams.get("serviceTierId") || undefined,
+      isActive: searchParams.get("isActive") || (isDashboard ? "all" : "true"),
       sortBy: searchParams.get("sortBy") || "createdAt",
       sortOrder: searchParams.get("sortOrder") || "desc",
     });
@@ -58,18 +57,23 @@ export async function GET(request: NextRequest) {
       page,
       limit,
       search,
+      serviceTierId,
       isActive,
       sortBy,
       sortOrder,
     } = queryResult.data;
 
-    const where: Record<string, unknown> = {};
+    const where: any = {};
 
     if (search) {
       where.OR = [
         { name: { contains: search, mode: "insensitive" } },
         { description: { contains: search, mode: "insensitive" } },
       ];
+    }
+
+    if (serviceTierId) {
+      where.serviceTierId = serviceTierId;
     }
 
     if (isActive !== "all") {
@@ -86,6 +90,7 @@ export async function GET(request: NextRequest) {
               id: true,
               name: true,
               isVIP: true,
+              pricePerGuest: true,
             },
           },
           items: {
@@ -108,10 +113,10 @@ export async function GET(request: NextRequest) {
       success: true,
       data: menus.map(serializeMenu),
       pagination: {
-        page,
-        limit,
         total,
         totalPages: Math.ceil(total / limit),
+        currentPage: page,
+        limit,
       },
     });
   } catch (error) {

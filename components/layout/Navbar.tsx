@@ -77,9 +77,10 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
 
   const navLinks = [
     { name: t("services"), href: "#services" },
+    { name: t("menus"), href: "/menus" },
     { name: t("howItWorks"), href: "#how-it-works" },
-    { name: t("chefs"), href: "#chefs" },
-    { name: t("events"), href: "#events" },
+    { name: t("chefs"), href: "/chefs" },
+    { name: t("events"), href: "/events" },
     { name: t("international"), href: "#" },
   ];
 

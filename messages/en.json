@@ -97,6 +97,7 @@
     },
     "Navbar": {
         "services": "Services",
+        "menus": "Menus",
         "howItWorks": "How It Works",
         "vip": "VIP Experience",
         "chefs": "Our Chefs",
@@ -176,13 +177,15 @@
     },
     "SignatureMenus": {
         "title": "Signature Menus",
-        "description": "A culinary odyssey curated for every occasion.",
-        "downloadMenu": "Download Full Menu",
-        "perGuest": "/ guest",
+        "seeAllTitle": "Culinary Collections",
+        "description": "Exquisite seasonal selections curated by our executive chefs.",
+        "seeAllDescription": "Explore our diverse range of culinary experiences, from intimate private dinners to grand corporate galas.",
+        "downloadMenu": "Full Catalog",
+        "perGuest": "per guest",
         "addToBooking": "Add to Booking",
-        "luxuryTier": "Luxury",
-        "premiumTier": "Premium",
-        "standardTier": "Standard",
+        "luxuryTier": "Luxury Tier",
+        "premiumTier": "Premium Tier",
+        "standardTier": "Standard Tier",
         "menu1": {
             "title": "Signature Luxury Menu",
             "items": [
@@ -227,14 +230,31 @@
         "chefRole": "3 Michelin Stars"
     },
     "Chefs": {
-        "title": "Masters of the Kitchen",
-        "description": "Meet the artisans behind your next unforgettable meal.",
+        "title": "Master Artists",
+        "seeAllTitle": "Our Culinary Experts",
+        "description": "The visionary chefs driving the culinary direction of our most prestigious events.",
+        "seeAllDescription": "Meet the exceptional talent behind our bespoke catering experiences. Filter by specialty or experience to find your perfect match.",
         "role": "Executive Chef",
-        "viewAll": "Meet All Our Chefs",
-        "back": "Back",
-        "reviews": "reviews",
+        "reviews": "Reviews",
         "specialty": "Specialty",
-        "openDetails": "Open Profile",
+        "defaultSpecialty": "Culinary Expert",
+        "openDetails": "View Profile",
+        "experience": "Experience",
+        "years": "{count} years",
+        "experienceLabel": "{years} years of experience",
+        "filters": {
+            "title": "Find an Expert",
+            "search": "Search chefs...",
+            "specialty": "Cuisine Specialty",
+            "minExperience": "Min Experience",
+            "allSpecialties": "All Specializations",
+            "years": "Years",
+            "apply": "Apply filters",
+            "clear": "Reset"
+        },
+        "stats": {
+            "results": "{count} chefs available"
+        },
         "loginAction": "Log in",
         "requestConsultation": "Request Consultation",
         "reviewsSectionTitle": "Reviews",
@@ -257,8 +277,6 @@
         "reviewDeleteSuccess": "Review deleted successfully.",
         "reviewDeleteError": "Failed to delete review.",
         "bio": "Biography",
-        "experience": "Experience",
-        "years": "{count} years",
         "certifications": "Certifications",
         "portfolio": "Event Portfolio",
         "detailDescription": "{name} crafts elevated experiences with precise execution and premium ingredients.",
@@ -266,11 +284,27 @@
     },
     "Events": {
         "title": "Unforgettable Occasions",
+        "seeAllTitle": "Portfolio of Excellence",
         "description": "Recent highlights from the world of Mongolian National Caterer.",
+        "seeAllDescription": "Explore our portfolio of exceptional culinary experiences and bespoke event designs.",
         "guests": "Guests",
         "openDetails": "View Details",
         "detailDescription": "A {type} experience tailored for {guests}.",
         "highlights": "Highlights",
+        "filters": {
+            "title": "Refine Results",
+            "type": "Service Type",
+            "guestRange": "Guest Capacity",
+            "search": "Search portfolio...",
+            "allTypes": "All Occasions",
+            "minGuests": "Min Guests",
+            "maxGuests": "Max Guests",
+            "apply": "Apply Selection",
+            "clear": "Reset Filters"
+        },
+        "stats": {
+            "results": "{count} events discovered"
+        },
         "types": {
             "Wedding": "Wedding",
             "Corporate": "Corporate",

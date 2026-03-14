@@ -6,23 +6,16 @@ import { eventsQuerySchema, createEventSchema } from "@/lib/validations/events";
 // GET /api/events - List all events with pagination, search, and filters
 export async function GET(request: NextRequest) {
   try {
-    // Verify session
-    const session = await getSession();
-    if (!session || session.userType !== "dashboard") {
-      return NextResponse.json(
-        { success: false, error: "Unauthorized" },
-        { status: 401 },
-      );
-    }
-
     // Parse query parameters
     const searchParams = request.nextUrl.searchParams;
     const queryResult = eventsQuerySchema.safeParse({
       page: searchParams.get("page") || 1,
-      limit: searchParams.get("limit") || 10,
+      limit: searchParams.get("limit") || 12,
       search: searchParams.get("search") || undefined,
       eventType: searchParams.get("eventType") || undefined,
       isFeatured: searchParams.get("isFeatured") || undefined,
+      minGuests: searchParams.get("minGuests") || undefined,
+      maxGuests: searchParams.get("maxGuests") || undefined,
       sortBy: searchParams.get("sortBy") || "createdAt",
       sortOrder: searchParams.get("sortOrder") || "desc",
     });
@@ -38,11 +31,20 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const { page, limit, search, eventType, isFeatured, sortBy, sortOrder } =
-      queryResult.data;
+    const {
+      page,
+      limit,
+      search,
+      eventType,
+      isFeatured,
+      minGuests,
+      maxGuests,
+      sortBy,
+      sortOrder,
+    } = queryResult.data;
 
     // Build where clause
-    const where: Record<string, unknown> = {};
+    const where: any = {};
 
     if (search) {
       where.OR = [
@@ -59,6 +61,12 @@ export async function GET(request: NextRequest) {
       where.isFeatured = isFeatured;
     }
 
+    if (minGuests !== undefined || maxGuests !== undefined) {
+      where.guestCount = {};
+      if (minGuests !== undefined) where.guestCount.gte = minGuests;
+      if (maxGuests !== undefined) where.guestCount.lte = maxGuests;
+    }
+
     // Get total count
     const total = await prisma.event.count({ where });
 
@@ -69,14 +77,14 @@ export async function GET(request: NextRequest) {
         chefProfile: {
           include: {
             dashboardUser: {
-              select: { name: true },
+              select: { name: true, avatar: true },
             },
           },
         },
         companyProfile: {
           include: {
             dashboardUser: {
-              select: { name: true },
+              select: { name: true, avatar: true },
             },
           },
         },

@@ -97,6 +97,7 @@
     },
     "Navbar": {
         "services": "Бидний үйлчилгээ",
+        "menus": "Цэс",
         "howItWorks": "Хэрхэн ажилладаг вэ",
         "vip": "VIP үйлчилгээ",
         "chefs": "Тогооч нар",
@@ -175,14 +176,16 @@
         }
     },
     "SignatureMenus": {
-        "title": "Шилдэг Цэснүүд",
-        "description": "Зэрэг бүрт зориулсан хоолны аялал.",
-        "downloadMenu": "Бүх цэс татах",
-        "perGuest": "/ хүн",
+        "title": "Онцлох Цэсүүд",
+        "seeAllTitle": "Хоолны Цуглуулга",
+        "description": "Бидний ахлах тогооч нарын бэлтгэсэн улирлын чанартай шилдэг сонголтууд.",
+        "seeAllDescription": "Гэр бүлийн оройн зоогноос эхлээд томоохон арга хэмжээ хүртэлх бүх төрлийн хоолны туршлагатай танилцана уу.",
+        "downloadMenu": "Бүрэн каталог",
+        "perGuest": "зочин тутамд",
         "addToBooking": "Захиалгад нэмэх",
-        "luxuryTier": "Тансаг",
-        "premiumTier": "Премиум",
-        "standardTier": "Стандарт",
+        "luxuryTier": "Luxury зэрэглэл",
+        "premiumTier": "Premium зэрэглэл",
+        "standardTier": "Standard зэрэглэл",
         "menu1": {
             "title": "Тансаг Зэрэглэлийн Цэс",
             "items": [
@@ -228,13 +231,30 @@
     },
     "Chefs": {
         "title": "Хоолны Урлагийн Мастерууд",
-        "description": "Танд зориулсан амтны мастерууд.",
+        "seeAllTitle": "Манай Тогооч Нар",
+        "description": "Бидний хамгийн нэр хүндтэй арга хэмжээний хоолны чиглэлийг тодорхойлж буй шилдэг тогооч нар.",
+        "seeAllDescription": "Манай онцгой хоолны үйлчилгээний ард байдаг гайхалтай авьяас чадваруудтай танилцана уу. Мэргэшил болон туршлагаар нь шүүж өөрт тохирохыг олоорой.",
         "role": "Ахлах Тогооч",
-        "viewAll": "Бүх тогооч нарыг харах",
-        "back": "Буцах",
         "reviews": "сэтгэгдэл",
         "specialty": "Мэргэшил",
-        "openDetails": "Профайл нээх",
+        "defaultSpecialty": "Хоолны мэргэжилтэн",
+        "openDetails": "Профайл харах",
+        "experience": "Туршлага",
+        "years": "{count} жил",
+        "experienceLabel": "{years} жилийн туршлагатай",
+        "filters": {
+            "title": "Мэргэжилтэн хайх",
+            "search": "Тогооч хайх...",
+            "specialty": "Хоолны төрөл",
+            "minExperience": "Туршлага (min)",
+            "allSpecialties": "Бүх төрөл",
+            "years": "Жил",
+            "apply": "Шүүлтүүр ашиглах",
+            "clear": "Цэвэрлэх"
+        },
+        "stats": {
+            "results": "{count} тогооч олдлоо"
+        },
         "loginAction": "Нэвтрэх",
         "requestConsultation": "Зөвлөгөө хүсэх",
         "reviewsSectionTitle": "Сэтгэгдлүүд",
@@ -257,8 +277,6 @@
         "reviewDeleteSuccess": "Сэтгэгдэл амжилттай устгагдлаа.",
         "reviewDeleteError": "Сэтгэгдэл устгаж чадсангүй.",
         "bio": "Намтар",
-        "experience": "Туршлага",
-        "years": "{count} жил",
         "certifications": "Сертификатууд",
         "portfolio": "Эвент багц",
         "detailDescription": "{name} нь өндөр зэрэглэлийн орц, нарийн гүйцэтгэлээр онцгой туршлагыг бүтээдэг.",
@@ -266,11 +284,27 @@
     },
     "Events": {
         "title": "Мартагдашгүй Мөчүүд",
+        "seeAllTitle": "Арга хэмжээний багц",
         "description": "Mongolian National Caterer-ийн бэлтгэсэн сүүлийн үеийн арга хэмжээнүүд.",
+        "seeAllDescription": "Манай бэлтгэсэн онцгой хоолны туршлага бүхий арга хэмжээнүүдтэй танилцана уу.",
         "guests": "Зочин",
         "openDetails": "Дэлгэрэнгүй",
         "detailDescription": "{guests}-д зориулсан {type} төрлийн тусгай туршлага.",
         "highlights": "Онцлох хэсгүүд",
+        "filters": {
+            "title": "Шүүлтүүр",
+            "type": "Арга хэмжээний төрөл",
+            "guestRange": "Зочдын тоо",
+            "search": "Арга хэмжээ хайх...",
+            "allTypes": "Бүх төрөл",
+            "minGuests": "Хамгийн бага",
+            "maxGuests": "Хамгийн их",
+            "apply": "Шүүлтүүр ашиглах",
+            "clear": "Цэвэрлэх"
+        },
+        "stats": {
+            "results": "{count} арга хэмжээ олдлоо"
+        },
         "types": {
             "Wedding": "Хурим",
             "Corporate": "Компанийн",

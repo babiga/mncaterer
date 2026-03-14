@@ -12,6 +12,7 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
+import { Button } from "@/components/ui/button";
 
 const events = [
   {
@@ -124,7 +125,7 @@ export default function Events({ events: apiEvents }: { events?: EventType[] }) 
                     whileHover={{ y: -10 }}
                     className="bg-card border border-white/5 overflow-hidden group text-left w-full h-full"
                   >
-                    <div className="relative aspect-[4/3] overflow-hidden">
+                    <div className="relative aspect-4/3 overflow-hidden">
                       <img
                         src={event.image}
                         alt={event.title}
@@ -149,6 +150,11 @@ export default function Events({ events: apiEvents }: { events?: EventType[] }) 
             <CarouselNext className="static translate-y-0 hover:bg-primary hover:text-black border-white/10" />
           </div>
         </Carousel>
+        <div className="flex justify-center mt-16">
+          <Button asChild variant="outline" size="lg" className="border-white/10 hover:border-primary px-10 py-6 text-lg rounded-none transition-all">
+            <Link href="/events">{t("seeAllTitle")}</Link>
+          </Button>
+        </div>
       </div>
 
       {/* Modals removed in favor of detail page */}

@@ -56,13 +56,15 @@ export const updateEventSchema = z.object({
 // Query params schema for events list endpoint
 export const eventsQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
-  limit: z.coerce.number().min(1).max(100).default(10),
+  limit: z.coerce.number().min(1).max(100).default(12),
   search: z.string().optional(),
   eventType: z.enum(["WEDDING", "CORPORATE", "PRIVATE", "SOCIAL"]).optional(),
   isFeatured: z
     .string()
     .transform((val) => val === "true")
     .optional(),
+  minGuests: z.coerce.number().optional(),
+  maxGuests: z.coerce.number().optional(),
   sortBy: z.string().default("createdAt"),
   sortOrder: z.enum(["asc", "desc"]).default("desc"),
 });

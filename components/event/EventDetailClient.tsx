@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
-import { ArrowLeft, Users, Calendar, ChefHat, Building2 } from "lucide-react";
+import { ArrowLeft, Users, Calendar } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
@@ -52,7 +52,7 @@ export function EventDetailClient({ event }: { event: any }) {
 
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-24">
           <motion.div {...fadeIn} transition={{ delay: 0.2, duration: 0.6 }} className="space-y-8">
-            <div className="aspect-[4/3] relative rounded-3xl overflow-hidden border border-white/10 bg-white/5">
+            <div className="aspect-4/3 relative rounded-3xl overflow-hidden border border-white/10 bg-white/5">
               <AnimatePresence mode="wait">
                 <motion.img
                   key={activeImage}
@@ -73,7 +73,7 @@ export function EventDetailClient({ event }: { event: any }) {
                   <button
                     key={idx}
                     onClick={() => setActiveImage(img)}
-                    className={`relative w-24 h-24 flex-shrink-0 rounded-2xl overflow-hidden border-2 transition-all ${activeImage === img ? "border-primary" : "border-transparent hover:border-white/20"}`}
+                    className={`relative w-24 h-24 shrink-0 rounded-2xl overflow-hidden border-2 transition-all ${activeImage === img ? "border-primary" : "border-transparent hover:border-white/20"}`}
                   >
                     <img src={img} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover" />
                   </button>
@@ -116,31 +116,6 @@ export function EventDetailClient({ event }: { event: any }) {
                 </div>
               )}
             </div>
-
-            {(event.chefProfile?.dashboardUser || event.companyProfile?.dashboardUser) && (
-              <div className="space-y-4">
-                <h3 className="text-sm uppercase tracking-wider text-white/40">Catered By</h3>
-                <div className="flex items-center gap-4 bg-white/5 border border-white/10 p-4 rounded-2xl">
-                  {event.chefProfile?.dashboardUser?.avatar || event.companyProfile?.dashboardUser?.avatar ? (
-                    <img 
-                      src={event.chefProfile?.dashboardUser?.avatar || event.companyProfile?.dashboardUser?.avatar} 
-                      alt="Caterer" 
-                      className="w-12 h-12 rounded-full object-cover border border-white/20"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
-                      {event.chefProfile ? <ChefHat className="w-6 h-6 text-white/50" /> : <Building2 className="w-6 h-6 text-white/50" />}
-                    </div>
-                  )}
-                  <div>
-                    <p className="text-white font-medium">
-                      {event.chefProfile?.dashboardUser?.name || event.companyProfile?.companyName || event.companyProfile?.dashboardUser?.name}
-                    </p>
-                    <p className="text-sm text-white/50">{event.chefProfile ? "Chef" : "Company"}</p>
-                  </div>
-                </div>
-              </div>
-            )}
 
             <Button asChild size="lg" className="bg-primary text-black hover:bg-white w-full sm:w-auto px-10 h-14 rounded-full font-semibold text-lg transition-all shadow-lg shadow-primary/20">
               <Link href="/inquiry">Inquire for Similar Event</Link>

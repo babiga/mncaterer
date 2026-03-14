@@ -67,8 +67,9 @@ export const updateMenuSchema = z.object({
 
 export const menusQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
-  limit: z.coerce.number().min(1).max(100).default(10),
+  limit: z.coerce.number().min(1).max(100).default(12),
   search: z.string().optional(),
+  serviceTierId: z.string().optional(),
   isActive: z.enum(["true", "false", "all"]).default("all"),
   sortBy: z
     .enum(["name", "createdAt", "updatedAt", "isActive"])

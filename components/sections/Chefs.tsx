@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/carousel";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
+import { Button } from "@/components/ui/button";
 import { fallbackChefProfiles } from "@/lib/chef-profile-fallback";
 
 type ChefType = {
@@ -57,12 +58,12 @@ export default function Chefs({ chefs: apiChefs }: { chefs?: ChefType[] }) {
             <h2 className="text-4xl md:text-5xl mb-2">{t("title")}</h2>
             <p className="text-muted-foreground">{t("description")}</p>
           </div>
-          <a
-            href="#"
+          <Link
+            href="/chefs"
             className="hidden md:block text-primary hover:text-white transition-colors underline decoration-primary/30 underline-offset-8"
           >
-            {t("viewAll")}
-          </a>
+            {t("seeAllTitle")}
+          </Link>
         </div>
 
         <Carousel
@@ -84,9 +85,9 @@ export default function Chefs({ chefs: apiChefs }: { chefs?: ChefType[] }) {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
-                    className="group relative h-[500px] overflow-hidden cursor-pointer text-left w-full"
+                    className="group relative aspect-3/4 overflow-hidden cursor-pointer text-left w-full"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 z-10" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black via-transparent to-transparent opacity-80 z-10" />
 
                     <img
                       src={chef.image}
@@ -127,13 +128,10 @@ export default function Chefs({ chefs: apiChefs }: { chefs?: ChefType[] }) {
           </div>
         </Carousel>
 
-        <div className="mt-12 text-center md:hidden">
-          <a
-            href="#"
-            className="text-primary hover:text-white transition-colors underline decoration-primary/30 underline-offset-8"
-          >
-            {t("viewAll")}
-          </a>
+        <div className="mt-16 text-center">
+          <Button asChild variant="outline" size="lg" className="border-white/10 hover:border-primary px-10 py-6 text-lg rounded-none transition-all">
+            <Link href="/chefs">{t("seeAllTitle")}</Link>
+          </Button>
         </div>
       </div>
     </section>

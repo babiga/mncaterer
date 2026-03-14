@@ -11,6 +11,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 
 const menuData = [
   { key: "menu1", price: "185,000₮+", tier: "luxuryTier" },
@@ -58,9 +59,14 @@ export default function SignatureMenus({ menus }: { menus?: MenuType[] }) {
             </h2>
             <p className="text-muted-foreground">{t("description")}</p>
           </div>
-          <Button className="bg-primary text-black hover:bg-white px-8 py-6 rounded-none text-lg">
-            {t("downloadMenu")}
-          </Button>
+          <div className="flex gap-4">
+            <Button asChild variant="outline" className="hidden md:flex border-white/10 hover:border-primary px-8 py-6 rounded-none text-lg">
+              <Link href="/menus">{t("seeAllTitle")}</Link>
+            </Button>
+            <Button className="bg-primary text-black hover:bg-white px-8 py-6 rounded-none text-lg">
+              {t("downloadMenu")}
+            </Button>
+          </div>
         </div>
 
         <Carousel
@@ -118,6 +124,12 @@ export default function SignatureMenus({ menus }: { menus?: MenuType[] }) {
             <CarouselNext className="static translate-y-0 hover:bg-primary hover:text-black border-white/10" />
           </div>
         </Carousel>
+
+        <div className="mt-16 text-center">
+          <Button asChild variant="outline" size="lg" className="border-white/10 hover:border-primary px-10 py-6 text-lg rounded-none transition-all">
+            <Link href="/menus">{t("seeAllTitle")}</Link>
+          </Button>
+        </div>
       </div>
     </section>
   );
