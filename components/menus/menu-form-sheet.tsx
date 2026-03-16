@@ -10,6 +10,7 @@ import { z } from "zod";
 
 import { createMenuSchema } from "@/lib/validations/menus";
 import type { MenuRecord } from "@/components/menus/menus-columns";
+import { ImageUpload } from "@/components/ui/image-upload";
 import {
   Sheet,
   SheetClose,
@@ -104,6 +105,7 @@ export function MenuFormSheet({
       downloadUrl: "",
       serviceTierId: null,
       menuItemIds: [],
+      imageUrl: "",
       isActive: true,
     },
   });
@@ -148,6 +150,7 @@ export function MenuFormSheet({
         downloadUrl: "",
         serviceTierId: null,
         menuItemIds: [],
+        imageUrl: "",
         isActive: true,
       });
       setItemSearch("");
@@ -161,6 +164,7 @@ export function MenuFormSheet({
         downloadUrl: menu.downloadUrl ?? "",
         serviceTierId: menu.serviceTierId,
         menuItemIds: menu.items.map((item) => item.id),
+        imageUrl: menu.imageUrl ?? "",
         isActive: menu.isActive,
       });
     }
@@ -172,6 +176,7 @@ export function MenuFormSheet({
     const payload = {
       ...values,
       description: values.description || null,
+      imageUrl: values.imageUrl || null,
       downloadUrl: values.downloadUrl || null,
       serviceTierId: values.serviceTierId || null,
     };
@@ -252,6 +257,20 @@ export function MenuFormSheet({
 
         {isView && menu ? (
           <div className="flex flex-1 flex-col gap-4 py-4 text-sm">
+            <div>
+              <label className="text-muted-foreground flex items-center justify-between mb-2">Cover Image</label>
+              {menu.imageUrl ? (
+                <div className="aspect-video w-full relative overflow-hidden rounded-lg border">
+                  <img
+                    src={menu.imageUrl}
+                    alt={menu.name}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              ) : (
+                <p className="text-sm font-medium text-muted-foreground italic">— No cover image</p>
+              )}
+            </div>
             <div>
               <label className="text-muted-foreground">Description</label>
               <p className="mt-1 font-medium">{menu.description || "—"}</p>
@@ -376,6 +395,25 @@ export function MenuFormSheet({
                         placeholder="Short menu description"
                         {...field}
                         value={field.value ?? ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="imageUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Menu Cover Image</FormLabel>
+                    <FormControl>
+                      <ImageUpload
+                        value={field.value}
+                        onChange={field.onChange}
+                        onRemove={() => field.onChange("")}
+                        aspectRatio="video"
                       />
                     </FormControl>
                     <FormMessage />

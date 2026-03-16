@@ -10,6 +10,7 @@ import { z } from "zod";
 
 import { createMenuItemSchema, menuItemCategoryValues } from "@/lib/validations/menu-items";
 import type { MenuItemRecord } from "@/components/menu-items/menu-items-columns";
+import { ImageUpload } from "@/components/ui/image-upload";
 import {
   Sheet,
   SheetClose,
@@ -222,8 +223,18 @@ export function MenuItemFormSheet({
               <p className="mt-1 font-medium">{item.description || "—"}</p>
             </div>
             <div>
-              <label className="text-muted-foreground">Image URL</label>
-              <p className="mt-1 font-medium break-all">{item.imageUrl || "—"}</p>
+              <label className="text-muted-foreground flex items-center justify-between mb-2">Item Image</label>
+              {item.imageUrl ? (
+                <div className="aspect-square w-full relative overflow-hidden rounded-lg border">
+                  <img
+                    src={item.imageUrl}
+                    alt={item.name}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              ) : (
+                <p className="text-sm font-medium text-muted-foreground italic">— No image provided</p>
+              )}
             </div>
             {item.ingredients.length > 0 && (
               <div>
@@ -350,14 +361,20 @@ export function MenuItemFormSheet({
                 )}
               />
 
+
               <FormField
                 control={form.control}
                 name="imageUrl"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Image URL</FormLabel>
+                    <FormLabel>Item Image</FormLabel>
                     <FormControl>
-                      <Input placeholder="https://..." {...field} value={field.value ?? ""} />
+                      <ImageUpload
+                        value={field.value}
+                        onChange={field.onChange}
+                        onRemove={() => field.onChange("")}
+                        aspectRatio="square"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

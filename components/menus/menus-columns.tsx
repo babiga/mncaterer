@@ -20,6 +20,7 @@ export type MenuRecord = {
   name: string;
   description: string | null;
   downloadUrl: string | null;
+  imageUrl: string | null;
   serviceTierId: string | null;
   serviceTier: {
     id: string;
@@ -98,17 +99,32 @@ export function getMenusColumns({
       cell: ({ row }) => {
         const menu = row.original;
         return (
-          <div className="flex flex-col">
-            <Button
-              variant="link"
-              className="h-auto p-0 text-left justify-start font-medium"
-              onClick={() => onView(menu)}
-            >
-              {menu.name}
-            </Button>
-            {menu.description ? (
-              <span className="line-clamp-1 text-xs text-muted-foreground">{menu.description}</span>
-            ) : null}
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-16 shrink-0 overflow-hidden rounded-md border bg-muted">
+              {menu.imageUrl ? (
+                <img
+                  src={menu.imageUrl}
+                  alt={menu.name}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+                  <span className="text-[10px]">No image</span>
+                </div>
+              )}
+            </div>
+            <div className="flex flex-col">
+              <Button
+                variant="link"
+                className="h-auto p-0 text-left justify-start font-medium"
+                onClick={() => onView(menu)}
+              >
+                {menu.name}
+              </Button>
+              {menu.description ? (
+                <span className="line-clamp-1 text-xs text-muted-foreground">{menu.description}</span>
+              ) : null}
+            </div>
           </div>
         );
       },

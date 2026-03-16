@@ -98,6 +98,8 @@ export async function PUT(
             result.data.description === undefined ? undefined : result.data.description || null,
           downloadUrl:
             result.data.downloadUrl === undefined ? undefined : result.data.downloadUrl || null,
+          imageUrl:
+            result.data.imageUrl === undefined ? undefined : result.data.imageUrl || null,
           serviceTierId,
           isActive: result.data.isActive,
         },

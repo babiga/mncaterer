@@ -15,6 +15,11 @@ export const createMenuSchema = z.object({
     .max(2048, "Download URL must be less than 2048 characters")
     .optional()
     .nullable(),
+  imageUrl: z
+    .string()
+    .max(2048, "Image URL must be less than 2048 characters")
+    .optional()
+    .nullable(),
   serviceTierId: z.string().optional().nullable(),
   menuItemIds: z.array(z.string()).default([]),
   isActive: z.boolean().default(true),
@@ -34,6 +39,11 @@ export const updateMenuSchema = z.object({
   downloadUrl: z
     .string()
     .max(2048, "Download URL must be less than 2048 characters")
+    .optional()
+    .nullable(),
+  imageUrl: z
+    .string()
+    .max(2048, "Image URL must be less than 2048 characters")
     .optional()
     .nullable(),
   serviceTierId: z.string().optional().nullable(),

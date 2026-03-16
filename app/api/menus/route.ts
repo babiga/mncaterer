@@ -122,6 +122,7 @@ export async function POST(request: NextRequest) {
         name: result.data.name,
         description: result.data.description || null,
         downloadUrl: result.data.downloadUrl || null,
+        imageUrl: result.data.imageUrl || null,
         serviceTierId,
         isActive: result.data.isActive,
         items: {

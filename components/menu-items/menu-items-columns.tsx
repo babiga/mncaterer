@@ -103,17 +103,32 @@ export function getMenuItemsColumns({
       cell: ({ row }) => {
         const item = row.original;
         return (
-          <div className="flex flex-col">
-            <Button
-              variant="link"
-              className="h-auto p-0 text-left justify-start font-medium"
-              onClick={() => onView(item)}
-            >
-              {item.name}
-            </Button>
-            {item.description ? (
-              <span className="line-clamp-1 text-xs text-muted-foreground">{item.description}</span>
-            ) : null}
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 shrink-0 overflow-hidden rounded-md border bg-muted">
+              {item.imageUrl ? (
+                <img
+                  src={item.imageUrl}
+                  alt={item.name}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+                  <span className="text-[10px]">No image</span>
+                </div>
+              )}
+            </div>
+            <div className="flex flex-col">
+              <Button
+                variant="link"
+                className="h-auto p-0 text-left justify-start font-medium"
+                onClick={() => onView(item)}
+              >
+                {item.name}
+              </Button>
+              {item.description ? (
+                <span className="line-clamp-1 text-xs text-muted-foreground">{item.description}</span>
+              ) : null}
+            </div>
           </div>
         );
       },

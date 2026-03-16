@@ -264,6 +264,7 @@ model Menu {
   description   String?      @db.Text
   serviceTierId String?
   serviceTier   ServiceTier? @relation(fields: [serviceTierId], references: [id], onDelete: SetNull)
+  imageUrl      String?
   downloadUrl   String?
   isActive      Boolean      @default(true)
 
@@ -272,6 +273,7 @@ model Menu {
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
 }
+
 
 model MenuItem {
   id          String           @id @default(cuid())
