@@ -73,14 +73,31 @@ async function upsertMenu(data: {
         },
       });
 
-  await prisma.menuItem.deleteMany({ where: { menuId: menu.id } });
+  // Delete existing items linked to this menu to avoid duplicates
+  const existingLinks = await prisma.menuMenuItem.findMany({
+    where: { menuId: menu.id },
+    select: { menuItemId: true }
+  });
 
-  if (data.items.length > 0) {
-    await prisma.menuItem.createMany({
-      data: data.items.map((item) => ({
-        ...item,
+  if (existingLinks.length > 0) {
+    await prisma.menuItem.deleteMany({
+      where: { id: { in: existingLinks.map((l) => l.menuItemId) } }
+    });
+  }
+
+  // Create new items and link them
+  for (const item of data.items) {
+    const { sortOrder, ...itemData } = item;
+    const menuItem = await prisma.menuItem.create({
+      data: itemData
+    });
+
+    await prisma.menuMenuItem.create({
+      data: {
         menuId: menu.id,
-      })),
+        menuItemId: menuItem.id,
+        sortOrder: sortOrder
+      }
     });
   }
 

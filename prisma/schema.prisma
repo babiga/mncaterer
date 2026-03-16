@@ -112,6 +112,17 @@ enum NotificationType {
   IN_APP
 }
 
+enum MenuItemCategory {
+  APPETIZER
+  MAIN_COURSE
+  DESSERT
+  BEVERAGE
+  SIDE_DISH
+  SALAD
+  SOUP
+  OTHER
+}
+
 enum InquiryRequesterType {
   INDIVIDUAL
   ORG
@@ -248,35 +259,46 @@ model ServiceTier {
 }
 
 model Menu {
-  id            String      @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String
-  description   String?     @db.Text
+  description   String?      @db.Text
   serviceTierId String?
   serviceTier   ServiceTier? @relation(fields: [serviceTierId], references: [id], onDelete: SetNull)
   downloadUrl   String?
-  isActive      Boolean     @default(true)
+  isActive      Boolean      @default(true)
 
-  items     MenuItem[]
+  items     MenuMenuItem[]
   bookings  Booking[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 }
 
 model MenuItem {
-  id     String @id @default(cuid())
-  menuId String
-  menu   Menu   @relation(fields: [menuId], references: [id], onDelete: Cascade)
-
+  id          String           @id @default(cuid())
   name        String
-  description String?
-  price       Decimal  @db.Decimal(10, 2)
+  description String?          @db.Text
+  price       Decimal          @db.Decimal(10, 2)
+  category    MenuItemCategory @default(OTHER)
   ingredients String[]
   allergens   String[]
   imageUrl    String?
-  sortOrder   Int      @default(0)
+  isActive    Boolean          @default(true)
+  sortOrder   Int              @default(0)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  menus     MenuMenuItem[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model MenuMenuItem {
+  id         String   @id @default(cuid())
+  menuId     String
+  menu       Menu     @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  menuItemId String
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  sortOrder  Int      @default(0)
+
+  @@unique([menuId, menuItemId])
 }
 
 // ============================================

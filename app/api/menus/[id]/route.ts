@@ -6,28 +6,28 @@ import { updateMenuSchema } from "@/lib/validations/menus";
 function serializeMenu(menu: any) {
   return {
     ...menu,
-    items: menu.items.map((item: any) => ({
-      ...item,
-      price: Number(item.price),
+    items: (menu.items ?? []).map((join: any) => ({
+      ...join.menuItem,
+      price: Number(join.menuItem.price),
+      sortOrder: join.sortOrder,
+      joinId: join.id,
     })),
   };
 }
 
 async function validateServiceTier(serviceTierId: string | null | undefined) {
-  if (!serviceTierId) {
-    return null;
-  }
-
-  const serviceTier = await prisma.serviceTier.findUnique({
-    where: { id: serviceTierId },
-    select: { id: true },
-  });
-
-  return serviceTier;
+  if (!serviceTierId) return null;
+  return prisma.serviceTier.findUnique({ where: { id: serviceTierId }, select: { id: true } });
 }
 
+const menuInclude = {
+  serviceTier: { select: { id: true, name: true, isVIP: true } },
+  items: { include: { menuItem: true as const }, orderBy: { sortOrder: "asc" as const } },
+  _count: { select: { items: true, bookings: true } },
+};
+
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
@@ -37,43 +37,16 @@ export async function GET(
     }
 
     const { id } = await params;
-
-    const menu = await prisma.menu.findUnique({
-      where: { id },
-      include: {
-        serviceTier: {
-          select: {
-            id: true,
-            name: true,
-            isVIP: true,
-          },
-        },
-        items: {
-          orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
-        },
-        _count: {
-          select: {
-            items: true,
-            bookings: true,
-          },
-        },
-      },
-    });
+    const menu = await prisma.menu.findUnique({ where: { id }, include: menuInclude });
 
     if (!menu) {
-      return NextResponse.json(
-        { success: false, error: "Menu not found" },
-        { status: 404 },
-      );
+      return NextResponse.json({ success: false, error: "Menu not found" }, { status: 404 });
     }
 
     return NextResponse.json({ success: true, data: serializeMenu(menu) });
   } catch (error) {
     console.error("Get menu error:", error);
-    return NextResponse.json(
-      { success: false, error: "Internal server error" },
-      { status: 500 },
-    );
+    return NextResponse.json({ success: false, error: "Internal server error" }, { status: 500 });
   }
 }
 
@@ -89,30 +62,24 @@ export async function PUT(
 
     const { id } = await params;
     const body = await request.json();
-
     const result = updateMenuSchema.safeParse(body);
+
     if (!result.success) {
       return NextResponse.json(
-        {
-          success: false,
-          error: "Invalid input",
-          details: result.error.flatten(),
-        },
+        { success: false, error: "Invalid input", details: result.error.flatten() },
         { status: 400 },
       );
     }
 
     const existing = await prisma.menu.findUnique({ where: { id } });
     if (!existing) {
-      return NextResponse.json(
-        { success: false, error: "Menu not found" },
-        { status: 404 },
-      );
+      return NextResponse.json({ success: false, error: "Menu not found" }, { status: 404 });
     }
 
-    const serviceTierId = result.data.serviceTierId === undefined
-      ? existing.serviceTierId
-      : result.data.serviceTierId?.trim() || null;
+    const serviceTierId =
+      result.data.serviceTierId === undefined
+        ? existing.serviceTierId
+        : result.data.serviceTierId?.trim() || null;
 
     const serviceTier = await validateServiceTier(serviceTierId);
     if (serviceTierId && !serviceTier) {
@@ -127,60 +94,31 @@ export async function PUT(
         where: { id },
         data: {
           name: result.data.name,
-          description: result.data.description === undefined
-            ? undefined
-            : result.data.description || null,
-          downloadUrl: result.data.downloadUrl === undefined
-            ? undefined
-            : result.data.downloadUrl || null,
+          description:
+            result.data.description === undefined ? undefined : result.data.description || null,
+          downloadUrl:
+            result.data.downloadUrl === undefined ? undefined : result.data.downloadUrl || null,
           serviceTierId,
           isActive: result.data.isActive,
         },
       });
 
-      if (result.data.items) {
-        await tx.menuItem.deleteMany({
-          where: { menuId: id },
-        });
+      if (result.data.menuItemIds !== undefined) {
+        await tx.menuMenuItem.deleteMany({ where: { menuId: id } });
 
-        if (result.data.items.length > 0) {
-          await tx.menuItem.createMany({
-            data: result.data.items.map((item) => ({
+        if (result.data.menuItemIds.length > 0) {
+          await tx.menuMenuItem.createMany({
+            data: result.data.menuItemIds.map((menuItemId, index) => ({
               menuId: id,
-              name: item.name,
-              description: item.description || null,
-              price: item.price,
-              ingredients: item.ingredients,
-              allergens: item.allergens,
-              imageUrl: item.imageUrl || null,
-              sortOrder: item.sortOrder,
+              menuItemId,
+              sortOrder: index,
             })),
           });
         }
       }
     });
 
-    const menu = await prisma.menu.findUnique({
-      where: { id },
-      include: {
-        serviceTier: {
-          select: {
-            id: true,
-            name: true,
-            isVIP: true,
-          },
-        },
-        items: {
-          orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
-        },
-        _count: {
-          select: {
-            items: true,
-            bookings: true,
-          },
-        },
-      },
-    });
+    const menu = await prisma.menu.findUnique({ where: { id }, include: menuInclude });
 
     return NextResponse.json({
       success: true,
@@ -189,15 +127,12 @@ export async function PUT(
     });
   } catch (error) {
     console.error("Update menu error:", error);
-    return NextResponse.json(
-      { success: false, error: "Internal server error" },
-      { status: 500 },
-    );
+    return NextResponse.json({ success: false, error: "Internal server error" }, { status: 500 });
   }
 }
 
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
@@ -207,26 +142,16 @@ export async function DELETE(
     }
 
     const { id } = await params;
-
     const existing = await prisma.menu.findUnique({ where: { id } });
+
     if (!existing) {
-      return NextResponse.json(
-        { success: false, error: "Menu not found" },
-        { status: 404 },
-      );
+      return NextResponse.json({ success: false, error: "Menu not found" }, { status: 404 });
     }
 
     await prisma.menu.delete({ where: { id } });
-
-    return NextResponse.json({
-      success: true,
-      message: "Menu deleted successfully",
-    });
+    return NextResponse.json({ success: true, message: "Menu deleted successfully" });
   } catch (error) {
     console.error("Delete menu error:", error);
-    return NextResponse.json(
-      { success: false, error: "Internal server error" },
-      { status: 500 },
-    );
+    return NextResponse.json({ success: false, error: "Internal server error" }, { status: 500 });
   }
 }

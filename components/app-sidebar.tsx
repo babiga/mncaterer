@@ -70,6 +70,12 @@ const data = {
   ],
   navManagement: [
     {
+      name: "Food Items",
+      url: "/dashboard/menu-items",
+      icon: UtensilsIcon,
+      hiddenFrom: [],
+    },
+    {
       name: "Menus",
       url: "/dashboard/menus",
       icon: UtensilsIcon,

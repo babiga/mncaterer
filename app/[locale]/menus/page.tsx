@@ -40,7 +40,7 @@ export default async function MenusPage({
           },
         },
         items: {
-          orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+          orderBy: [{ sortOrder: "asc" }, { menuItem: { name: "asc" } }],
         },
       },
       orderBy: { createdAt: "desc" },

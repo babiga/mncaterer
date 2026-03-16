@@ -27,7 +27,11 @@ export async function GET() {
         where: { isActive: true },
         include: {
           items: {
-            select: { name: true, sortOrder: true },
+            include: {
+              menuItem: {
+                select: { name: true },
+              },
+            },
             orderBy: { sortOrder: "asc" },
             take: 4,
           },
@@ -98,7 +102,7 @@ export async function GET() {
           name: menu.name,
           description: menu.description,
           downloadUrl: menu.downloadUrl,
-          items: menu.items.map((item) => item.name),
+          items: menu.items.map((item: any) => item.menuItem.name),
         })),
         chefs: chefs.map((chef) => ({
           id: chef.id,

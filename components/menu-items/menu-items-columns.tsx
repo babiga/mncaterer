@@ -2,7 +2,7 @@
 
 import { format } from "date-fns";
 import { ColumnDef } from "@tanstack/react-table";
-import { CheckIcon, DownloadIcon, MoreHorizontalIcon, XIcon } from "lucide-react";
+import { CheckIcon, MoreHorizontalIcon, XIcon } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,56 +15,61 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export type MenuRecord = {
+export type MenuItemRecord = {
   id: string;
   name: string;
   description: string | null;
-  downloadUrl: string | null;
-  serviceTierId: string | null;
-  serviceTier: {
-    id: string;
-    name: string;
-    isVIP: boolean;
-  } | null;
+  price: number;
+  category: string;
+  ingredients: string[];
+  allergens: string[];
+  imageUrl: string | null;
   isActive: boolean;
-  items: {
-    id: string;
-    name: string;
-    description: string | null;
-    price: number;
-    category: string;
-    ingredients: string[];
-    allergens: string[];
-    imageUrl: string | null;
-    isActive: boolean;
-    sortOrder: number;
-    createdAt: string;
-    updatedAt: string;
-  }[];
+  sortOrder: number;
   createdAt: string;
   updatedAt: string;
-  _count: {
-    items: number;
-    bookings: number;
-  };
+  _count: { menus: number };
 };
 
-interface MenusColumnsProps {
-  onView: (menu: MenuRecord) => void;
-  onEdit: (menu: MenuRecord) => void;
-  onDelete: (menu: MenuRecord) => void;
-  onToggleActive: (menu: MenuRecord) => void;
+const CATEGORY_LABELS: Record<string, string> = {
+  APPETIZER: "Appetizer",
+  MAIN_COURSE: "Main Course",
+  DESSERT: "Dessert",
+  BEVERAGE: "Beverage",
+  SIDE_DISH: "Side Dish",
+  SALAD: "Salad",
+  SOUP: "Soup",
+  OTHER: "Other",
+};
+
+const CATEGORY_COLORS: Record<string, string> = {
+  APPETIZER: "border-amber-500/30 text-amber-600 bg-amber-500/10",
+  MAIN_COURSE: "border-blue-500/30 text-blue-600 bg-blue-500/10",
+  DESSERT: "border-pink-500/30 text-pink-600 bg-pink-500/10",
+  BEVERAGE: "border-cyan-500/30 text-cyan-600 bg-cyan-500/10",
+  SIDE_DISH: "border-green-500/30 text-green-600 bg-green-500/10",
+  SALAD: "border-lime-500/30 text-lime-600 bg-lime-500/10",
+  SOUP: "border-orange-500/30 text-orange-600 bg-orange-500/10",
+  OTHER: "border-muted-foreground/30 text-muted-foreground",
+};
+
+interface MenuItemsColumnsProps {
+  onView: (item: MenuItemRecord) => void;
+  onEdit: (item: MenuItemRecord) => void;
+  onDelete: (item: MenuItemRecord) => void;
+  onToggleActive: (item: MenuItemRecord) => void;
   role?: string;
 }
 
-export function getMenusColumns({
+export function getMenuItemsColumns({
   onView,
   onEdit,
   onDelete,
   onToggleActive,
   role,
-}: MenusColumnsProps): ColumnDef<MenuRecord>[] {
+}: MenuItemsColumnsProps): ColumnDef<MenuItemRecord>[] {
   const isAdmin = role === "ADMIN";
+
   return [
     {
       id: "select",
@@ -94,20 +99,20 @@ export function getMenusColumns({
     },
     {
       accessorKey: "name",
-      header: "Menu",
+      header: "Food Item",
       cell: ({ row }) => {
-        const menu = row.original;
+        const item = row.original;
         return (
           <div className="flex flex-col">
             <Button
               variant="link"
               className="h-auto p-0 text-left justify-start font-medium"
-              onClick={() => onView(menu)}
+              onClick={() => onView(item)}
             >
-              {menu.name}
+              {item.name}
             </Button>
-            {menu.description ? (
-              <span className="line-clamp-1 text-xs text-muted-foreground">{menu.description}</span>
+            {item.description ? (
+              <span className="line-clamp-1 text-xs text-muted-foreground">{item.description}</span>
             ) : null}
           </div>
         );
@@ -115,16 +120,24 @@ export function getMenusColumns({
       enableHiding: false,
     },
     {
-      id: "tier",
-      header: "Tier",
+      accessorKey: "category",
+      header: "Category",
       cell: ({ row }) => (
-        row.original.serviceTier ? (
-          <Badge variant="secondary">
-            {row.original.serviceTier.name}
-          </Badge>
-        ) : (
-          <span className="text-xs text-muted-foreground">All tiers</span>
-        )
+        <Badge
+          variant="outline"
+          className={`text-xs ${CATEGORY_COLORS[row.original.category] ?? CATEGORY_COLORS.OTHER}`}
+        >
+          {CATEGORY_LABELS[row.original.category] ?? row.original.category}
+        </Badge>
+      ),
+    },
+    {
+      accessorKey: "price",
+      header: "Price",
+      cell: ({ row }) => (
+        <span className="font-mono text-sm">
+          {row.original.price.toLocaleString("en-US")}₮
+        </span>
       ),
     },
     {
@@ -144,32 +157,11 @@ export function getMenusColumns({
         ),
     },
     {
-      id: "items",
-      header: "Items",
-      cell: ({ row }) => <span>{row.original._count.items}</span>,
-    },
-    {
-      id: "bookings",
-      header: "Bookings",
-      cell: ({ row }) => <span>{row.original._count.bookings}</span>,
-    },
-    {
-      id: "download",
-      header: "Download",
-      cell: ({ row }) =>
-        row.original.downloadUrl ? (
-          <a
-            href={row.original.downloadUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
-          >
-            <DownloadIcon className="h-3.5 w-3.5" />
-            File
-          </a>
-        ) : (
-          <span className="text-xs text-muted-foreground">None</span>
-        ),
+      id: "menus",
+      header: "Used in Menus",
+      cell: ({ row }) => (
+        <span className="text-sm text-muted-foreground">{row.original._count.menus}</span>
+      ),
     },
     {
       accessorKey: "updatedAt",
@@ -181,8 +173,7 @@ export function getMenusColumns({
     {
       id: "actions",
       cell: ({ row }) => {
-        const menu = row.original;
-
+        const item = row.original;
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -191,21 +182,21 @@ export function getMenusColumns({
                 <span className="sr-only">Open menu</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40">
-              <DropdownMenuItem onClick={() => onView(menu)}>View Details</DropdownMenuItem>
+            <DropdownMenuContent align="end" className="w-44">
+              <DropdownMenuItem onClick={() => onView(item)}>View Details</DropdownMenuItem>
               {isAdmin && (
                 <>
-                  <DropdownMenuItem onClick={() => onEdit(menu)}>Edit Menu</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onEdit(item)}>Edit Item</DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => onToggleActive(menu)}>
-                    {menu.isActive ? "Deactivate" : "Activate"}
+                  <DropdownMenuItem onClick={() => onToggleActive(item)}>
+                    {item.isActive ? "Deactivate" : "Activate"}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    onClick={() => onDelete(menu)}
+                    onClick={() => onDelete(item)}
                     className="text-destructive focus:text-destructive"
                   >
-                    Delete Menu
+                    Delete Item
                   </DropdownMenuItem>
                 </>
               )}

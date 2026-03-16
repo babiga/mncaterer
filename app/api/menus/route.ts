@@ -6,24 +6,18 @@ import { createMenuSchema, menusQuerySchema } from "@/lib/validations/menus";
 function serializeMenu(menu: any) {
   return {
     ...menu,
-    items: menu.items.map((item: any) => ({
-      ...item,
-      price: Number(item.price),
+    items: (menu.items ?? []).map((join: any) => ({
+      ...join.menuItem,
+      price: Number(join.menuItem.price),
+      sortOrder: join.sortOrder,
+      joinId: join.id,
     })),
   };
 }
 
 async function validateServiceTier(serviceTierId: string | null | undefined) {
-  if (!serviceTierId) {
-    return null;
-  }
-
-  const serviceTier = await prisma.serviceTier.findUnique({
-    where: { id: serviceTierId },
-    select: { id: true },
-  });
-
-  return serviceTier;
+  if (!serviceTierId) return null;
+  return prisma.serviceTier.findUnique({ where: { id: serviceTierId }, select: { id: true } });
 }
 
 export async function GET(request: NextRequest) {
@@ -44,24 +38,12 @@ export async function GET(request: NextRequest) {
 
     if (!queryResult.success) {
       return NextResponse.json(
-        {
-          success: false,
-          error: "Invalid query parameters",
-          details: queryResult.error.flatten(),
-        },
+        { success: false, error: "Invalid query parameters", details: queryResult.error.flatten() },
         { status: 400 },
       );
     }
 
-    const {
-      page,
-      limit,
-      search,
-      serviceTierId,
-      isActive,
-      sortBy,
-      sortOrder,
-    } = queryResult.data;
+    const { page, limit, search, serviceTierId, isActive, sortBy, sortOrder } = queryResult.data;
 
     const where: any = {};
 
@@ -72,36 +54,20 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    if (serviceTierId) {
-      where.serviceTierId = serviceTierId;
-    }
-
-    if (isActive !== "all") {
-      where.isActive = isActive === "true";
-    }
+    if (serviceTierId) where.serviceTierId = serviceTierId;
+    if (isActive !== "all") where.isActive = isActive === "true";
 
     const [total, menus] = await Promise.all([
       prisma.menu.count({ where }),
       prisma.menu.findMany({
         where,
         include: {
-          serviceTier: {
-            select: {
-              id: true,
-              name: true,
-              isVIP: true,
-              pricePerGuest: true,
-            },
-          },
+          serviceTier: { select: { id: true, name: true, isVIP: true, pricePerGuest: true } },
           items: {
-            orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+            include: { menuItem: true },
+            orderBy: { sortOrder: "asc" },
           },
-          _count: {
-            select: {
-              items: true,
-              bookings: true,
-            },
-          },
+          _count: { select: { items: true, bookings: true } },
         },
         orderBy: { [sortBy]: sortOrder },
         skip: (page - 1) * limit,
@@ -121,10 +87,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("List menus error:", error);
-    return NextResponse.json(
-      { success: false, error: "Internal server error" },
-      { status: 500 },
-    );
+    return NextResponse.json({ success: false, error: "Internal server error" }, { status: 500 });
   }
 }
 
@@ -140,11 +103,7 @@ export async function POST(request: NextRequest) {
 
     if (!result.success) {
       return NextResponse.json(
-        {
-          success: false,
-          error: "Invalid input",
-          details: result.error.flatten(),
-        },
+        { success: false, error: "Invalid input", details: result.error.flatten() },
         { status: 400 },
       );
     }
@@ -165,74 +124,27 @@ export async function POST(request: NextRequest) {
         downloadUrl: result.data.downloadUrl || null,
         serviceTierId,
         isActive: result.data.isActive,
+        items: {
+          create: result.data.menuItemIds.map((menuItemId, index) => ({
+            menuItemId,
+            sortOrder: index,
+          })),
+        },
       },
       include: {
-        serviceTier: {
-          select: {
-            id: true,
-            name: true,
-            isVIP: true,
-          },
-        },
-        items: {
-          orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
-        },
-        _count: {
-          select: {
-            items: true,
-            bookings: true,
-          },
-        },
-      },
-    });
-
-    if (result.data.items.length > 0) {
-      await prisma.menuItem.createMany({
-        data: result.data.items.map((item) => ({
-          menuId: menu.id,
-          name: item.name,
-          description: item.description || null,
-          price: item.price,
-          ingredients: item.ingredients,
-          allergens: item.allergens,
-          imageUrl: item.imageUrl || null,
-          sortOrder: item.sortOrder,
-        })),
-      });
-    }
-
-    const fullMenu = await prisma.menu.findUnique({
-      where: { id: menu.id },
-      include: {
-        serviceTier: {
-          select: {
-            id: true,
-            name: true,
-            isVIP: true,
-          },
-        },
-        items: {
-          orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
-        },
-        _count: {
-          select: {
-            items: true,
-            bookings: true,
-          },
-        },
+        serviceTier: { select: { id: true, name: true, isVIP: true } },
+        items: { include: { menuItem: true }, orderBy: { sortOrder: "asc" } },
+        _count: { select: { items: true, bookings: true } },
       },
     });
 
     return NextResponse.json({
       success: true,
       message: "Menu created successfully",
-      data: fullMenu ? serializeMenu(fullMenu) : null,
+      data: serializeMenu(menu),
     });
   } catch (error) {
     console.error("Create menu error:", error);
-    return NextResponse.json(
-      { success: false, error: "Internal server error" },
-      { status: 500 },
-    );
+    return NextResponse.json({ success: false, error: "Internal server error" }, { status: 500 });
   }
 }

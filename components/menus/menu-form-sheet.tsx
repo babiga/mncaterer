@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { PlusIcon, Trash2Icon } from "lucide-react";
+import { CheckIcon, SearchIcon } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -42,12 +43,33 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
 type MenuFormValues = z.input<typeof createMenuSchema>;
+
 type ServiceTierOption = {
   id: string;
   name: string;
   description: string | null;
   isVIP: boolean;
   sortOrder: number;
+};
+
+type AvailableMenuItem = {
+  id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  category: string;
+  isActive: boolean;
+};
+
+const CATEGORY_LABELS: Record<string, string> = {
+  APPETIZER: "Appetizer",
+  MAIN_COURSE: "Main Course",
+  DESSERT: "Dessert",
+  BEVERAGE: "Beverage",
+  SIDE_DISH: "Side Dish",
+  SALAD: "Salad",
+  SOUP: "Soup",
+  OTHER: "Other",
 };
 
 interface MenuFormSheetProps {
@@ -67,6 +89,8 @@ export function MenuFormSheet({
 }: MenuFormSheetProps) {
   const [isPending, setIsPending] = useState(false);
   const [serviceTiers, setServiceTiers] = useState<ServiceTierOption[]>([]);
+  const [availableItems, setAvailableItems] = useState<AvailableMenuItem[]>([]);
+  const [itemSearch, setItemSearch] = useState("");
 
   const isCreate = mode === "create";
   const isEdit = mode === "edit";
@@ -76,57 +100,57 @@ export function MenuFormSheet({
     resolver: zodResolver(createMenuSchema),
     defaultValues: {
       name: "",
-      description: undefined,
-      downloadUrl: undefined,
+      description: "",
+      downloadUrl: "",
       serviceTierId: null,
-      items: [],
+      menuItemIds: [],
       isActive: true,
     },
   });
 
+  // Load service tiers + available food items when sheet opens (not in view mode)
   useEffect(() => {
-    if (!open || isView) {
-      return;
-    }
+    if (!open || isView) return;
 
     let isMounted = true;
 
-    async function loadServiceTiers() {
+    async function loadData() {
       try {
-        const response = await fetch("/api/service-tiers");
-        const result = await response.json();
+        const [tiersRes, itemsRes] = await Promise.all([
+          fetch("/api/service-tiers"),
+          fetch("/api/menu-items?isActive=true&limit=200&sortBy=name&sortOrder=asc"),
+        ]);
 
-        if (!response.ok || !result.success) {
-          throw new Error(result.error || "Failed to load service tiers");
-        }
+        const [tiersResult, itemsResult] = await Promise.all([
+          tiersRes.json(),
+          itemsRes.json(),
+        ]);
 
         if (isMounted) {
-          setServiceTiers(result.data ?? []);
+          setServiceTiers(tiersResult.data ?? []);
+          setAvailableItems(itemsResult.data ?? []);
         }
       } catch {
-        if (isMounted) {
-          toast.error("Failed to load service tiers");
-        }
+        if (isMounted) toast.error("Failed to load data");
       }
     }
 
-    void loadServiceTiers();
-
-    return () => {
-      isMounted = false;
-    };
+    void loadData();
+    return () => { isMounted = false; };
   }, [isView, open]);
 
+  // Reset form when mode/menu changes
   useEffect(() => {
     if (isCreate) {
       form.reset({
         name: "",
-        description: undefined,
-        downloadUrl: undefined,
+        description: "",
+        downloadUrl: "",
         serviceTierId: null,
-        items: [],
+        menuItemIds: [],
         isActive: true,
       });
+      setItemSearch("");
       return;
     }
 
@@ -136,15 +160,7 @@ export function MenuFormSheet({
         description: menu.description ?? "",
         downloadUrl: menu.downloadUrl ?? "",
         serviceTierId: menu.serviceTierId,
-        items: menu.items.map((item) => ({
-          name: item.name,
-          description: item.description ?? "",
-          price: Number(item.price),
-          ingredients: item.ingredients,
-          allergens: item.allergens,
-          imageUrl: item.imageUrl ?? "",
-          sortOrder: item.sortOrder,
-        })),
+        menuItemIds: menu.items.map((item) => item.id),
         isActive: menu.isActive,
       });
     }
@@ -158,14 +174,6 @@ export function MenuFormSheet({
       description: values.description || null,
       downloadUrl: values.downloadUrl || null,
       serviceTierId: values.serviceTierId || null,
-      items: (values.items ?? []).map((item, index) => ({
-        ...item,
-        description: item.description || null,
-        imageUrl: item.imageUrl || null,
-        ingredients: (item.ingredients ?? []).map((value) => value.trim()).filter(Boolean),
-        allergens: (item.allergens ?? []).map((value) => value.trim()).filter(Boolean),
-        sortOrder: item.sortOrder ?? index,
-      })),
     };
 
     try {
@@ -192,18 +200,35 @@ export function MenuFormSheet({
     }
   }
 
+  const selectedIds = form.watch("menuItemIds") ?? [];
+
+  function toggleItem(itemId: string) {
+    const current = [...selectedIds];
+    const idx = current.indexOf(itemId);
+    if (idx === -1) {
+      form.setValue("menuItemIds", [...current, itemId], { shouldDirty: true });
+    } else {
+      current.splice(idx, 1);
+      form.setValue("menuItemIds", current, { shouldDirty: true });
+    }
+  }
+
+  const filteredItems = availableItems.filter((i) =>
+    i.name.toLowerCase().includes(itemSearch.toLowerCase()),
+  );
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="flex flex-col overflow-y-auto sm:max-w-md">
+      <SheetContent className="flex flex-col overflow-y-auto sm:max-w-lg">
         <SheetHeader>
           <SheetTitle>
             {isCreate ? "Add New Menu" : isEdit ? "Edit Menu" : "Menu Details"}
           </SheetTitle>
           <SheetDescription>
             {isCreate
-              ? "Create a menu for a service tier"
+              ? "Compose a menu by selecting existing food items"
               : isEdit
-                ? "Update menu information"
+                ? "Update menu information and food items"
                 : "View menu details"}
           </SheetDescription>
         </SheetHeader>
@@ -229,7 +254,7 @@ export function MenuFormSheet({
           <div className="flex flex-1 flex-col gap-4 py-4 text-sm">
             <div>
               <label className="text-muted-foreground">Description</label>
-              <p className="mt-1 font-medium">{menu.description || "-"}</p>
+              <p className="mt-1 font-medium">{menu.description || "—"}</p>
             </div>
             <div>
               <label className="text-muted-foreground">Service Tier</label>
@@ -248,25 +273,29 @@ export function MenuFormSheet({
               </div>
             </div>
             <div>
-              <label className="text-muted-foreground">Menu Items</label>
+              <label className="text-muted-foreground">Food Items</label>
               {menu.items.length > 0 ? (
                 <div className="mt-2 space-y-2">
                   {menu.items.map((item) => (
                     <div key={item.id} className="rounded-md border p-3">
                       <div className="flex items-center justify-between gap-3">
-                        <p className="font-medium">{item.name}</p>
-                        <span className="text-xs text-muted-foreground">
-                          {Number(item.price).toLocaleString("en-US")}
+                        <div>
+                          <p className="font-medium">{item.name}</p>
+                          {item.description ? (
+                            <p className="text-xs text-muted-foreground line-clamp-1">
+                              {item.description}
+                            </p>
+                          ) : null}
+                        </div>
+                        <span className="shrink-0 text-xs font-mono text-muted-foreground">
+                          {Number(item.price).toLocaleString("en-US")}₮
                         </span>
                       </div>
-                      {item.description ? (
-                        <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
-                      ) : null}
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="mt-1 font-medium">-</p>
+                <p className="mt-1 font-medium">—</p>
               )}
             </div>
             <Separator />
@@ -282,9 +311,7 @@ export function MenuFormSheet({
             </div>
             <SheetFooter className="mt-auto pt-4">
               <SheetClose asChild>
-                <Button variant="outline" className="w-full">
-                  Close
-                </Button>
+                <Button variant="outline" className="w-full">Close</Button>
               </SheetClose>
             </SheetFooter>
           </div>
@@ -345,7 +372,7 @@ export function MenuFormSheet({
                     <FormLabel>Description</FormLabel>
                     <FormControl>
                       <Textarea
-                        rows={3}
+                        rows={2}
                         placeholder="Short menu description"
                         {...field}
                         value={field.value ?? ""}
@@ -369,131 +396,86 @@ export function MenuFormSheet({
                 )}
               />
 
-              <div className="space-y-3 rounded-lg border p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <h3 className="font-medium">Menu Items</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Add and reorder dishes included in this menu.
-                    </p>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      const items = form.getValues("items") ?? [];
-                      form.setValue("items", [
-                        ...items,
-                        {
-                          name: "",
-                          description: "",
-                          price: 0,
-                        },
-                      ], { shouldDirty: true });
-                    }}
-                  >
-                    <PlusIcon className="mr-2 h-4 w-4" />
-                    Add Item
-                  </Button>
-                </div>
-
-                {(form.watch("items") ?? []).length === 0 ? (
-                  <p className="text-sm text-muted-foreground">No items added yet.</p>
-                ) : (
-                  <div className="space-y-4">
-                    {(form.watch("items") ?? []).map((item, index) => (
-                      <div key={`${index}-${item.name}`} className="space-y-3 rounded-md border p-3">
-                        <div className="flex items-center justify-between gap-3">
-                          <p className="text-sm font-medium">Item {index + 1}</p>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => {
-                              const items = [...(form.getValues("items") ?? [])];
-                              items.splice(index, 1);
-                              form.setValue(
-                                "items",
-                                items.map((existingItem, itemIndex) => ({
-                                  ...existingItem,
-                                  sortOrder: itemIndex,
-                                })),
-                                { shouldDirty: true },
-                              );
-                            }}
-                          >
-                            <Trash2Icon className="h-4 w-4" />
-                            <span className="sr-only">Remove item</span>
-                          </Button>
+              {/* Food item picker */}
+              <FormField
+                control={form.control}
+                name="menuItemIds"
+                render={() => (
+                  <FormItem>
+                    <div className="rounded-lg border">
+                      <div className="flex items-center justify-between p-3 border-b">
+                        <div>
+                          <FormLabel className="text-sm font-medium">Food Items</FormLabel>
+                          <p className="text-xs text-muted-foreground">
+                            {selectedIds.length} selected
+                          </p>
                         </div>
-
-                        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                          <FormField
-                            control={form.control}
-                            name={`items.${index}.name`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Item Name</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="Roasted lamb" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name={`items.${index}.price`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Price</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="number"
-                                    min={0}
-                                    step="0.01"
-                                    {...field}
-                                    value={field.value ?? 0}
-                                    onChange={(event) => field.onChange(Number(event.target.value))}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-
-                        <FormField
-                          control={form.control}
-                          name={`items.${index}.description`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Item Description</FormLabel>
-                              <FormControl>
-                                <Textarea
-                                  rows={2}
-                                  placeholder="Brief description"
-                                  {...field}
-                                  value={field.value ?? ""}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                        {availableItems.length === 0 && (
+                          <span className="text-xs text-muted-foreground">
+                            No active food items yet
+                          </span>
+                        )}
                       </div>
-                    ))}
-                  </div>
+
+                      {availableItems.length > 0 && (
+                        <>
+                          <div className="p-2 border-b">
+                            <div className="relative">
+                              <SearchIcon className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
+                              <Input
+                                placeholder="Search food items..."
+                                value={itemSearch}
+                                onChange={(e) => setItemSearch(e.target.value)}
+                                className="h-8 pl-8 text-sm"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="max-h-60 overflow-y-auto divide-y">
+                            {filteredItems.length === 0 ? (
+                              <p className="p-4 text-center text-sm text-muted-foreground">
+                                No items match your search
+                              </p>
+                            ) : (
+                              filteredItems.map((item) => {
+                                const isSelected = selectedIds.includes(item.id);
+                                return (
+                                  <button
+                                    key={item.id}
+                                    type="button"
+                                    onClick={() => toggleItem(item.id)}
+                                    className="flex w-full items-center gap-3 px-3 py-2.5 text-left hover:bg-muted/50 transition-colors"
+                                  >
+                                    <Checkbox
+                                      checked={isSelected}
+                                      onCheckedChange={() => toggleItem(item.id)}
+                                      className="pointer-events-none shrink-0"
+                                    />
+                                    <div className="min-w-0 flex-1">
+                                      <p className="text-sm font-medium truncate">{item.name}</p>
+                                      <p className="text-xs text-muted-foreground">
+                                        {CATEGORY_LABELS[item.category] ?? item.category}
+                                      </p>
+                                    </div>
+                                    <span className="shrink-0 text-xs font-mono text-muted-foreground">
+                                      {Number(item.price).toLocaleString("en-US")}₮
+                                    </span>
+                                  </button>
+                                );
+                              })
+                            )}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                    <FormMessage />
+                  </FormItem>
                 )}
-              </div>
+              />
 
               <SheetFooter className="mt-auto pt-4">
                 <SheetClose asChild>
-                  <Button type="button" variant="outline">
-                    Cancel
-                  </Button>
+                  <Button type="button" variant="outline">Cancel</Button>
                 </SheetClose>
                 <Button type="submit" disabled={isPending}>
                   {isPending ? "Saving..." : isCreate ? "Create Menu" : "Save Changes"}
