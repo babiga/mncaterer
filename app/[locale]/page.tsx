@@ -9,7 +9,7 @@ import Hero from "@/components/sections/Hero";
 import Services from "@/components/sections/Services";
 import HowItWorks from "@/components/sections/HowItWorks";
 import SignatureMenus from "@/components/sections/SignatureMenus";
-import VIPSection from "@/components/sections/VIPSection";
+import InternationalSection from "@/components/sections/InternationalSection";
 import Chefs from "@/components/sections/Chefs";
 import Events from "@/components/sections/Events";
 import Footer from "@/components/layout/Footer";
@@ -93,7 +93,7 @@ export default function Home() {
       <Services />
       <HowItWorks />
       <SignatureMenus menus={homeData?.menus} />
-      <VIPSection />
+      <InternationalSection />
       <Chefs chefs={homeData?.chefs} />
       <Events events={homeData?.events} />
 

@@ -214,20 +214,20 @@
             ]
         }
     },
-    "VIP": {
-        "exclusiveAccess": "Exclusive Access",
-        "title": "The VIP",
-        "italic": "Premiere",
-        "description": "Designed for moments that demand the extraordinary. Our VIP service offers Michelin-star caliber chefs, bespoke menu curation, and white-glove service for your most significant occasions.",
+    "International": {
+        "exclusiveAccess": "Global Opportunities",
+        "title": "Go",
+        "italic": "International",
+        "description": "Empowering Mongolian chefs to excel on the world stage. We provide international training, certification, and placement opportunities with top-tier culinary establishments globally.",
         "items": [
-            "Michelin-star culinary expertise",
-            "Exclusive sourcing of rare ingredients",
-            "Professional Sommelier pairings",
-            "Full-scale event production"
+            "Chef education & global certification",
+            "International placement opportunities",
+            "Culinary exchange programs",
+            "Global networking for professionals"
         ],
-        "requestAccess": "Request VIP Access",
-        "chefName": "Chef Jean-Pierre",
-        "chefRole": "3 Michelin Stars"
+        "requestAccess": "Join Global Network",
+        "chefName": "Global Career",
+        "chefRole": "Chef Education"
     },
     "Chefs": {
         "title": "Master Artists",

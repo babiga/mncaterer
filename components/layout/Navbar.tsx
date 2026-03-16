@@ -81,7 +81,7 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
     { name: t("howItWorks"), href: "#how-it-works" },
     { name: t("chefs"), href: "/chefs" },
     { name: t("events"), href: "/events" },
-    { name: t("international"), href: "#" },
+    { name: t("international"), href: "#international" },
   ];
 
   const handleLocaleChange = (newLocale: string) => {
