@@ -320,6 +320,9 @@
         "videoDescription": "Upload a video for this event.",
         "openDetails": "View Details",
         "detailDescription": "A {type} experience tailored for {guests}.",
+        "location": "Location",
+        "date": "Date",
+        "inquiryButton": "Inquire for Similar Event",
         "highlights": "Highlights",
         "filters": {
             "title": "Refine Results",

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
-import { ArrowLeft, Users, Calendar, Play } from "lucide-react";
+import { ArrowLeft, Users, Calendar, Play, MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
@@ -54,7 +54,7 @@ export function EventDetailClient({ event }: { event: any }) {
       <div className="container mx-auto px-6">
         <motion.div {...fadeIn}>
           <Button asChild variant="ghost" className="mb-8 w-fit text-white/60 hover:text-white hover:bg-white/10">
-            <Link href="/#events">
+            <Link href="/events">
               <ArrowLeft className="mr-2 h-4 w-4" />
               {tChefs("back")}
             </Link>
@@ -122,39 +122,57 @@ export function EventDetailClient({ event }: { event: any }) {
               <Badge className="bg-primary/10 text-primary border-primary/20">
                 {t(`types.${EVENT_TYPE_MAP[event.eventType] || event.eventType}`) || event.eventType}
               </Badge>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-white">{event.title}</h1>
+              <h1 className="text-4xl md:text-5xl lg:text-8xl font-light tracking-tight text-white">{event.title}</h1>
               {event.description && (
-                <p className="text-xl text-white/60 font-light leading-relaxed">
+                <p className="text-xl text-white/60 font-light leading-relaxed max-w-2xl">
                   {event.description}
                 </p>
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-6 py-8 border-y border-white/10">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-white/40">
-                  <Users className="w-4 h-4" />
-                  <span className="text-sm uppercase tracking-wider">{t("guests")}</span>
-                </div>
-                <p className="text-2xl text-white font-light">{event.guestCount}</p>
-              </div>
-              
-              {event.eventDate && (
+            <div className="space-y-6 py-10 border-y border-white/10">
+              <div className="grid grid-cols-2 gap-8">
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-white/40">
-                    <Calendar className="w-4 h-4" />
-                    <span className="text-sm uppercase tracking-wider">Date</span>
+                    <Users className="w-4 h-4" />
+                    <span className="text-sm uppercase tracking-wider">{t("guests")}</span>
                   </div>
-                  <p className="text-2xl text-white font-light">
-                    {new Date(event.eventDate).toLocaleDateString()}
-                  </p>
+                  <p className="text-3xl text-white font-light">{event.guestCount}</p>
+                </div>
+                
+                {event.eventDate && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-white/40">
+                      <Calendar className="w-4 h-4" />
+                      <span className="text-sm uppercase tracking-wider">{t("date")}</span>
+                    </div>
+                    <p className="text-3xl text-white font-light">
+                      {new Date(event.eventDate).toLocaleDateString()}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {event.location && (
+                <div className="space-y-2 pt-2">
+                  <div className="flex items-center gap-2 text-white/40">
+                    <MapPin className="w-4 h-4" />
+                    <span className="text-sm uppercase tracking-wider">{t("location")}</span>
+                  </div>
+                  <p className="text-2xl text-white font-light">{event.location}</p>
                 </div>
               )}
             </div>
 
-            <Button asChild size="lg" className="bg-primary text-black hover:bg-white w-full sm:w-auto px-10 h-14 rounded-full font-semibold text-lg transition-all shadow-lg shadow-primary/20">
-              <Link href="/inquiry">Inquire for Similar Event</Link>
-            </Button>
+            <div className="pt-4 flex flex-col sm:flex-row gap-6 items-center">
+              <Button asChild size="lg" className="bg-primary text-black hover:bg-white w-full sm:w-auto px-10 h-16 rounded-full font-semibold text-lg transition-all shadow-lg shadow-primary/20 hover:scale-105 active:scale-95">
+                <Link href="/inquiry">{t("inquiryButton")}</Link>
+              </Button>
+              
+              <p className="text-white/40 text-sm italic font-light">
+                {t("detailDescription", { type: t(`types.${EVENT_TYPE_MAP[event.eventType] || event.eventType}`), guests: event.guestCount })}
+              </p>
+            </div>
           </motion.div>
         </div>
       </div>

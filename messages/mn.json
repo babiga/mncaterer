@@ -320,6 +320,9 @@
         "videoDescription": "Энэхүү арга хэмжээний видеог ачаална уу.",
         "openDetails": "Дэлгэрэнгүй",
         "detailDescription": "{guests}-д зориулсан {type} төрлийн тусгай туршлага.",
+        "location": "Байршил",
+        "date": "Огноо",
+        "inquiryButton": "Төстэй арга хэмжээний лавлагаа илгээх",
         "highlights": "Онцлох хэсгүүд",
         "filters": {
             "title": "Шүүлтүүр",

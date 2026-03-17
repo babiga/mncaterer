@@ -24,6 +24,7 @@ export type EventItem = {
     coverImageUrl: string | null;
     imageUrls: string[];
     videoUrl: string | null;
+    location: string | null;
     eventDate: string | null;
     chefProfileId: string | null;
     companyProfileId: string | null;

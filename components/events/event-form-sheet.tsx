@@ -11,6 +11,7 @@ import {
     Loader2Icon,
     UsersIcon,
     XIcon,
+    MapPin,
 } from "lucide-react";
 
 import {
@@ -120,6 +121,7 @@ export function EventFormSheet({
             coverImageUrl: "",
             imageUrls: [],
             videoUrl: "",
+            location: "",
             isFeatured: false,
             chefProfileId: null,
             companyProfileId: null,
@@ -137,6 +139,7 @@ export function EventFormSheet({
             coverImageUrl: "",
             imageUrls: [],
             videoUrl: "",
+            location: "",
             isFeatured: false,
         },
     });
@@ -154,6 +157,7 @@ export function EventFormSheet({
                 coverImageUrl: event.coverImageUrl || "",
                 imageUrls: event.imageUrls || [],
                 videoUrl: event.videoUrl || "",
+                location: event.location || "",
                 isFeatured: event.isFeatured,
             });
         }
@@ -167,6 +171,7 @@ export function EventFormSheet({
                 coverImageUrl: "",
                 imageUrls: [],
                 videoUrl: "",
+                location: "",
                 isFeatured: false,
                 chefProfileId: null,
                 companyProfileId: null,
@@ -344,6 +349,19 @@ export function EventFormSheet({
                                     {...field}
                                     value={field.value ?? ""}
                                 />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="location"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Location (Optional)</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Event location" {...field} value={field.value ?? ""} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -629,6 +647,13 @@ export function EventFormSheet({
                                     {event.eventDate
                                         ? format(new Date(event.eventDate), "MMM d, yyyy")
                                         : "Not set"}
+                                </p>
+                            </div>
+                            <div>
+                                <label className="text-muted-foreground">Location</label>
+                                <p className="font-medium flex items-center gap-1.5">
+                                    <MapPin className="h-3.5 w-3.5" />
+                                    {event.location || "Not set"}
                                 </p>
                             </div>
                             <div>

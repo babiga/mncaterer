@@ -359,6 +359,7 @@ model Event {
   imageUrls     String[] @default([]) @map("image_urls")
   videoUrl      String?  @map("video_url")
   eventDate   DateTime?
+  location    String?
 
   chefProfileId String?
   chefProfile   ChefProfile? @relation(fields: [chefProfileId], references: [id])
