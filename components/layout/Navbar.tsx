@@ -1,31 +1,24 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Menu } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useTranslations, useLocale } from "next-intl";
-import { Link, usePathname, useRouter } from "@/i18n/routing";
-import { useRouter as useBaseRouter } from "next/navigation";
-import { Globe } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Link, usePathname, useRouter } from "@/i18n/routing";
 import BoringAvatar from "boring-avatars";
+import { Globe, Menu } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import { useRouter as useBaseRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const AVATAR_COLORS = ["#080F1D", "#12294F", "#31124B", "#4E215B", "#D4AF5A"];
 
-type NavbarUser = {
-  id: string;
-  name: string;
-  email: string;
-  avatar: string | null;
-  userType: "dashboard" | "customer";
-};
+import { useUserStore } from "@/lib/store/use-user-store";
 
 type NavbarProps = {
   trimmed?: boolean;
@@ -33,7 +26,7 @@ type NavbarProps = {
 
 export default function Navbar({ trimmed = false }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
-  const [currentUser, setCurrentUser] = useState<NavbarUser | null>(null);
+  const { user: currentUser } = useUserStore();
   const t = useTranslations("Navbar");
   const locale = useLocale();
   const pathname = usePathname();
@@ -47,32 +40,6 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const loadCurrentUser = async () => {
-      try {
-        const response = await fetch("/api/auth/me", { cache: "no-store" });
-        if (!response.ok) return;
-
-        const result = await response.json();
-        if (isMounted) {
-          setCurrentUser(result?.data ?? null);
-        }
-      } catch {
-        if (isMounted) {
-          setCurrentUser(null);
-        }
-      }
-    };
-
-    loadCurrentUser();
-
-    return () => {
-      isMounted = false;
-    };
   }, []);
 
   const navLinks = [
@@ -99,18 +66,16 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
 
   return (
     <nav
-      className={`fixed top-0 w-full z-50  ${
-        scrolled
+      className={`fixed top-0 w-full z-50  ${scrolled
           ? "bg-background/90 backdrop-blur-md py-4 border-b border-white/5"
           : "bg-transparent py-6"
-      }`}
+        }`}
     >
       <div className="container mx-auto px-6 flex justify-between items-center">
         <Link
           href="/"
-          className={`md:text-xl lg:text-2xl font-serif tracking-wider font-bold uppercase ${
-            isWeddingServicePage ? "text-[#8a5b35]" : "text-foreground"
-          }`}
+          className={`md:text-xl lg:text-2xl font-serif tracking-wider font-bold uppercase ${isWeddingServicePage ? "text-[#8a5b35]" : "text-foreground"
+            }`}
         >
           Mongolian National Caterer
         </Link>
@@ -122,11 +87,10 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
               <a
                 key={link.name}
                 href={link.href}
-                className={`text-sm font-medium transition-colors tracking-wide ${
-                  isWeddingServicePage
+                className={`text-sm font-medium transition-colors tracking-wide ${isWeddingServicePage
                     ? "text-[#8a5b35]/85 hover:text-[#6f4d2f]"
                     : "text-foreground/80 hover:text-primary"
-                }`}
+                  }`}
               >
                 {link.name}
               </a>
@@ -137,11 +101,10 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
               <Button
                 variant="ghost"
                 size="sm"
-                className={`flex items-center gap-2 ${
-                  isWeddingServicePage
+                className={`flex items-center gap-2 ${isWeddingServicePage
                     ? "text-[#8a5b35]/85 hover:text-[#6f4d2f]"
                     : "text-foreground/80 hover:text-primary"
-                }`}
+                  }`}
               >
                 <Globe className="h-4 w-4" />
                 <span className="uppercase">{locale}</span>
@@ -207,9 +170,9 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
         <div className="md:hidden">
           <Sheet>
             <SheetTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="icon" 
+              <Button
+                variant="ghost"
+                size="icon"
                 className={isWeddingServicePage ? "text-[#8a5b35]" : "text-foreground"}
               >
                 <Menu className="h-6 w-6" />
@@ -225,11 +188,10 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
                     <a
                       key={link.name}
                       href={link.href}
-                      className={`text-2xl font-serif transition-colors ${
-                        isWeddingServicePage
+                      className={`text-2xl font-serif transition-colors ${isWeddingServicePage
                           ? "text-[#8a5b35] hover:text-[#6f4d2f]"
                           : "text-foreground hover:text-primary"
-                      }`}
+                        }`}
                     >
                       {link.name}
                     </a>
@@ -238,29 +200,27 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
                 <div className="flex gap-4 pt-4 border-t border-white/5">
                   <button
                     onClick={() => handleLocaleChange("en")}
-                    className={`text-sm uppercase tracking-widest ${
-                      locale === "en"
+                    className={`text-sm uppercase tracking-widest ${locale === "en"
                         ? isWeddingServicePage
                           ? "text-[#8a5b35]"
                           : "text-primary"
                         : isWeddingServicePage
                           ? "text-[#8a5b35]/55"
                           : "text-foreground/60"
-                    }`}
+                      }`}
                   >
                     EN
                   </button>
                   <button
                     onClick={() => handleLocaleChange("mn")}
-                    className={`text-sm uppercase tracking-widest ${
-                      locale === "mn"
+                    className={`text-sm uppercase tracking-widest ${locale === "mn"
                         ? isWeddingServicePage
                           ? "text-[#8a5b35]"
                           : "text-primary"
                         : isWeddingServicePage
                           ? "text-[#8a5b35]/55"
                           : "text-foreground/60"
-                    }`}
+                      }`}
                   >
                     MN
                   </button>
