@@ -10,8 +10,10 @@ import { AlertCircle, CheckCircle2 } from "lucide-react";
 import {
   getIndividualSignupSchema,
   getCompanySignupSchema,
+  getChefSignupSchema,
   type IndividualSignupFormData,
   type CompanySignupFormData,
+  type ChefSignupFormData,
 } from "@/lib/validations/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,7 +37,7 @@ import {
 } from "@/components/auth/AuthCard";
 import { PasswordInput } from "@/components/auth/PasswordInput";
 
-type UserType = "individual" | "company";
+type UserType = "individual" | "company" | "chef";
 
 export function SignupForm() {
   const t = useTranslations("Auth.signup");
@@ -66,6 +68,20 @@ export function SignupForm() {
     defaultValues: {
       companyName: "",
       companyLegalNo: "",
+      email: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
+      acceptTerms: false,
+    },
+  });
+
+  // Chef form
+  const chefForm = useForm<ChefSignupFormData>({
+    resolver: zodResolver(getChefSignupSchema(vt)),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
       email: "",
       phone: "",
       password: "",
@@ -168,6 +184,50 @@ export function SignupForm() {
     }
   }
 
+  async function onChefSubmit(data: ChefSignupFormData) {
+    setIsLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userType: "CHEF",
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          phone: data.phone,
+          password: data.password,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        const code = result.error as string | undefined;
+        const mappedError =
+          code === "EMAIL_EXISTS"
+            ? t("errors.emailExists")
+            : code === "INVALID_INPUT"
+              ? t("errors.invalidInput")
+              : t("errors.serverError");
+        setError(mappedError);
+        return;
+      }
+
+      setSuccess(t("success"));
+      setTimeout(() => {
+        router.push("/login");
+      }, 2000);
+    } catch {
+      setError(t("errors.serverError"));
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   const inputClassName =
     "h-12 bg-background/50 border-white/10 focus:border-primary focus-visible:ring-primary/50 transition-all rounded-none";
   const labelClassName = "text-sm font-medium text-foreground/70 tracking-wide";
@@ -208,9 +268,10 @@ export function SignupForm() {
           onValueChange={handleTabChange}
           className="w-full"
         >
-          <TabsList className="grid w-full grid-cols-2 mb-6">
+          <TabsList className="grid w-full grid-cols-3 mb-6">
             <TabsTrigger value="individual">{t("tabs.individual")}</TabsTrigger>
             <TabsTrigger value="company">{t("tabs.company")}</TabsTrigger>
+            <TabsTrigger value="chef">{t("tabs.chef")}</TabsTrigger>
           </TabsList>
 
           {error && (
@@ -549,6 +610,193 @@ export function SignupForm() {
 
                 <FormField
                   control={companyForm.control}
+                  name="acceptTerms"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 pt-2">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel className="text-sm text-muted-foreground font-normal cursor-pointer">
+                          {t("acceptTerms")}{" "}
+                          <Link
+                            href="/terms"
+                            className="text-primary hover:text-primary/80 transition-colors"
+                          >
+                            {t("termsOfService")}
+                          </Link>{" "}
+                          {t("and")}{" "}
+                          <Link
+                            href="/privacy"
+                            className="text-primary hover:text-primary/80 transition-colors"
+                          >
+                            {t("privacyPolicy")}
+                          </Link>{" "}
+                          {t("agreementSuffix")}
+                        </FormLabel>
+                        <FormMessage />
+                      </div>
+                    </FormItem>
+                  )}
+                />
+
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full h-14 bg-primary text-black hover:bg-primary/90 rounded-none font-medium text-base transition-all duration-300 btn-glow mt-6"
+                >
+                  {isLoading ? t("submitting") : t("submit")}
+                </Button>
+              </form>
+            </Form>
+          </TabsContent>
+
+          {/* Chef Tab */}
+          <TabsContent value="chef">
+            <Form {...chefForm}>
+              <form
+                onSubmit={chefForm.handleSubmit(onChefSubmit)}
+                className="space-y-4"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={chefForm.control}
+                    name="firstName"
+                    render={({ field }) => (
+                      <FormItem className="space-y-2">
+                        <FormLabel className={labelClassName}>
+                          {t("firstName")}
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="text"
+                            placeholder={t("firstNamePlaceholder")}
+                            className={inputClassName}
+                            disabled={isLoading}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={chefForm.control}
+                    name="lastName"
+                    render={({ field }) => (
+                      <FormItem className="space-y-2">
+                        <FormLabel className={labelClassName}>
+                          {t("lastName")}
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="text"
+                            placeholder={t("lastNamePlaceholder")}
+                            className={inputClassName}
+                            disabled={isLoading}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={chefForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem className="space-y-2">
+                        <FormLabel className={labelClassName}>
+                          {t("email")}
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="email"
+                            placeholder={t("emailPlaceholder")}
+                            className={inputClassName}
+                            disabled={isLoading}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={chefForm.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem className="space-y-2">
+                        <FormLabel className={labelClassName}>
+                          {t("phone")}
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="tel"
+                            placeholder={t("phonePlaceholder")}
+                            className={inputClassName}
+                            disabled={isLoading}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={chefForm.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem className="space-y-2">
+                        <FormLabel className={labelClassName}>
+                          {t("password")}
+                        </FormLabel>
+                        <FormControl>
+                          <PasswordInput
+                            placeholder={t("passwordPlaceholder")}
+                            className={inputClassName}
+                            disabled={isLoading}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={chefForm.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem className="space-y-2">
+                        <FormLabel className={labelClassName}>
+                          {t("confirmPassword")}
+                        </FormLabel>
+                        <FormControl>
+                          <PasswordInput
+                            placeholder={t("confirmPasswordPlaceholder")}
+                            className={inputClassName}
+                            disabled={isLoading}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={chefForm.control}
                   name="acceptTerms"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0 pt-2">

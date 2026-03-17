@@ -41,6 +41,12 @@ export default async function ChefProfilePage({ params }: ChefProfilePageProps) 
           bio: true,
           yearsExperience: true,
           certifications: true,
+          specialties: true,
+          education: true,
+          experience: true,
+          events: true,
+          degrees: true,
+          awards: true,
           portfolioEvents: {
             take: 6,
             orderBy: { createdAt: "desc" },
@@ -121,10 +127,10 @@ export default async function ChefProfilePage({ params }: ChefProfilePageProps) 
   }
 
   return (
-    <div className="min-h-screen bg-black text-foreground overflow-x-hidden">
+    <div className="min-h-screen text-foreground overflow-x-hidden">
       <Navbar trimmed />
-      
-      <ChefDetailClient 
+
+      <ChefDetailClient
         chef={chef}
         fallbackChef={fallbackChef}
         customer={customer}
@@ -133,7 +139,7 @@ export default async function ChefProfilePage({ params }: ChefProfilePageProps) 
         rating={liveAverageRating}
         reviews={liveReviewCount}
       />
-      
+
       <Footer />
     </div>
   );

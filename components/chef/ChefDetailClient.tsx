@@ -1,14 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ChefReviewsSection, type ChefReviewItem } from "@/components/chef/chef-reviews-section";
 import { Link } from "@/i18n/routing";
-import { ArrowLeft, Star, Award, MapPin, Clock, Users, Calendar } from "lucide-react";
+import { ArrowLeft, Star, Award, MapPin, Clock, Users, Calendar, Briefcase, GraduationCap, Trophy, ChefHat } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { motion } from "framer-motion";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 type PortfolioEvent = {
   id: string;
@@ -41,12 +43,67 @@ export function ChefDetailClient({
   const t = useTranslations("Chefs");
 
   const displayName = chef?.name ?? fallbackChef?.name ?? "";
-  const avatar = chef?.avatar ?? fallbackChef?.image ?? "/chef-1.png";
+  const rawAvatar = chef?.avatar ?? fallbackChef?.image;
+  const avatar = rawAvatar && rawAvatar !== "" ? rawAvatar : null;
   const specialty = chef?.chefProfile?.specialty ?? fallbackChef?.specialty ?? t("defaultSpecialty");
   const bio = chef?.chefProfile?.bio ?? fallbackChef?.bio ?? t("detailDescription", { name: displayName });
   const yearsExperience = chef?.chefProfile?.yearsExperience ?? 0;
   const certifications = (chef?.chefProfile?.certifications as string[]) ?? [];
+  const specialties = (chef?.chefProfile?.specialties as string[]) ?? [];
+  const education = (chef?.chefProfile?.education as string[]) ?? [];
+  const experience = (chef?.chefProfile?.experience as string[]) ?? [];
+  const awards = (chef?.chefProfile?.awards as string[]) ?? [];
+  const degrees = (chef?.chefProfile?.degrees as string[]) ?? [];
+  const displayEvents = (chef?.chefProfile?.events as string[]) ?? [];
   const events = (chef?.chefProfile?.portfolioEvents as PortfolioEvent[]) ?? [];
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogContent, setDialogContent] = useState<{ title: string, items: string[] }>({ title: "", items: [] });
+
+  const statsCards = [
+    {
+      icon: Briefcase,
+      value: yearsExperience,
+      label: t("yearsOfExperience"),
+      title: t("professionalExperience"),
+      items: experience.length > 0 ? experience : [t("noExperienceProvided")]
+    },
+    {
+      icon: GraduationCap,
+      value: education.length + degrees.length,
+      label: t("educationAndDegrees"),
+      title: t("educationAndDegrees"),
+      items: [...education, ...degrees].length > 0 ? [...education, ...degrees] : [t("noEducationProvided")]
+    },
+    {
+      icon: Award,
+      value: certifications.length,
+      label: t("certifications"),
+      title: t("certifications"),
+      items: certifications.length > 0 ? certifications : [t("noCertificationsProvided")]
+    },
+    {
+      icon: Trophy,
+      value: awards.length,
+      label: t("awardsAndRecognition"),
+      title: t("awardsAndRecognition"),
+      items: awards.length > 0 ? awards : [t("noAwardsProvided")]
+    },
+    {
+      icon: ChefHat,
+      value: specialties.length,
+      label: t("specialties"),
+      title: t("specialties"),
+      items: specialties.length > 0 ? specialties : [t("noSpecialtiesProvided")]
+    },
+    {
+      icon: Calendar,
+      value: displayEvents.length,
+      label: t("notableEvents"),
+      title: t("notableEvents"),
+      items: displayEvents.length > 0 ? displayEvents : [t("noEventsProvided")]
+    }
+  ];
 
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
@@ -67,19 +124,25 @@ export function ChefDetailClient({
               </Link>
             </Button>
           </motion.div>
-          
+
           <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
-            <motion.div 
+            <motion.div
               {...fadeIn}
               transition={{ delay: 0.2, duration: 0.6 }}
               className="flex items-center gap-8"
             >
               <div className="h-32 w-32 overflow-hidden rounded-full border-4 border-primary/30 shadow-2xl md:h-48 md:w-48 group relative">
-                <img 
-                  src={avatar} 
-                  alt={displayName} 
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                />
+                {avatar ? (
+                  <img
+                    src={avatar}
+                    alt={displayName}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="h-full w-full bg-slate-800 flex items-center justify-center">
+                    <span className="text-4xl text-slate-500">{displayName?.charAt(0) || "C"}</span>
+                  </div>
+                )}
                 <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <div className="space-y-3">
@@ -90,8 +153,8 @@ export function ChefDetailClient({
                 <p className="text-xl text-primary/80 font-medium italic">{specialty}</p>
               </div>
             </motion.div>
-            
-            <motion.div 
+
+            <motion.div
               {...fadeIn}
               transition={{ delay: 0.4, duration: 0.6 }}
               className="mb-2"
@@ -108,42 +171,49 @@ export function ChefDetailClient({
         <div className="grid gap-16 lg:grid-cols-3">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-20">
-            
-            {/* Stats Grid - All Real Data */}
-            <motion.div 
+
+            {/* Professional Background Stats Grid */}
+            <motion.div
               variants={{
                 animate: { transition: { staggerChildren: 0.1 } }
               }}
               initial="initial"
               whileInView="animate"
               viewport={{ once: true }}
-              className="grid grid-cols-2 gap-4 sm:grid-cols-4"
+              className="grid grid-cols-2 gap-6 sm:grid-cols-3"
             >
-              {[
-                { icon: Star, value: rating.toFixed(1), label: t("reviews"), fill: true },
-                { icon: Clock, value: yearsExperience, label: t("experience") },
-                { icon: Users, value: reviews, label: t("reviewsSectionTitle") },
-                { icon: Calendar, value: events.length, label: "Events" }
-              ].map((stat, i) => (
-                <motion.div 
+              {statsCards.map((stat, i) => (
+                <motion.div
                   key={i}
                   variants={{
                     initial: { opacity: 0, scale: 0.9 },
                     animate: { opacity: 1, scale: 1 }
                   }}
-                  className="rounded-3xl border border-white/5 bg-white/5 p-6 backdrop-blur-md hover:bg-white/10 transition-all duration-300 group"
+                  onClick={() => {
+                    setDialogContent({ title: stat.title, items: stat.items });
+                    setDialogOpen(true);
+                  }}
+                  className="rounded-3xl border border-white/5 bg-white/5 p-6 backdrop-blur-md hover:bg-white/10 hover:border-primary/30 transition-all duration-300 group cursor-pointer flex flex-col relative overflow-hidden"
                 >
                   <div className="mb-3 text-primary group-hover:scale-110 transition-transform">
-                    <stat.icon className={`h-6 w-6 ${stat.fill ? 'fill-primary' : ''}`} />
+                    <stat.icon className="h-6 w-6" />
                   </div>
                   <div className="text-3xl font-light text-white mb-1">{stat.value}</div>
-                  <div className="text-[10px] uppercase tracking-[0.15em] text-white/40">{stat.label}</div>
+                  <div className="text-[10px] uppercase tracking-[0.15em] text-white/40 group-hover:text-white/60 transition-colors">{stat.label}</div>
+
+                  <div className="mt-4 text-[10px] text-primary/80 opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest font-semibold flex items-center gap-1">
+                    {t("viewDetails")} <span>→</span>
+                  </div>
+
+                  <div className="absolute -bottom-8 -right-8 opacity-5 group-hover:opacity-10 transition-opacity duration-500 pointer-events-none">
+                    <stat.icon className="h-32 w-32" />
+                  </div>
                 </motion.div>
               ))}
             </motion.div>
 
             {/* About */}
-            <motion.section 
+            <motion.section
               {...fadeIn}
               whileInView="animate"
               viewport={{ once: true }}
@@ -160,31 +230,8 @@ export function ChefDetailClient({
               </div>
             </motion.section>
 
-            {/* Certifications if any */}
-            {certifications.length > 0 && (
-              <motion.section 
-                {...fadeIn}
-                whileInView="animate"
-                viewport={{ once: true }}
-                className="space-y-8"
-              >
-                <div className="flex items-center gap-6">
-                  <h2 className="text-xl font-medium text-white uppercase tracking-[0.2em] whitespace-nowrap">{t("certifications")}</h2>
-                  <div className="h-px flex-1 bg-linear-to-r from-white/20 to-transparent" />
-                </div>
-                <div className="flex flex-wrap gap-4">
-                  {certifications.map((cert: string, idx: number) => (
-                    <div key={idx} className="flex items-center gap-3 rounded-2xl border border-primary/20 bg-primary/5 px-6 py-3 text-sm text-primary hover:bg-primary/10 transition-colors duration-300">
-                      <Award className="h-5 w-5" />
-                      <span className="font-medium">{cert}</span>
-                    </div>
-                  ))}
-                </div>
-              </motion.section>
-            )}
-
             {/* Portfolio Grid */}
-            {events.length > 0 && (
+            {/* {events.length > 0 && (
               <motion.section 
                 {...fadeIn}
                 whileInView="animate"
@@ -200,7 +247,7 @@ export function ChefDetailClient({
                     <Card key={event.id} className="group overflow-hidden border-white/5 bg-white/5 backdrop-blur-xl transition-all duration-500 hover:border-primary/30 rounded-3xl">
                       <div className="relative aspect-16/10 overflow-hidden">
                         <img 
-                          src={event.coverImageUrl || event.imageUrls[0] || "/event-private.png"} 
+                          src={(event.coverImageUrl && event.coverImageUrl !== "") ? event.coverImageUrl : ((event.imageUrls && event.imageUrls[0] && event.imageUrls[0] !== "") ? event.imageUrls[0] : "/user-empty.png")} 
                           alt={event.title} 
                           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
@@ -216,11 +263,11 @@ export function ChefDetailClient({
                         <div className="flex items-center gap-6 text-sm text-white/50">
                           <div className="flex items-center gap-2">
                             <Users className="h-4 w-4 text-primary" />
-                            <span>{event.guestCount} Guests</span>
+                            <span>{t("guestsCount", { count: event.guestCount })}</span>
                           </div>
                           <div className="flex items-center gap-2">
                             <MapPin className="h-4 w-4 text-primary" />
-                            <span>Private Event</span>
+                            <span>{t("privateEvent")}</span>
                           </div>
                         </div>
                       </CardContent>
@@ -228,10 +275,10 @@ export function ChefDetailClient({
                   ))}
                 </div>
               </motion.section>
-            )}
+            )} */}
 
             {/* Reviews Section */}
-            <motion.div 
+            <motion.div
               {...fadeIn}
               whileInView="animate"
               viewport={{ once: true }}
@@ -260,37 +307,37 @@ export function ChefDetailClient({
               <Card className="overflow-hidden border-primary/20 bg-white/5 backdrop-blur-2xl rounded-3xl">
                 <CardContent className="p-8 space-y-8">
                   <div className="space-y-3">
-                    <h3 className="text-2xl font-light text-white tracking-tight">Direct Inquiry</h3>
+                    <h3 className="text-2xl font-light text-white tracking-tight">{t("directInquiry")}</h3>
                     <p className="text-sm text-white/50 leading-relaxed">
-                      Connect directly with {displayName.split(' ')[0]} to discuss your upcoming event, dietary requirements, and custom menu options.
+                      {t("directInquiryDesc", { name: displayName.split(' ')[0] })}
                     </p>
                   </div>
-                  
+
                   <Button asChild className="w-full bg-primary text-black hover:bg-white h-16 rounded-full font-bold text-lg transition-all duration-300 shadow-xl shadow-primary/10">
                     <Link href="/inquiry">{t("requestConsultation")}</Link>
                   </Button>
-                  
+
                   <div className="pt-4 border-t border-white/5 text-center">
-                    <p className="text-[10px] text-white/30 uppercase tracking-[0.3em]">Official Portfolio</p>
+                    <p className="text-[10px] text-white/30 uppercase tracking-[0.3em]">{t("officialPortfolio")}</p>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Minimal Info Card with Only Real Data */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8, duration: 0.6 }}
                 className="mt-8 rounded-3xl border border-white/5 bg-white/5 p-8 backdrop-blur-md"
               >
-                <h4 className="text-[10px] font-bold text-primary uppercase tracking-[0.2em] mb-6">Culinary Identity</h4>
+                <h4 className="text-[10px] font-bold text-primary uppercase tracking-[0.2em] mb-6">{t("culinaryIdentity")}</h4>
                 <div className="space-y-6">
                   <div className="space-y-1">
-                    <span className="text-[10px] text-white/40 uppercase tracking-widest block">Primary Specialty</span>
+                    <span className="text-[10px] text-white/40 uppercase tracking-widest block">{t("primarySpecialty")}</span>
                     <span className="text-white/80 font-light">{specialty}</span>
                   </div>
                   <div className="space-y-1">
-                    <span className="text-[10px] text-white/40 uppercase tracking-widest block">Experience Level</span>
+                    <span className="text-[10px] text-white/40 uppercase tracking-widest block">{t("experienceLevel")}</span>
                     <span className="text-white/80 font-light">{yearsExperience} {t("years", { count: yearsExperience })}</span>
                   </div>
                 </div>
@@ -299,6 +346,25 @@ export function ChefDetailClient({
           </div>
         </div>
       </main>
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="bg-zinc-950/90 border border-white/10 backdrop-blur-3xl text-white max-w-2xl max-h-[80vh] overflow-hidden flex flex-col sm:rounded-3xl p-8">
+          <DialogHeader className="mb-6">
+            <DialogTitle className="text-3xl font-light tracking-tight">{dialogContent.title}</DialogTitle>
+            <DialogDescription className="text-white/50 text-base mt-2">
+              {t("dialogDescription", { title: dialogContent.title })}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex-1 overflow-y-auto pr-2 space-y-4 custom-scrollbar">
+            {dialogContent.items.map((item, i) => (
+              <div key={i} className="flex gap-6 items-start rounded-2xl border border-white/5 bg-white/5 p-5">
+                <div className="mt-2 h-2 w-2 shrink-0 rounded-full bg-primary" />
+                <span className="text-white/80 font-light leading-relaxed text-lg">{item}</span>
+              </div>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

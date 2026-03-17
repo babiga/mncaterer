@@ -24,6 +24,91 @@ import { ImageUpload } from "@/components/ui/image-upload";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
+interface DynamicListProps {
+    name: keyof ChefProfileData;
+    label: string;
+    description?: string;
+    placeholder: string;
+    form: UseFormReturn<ChefProfileData>;
+    readonly?: boolean;
+    isPending?: boolean;
+}
+
+function DynamicList({ name, label, description, placeholder, form, readonly, isPending }: DynamicListProps) {
+    const items = (form.watch(name as any) || []) as string[];
+
+    const addItem = () => {
+        if (readonly) return;
+        form.setValue(name as any, [...items, ""] as any);
+    };
+
+    const removeItem = (index: number) => {
+        if (readonly) return;
+        form.setValue(
+            name as any,
+            items.filter((_, i) => i !== index) as any
+        );
+    };
+
+    return (
+        <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                    <CardTitle>{label}</CardTitle>
+                    {description && <CardDescription>{description}</CardDescription>}
+                </div>
+                {!readonly && (
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={addItem}
+                        disabled={isPending}
+                    >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add
+                    </Button>
+                )}
+            </CardHeader>
+            <CardContent className="space-y-4">
+                {items.map((_, index) => (
+                    <div key={index} className="flex gap-2">
+                        <FormField
+                            control={form.control as any}
+                            name={`${name}.${index}`}
+                            render={({ field }) => (
+                                <FormItem className="flex-1">
+                                    <FormControl>
+                                        <Input placeholder={placeholder} {...field} disabled={readonly || isPending} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        {!readonly && (
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="text-destructive"
+                                onClick={() => removeItem(index)}
+                                disabled={isPending}
+                            >
+                                <Trash2 className="h-4 w-4" />
+                            </Button>
+                        )}
+                    </div>
+                ))}
+                {items.length === 0 && (
+                    <p className="text-sm text-muted-foreground text-center py-4">
+                        No {label.toLowerCase()} added yet.
+                    </p>
+                )}
+            </CardContent>
+        </Card>
+    );
+}
+
 interface ChefProfileFormProps {
     initialData: ChefProfileData;
     readonly?: boolean;
@@ -55,206 +140,192 @@ export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFo
         }
     }
 
-    const certifications = form.watch("certifications") || [];
-
-    const addCertification = () => {
-        if (readonly) return;
-        form.setValue("certifications", [...certifications, ""]);
-    };
-
-    const removeCertification = (index: number) => {
-        if (readonly) return;
-        form.setValue(
-            "certifications",
-            certifications.filter((_, i) => i !== index)
-        );
-    };
-
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {/* Visual Profile section */}
-                    <div className="space-y-6">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Profile Visuals</CardTitle>
-                                <CardDescription>
-                                    {readonly ? "Chef profile photo." : "Update your profile photo and cover image to make a great first impression."}
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-6">
-                                <div className="flex justify-center relative z-10">
-                                    <FormField
-                                        control={form.control as any}
-                                        name="avatar"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <div className="bg-background p-2 shadow-sm">
-                                                    <FormControl>
-                                                        <ImageUpload
-                                                            className="w-32 h-32 rounded-full"
-                                                            value={field.value}
-                                                            disabled={isPending || readonly}
-                                                            onChange={field.onChange}
-                                                            onRemove={() => field.onChange("")}
-                                                        />
-                                                    </FormControl>
-                                                </div>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Basic Information</CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
+                <div className="flex flex-col gap-8 max-w-4xl mx-auto">
+                    {/* Profile Details (Avatar + Bio) */}
+                    <Card className="shadow-lg border-white/5 bg-white/2">
+                        <CardHeader>
+                            <CardTitle>Profile Details</CardTitle>
+                            <CardDescription>
+                                {readonly ? "Chef profile photo and bio." : "Update your profile photo and public biography."}
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <div className="flex justify-center pb-2">
                                 <FormField
                                     control={form.control as any}
-                                    name="name"
+                                    name="avatar"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Full Name</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Chef Name" {...field} disabled={readonly} />
-                                            </FormControl>
+                                            <div className="bg-background/50 p-3 shadow-xl rounded-full border border-white/5">
+                                                <FormControl>
+                                                    <ImageUpload
+                                                        className="w-40 h-40 rounded-full"
+                                                        value={field.value}
+                                                        disabled={isPending || readonly}
+                                                        onChange={field.onChange}
+                                                        onRemove={() => field.onChange("")}
+                                                    />
+                                                </FormControl>
+                                            </div>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
-                                <FormField
-                                    control={form.control as any}
-                                    name="phone"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Phone Number</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="+976 99999999" {...field} value={field.value || ""} disabled={readonly} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </CardContent>
-                        </Card>
-                    </div>
+                            </div>
+                            
+                            <Separator className="bg-white/5" />
+                            
+                            <FormField
+                                control={form.control as any}
+                                name="bio"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="text-sm font-medium text-white/70">Professional Biography</FormLabel>
+                                        <FormControl>
+                                            <Textarea
+                                                placeholder="Share your culinary journey, style, and philosophy..."
+                                                className="min-h-[200px] bg-white/1 border-white/10 focus:border-primary/50 transition-all resize-none leading-relaxed"
+                                                {...field}
+                                                value={field.value || ""}
+                                                disabled={readonly}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </CardContent>
+                    </Card>
 
-                    {/* Professional details section */}
-                    <div className="space-y-6">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Professional Details</CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
+                    {/* Basic Information */}
+                    <Card className="border-white/5 bg-white/2 shadow-md">
+                        <CardHeader>
+                            <CardTitle>Basic Information</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <FormField
+                                control={form.control as any}
+                                name="name"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Full Name</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Chef Name" {...field} disabled={readonly} className="bg-white/2 border-white/10" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control as any}
+                                name="phone"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Phone Number</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="+976 99999999" {...field} value={field.value || ""} disabled={readonly} className="bg-white/2 border-white/10" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                                 <FormField
                                     control={form.control as any}
                                     name="specialty"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Specialty</FormLabel>
+                                            <FormLabel>Primary Specialty</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="e.g. Italian Cuisine, Pastry" {...field} disabled={readonly} />
+                                                <Input placeholder="e.g. Italian" {...field} disabled={readonly} className="bg-white/2 border-white/10" />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
-                                <div className="grid grid-cols-1 gap-4">
-                                    <FormField
-                                        control={form.control as any}
-                                        name="yearsExperience"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Years of Experience</FormLabel>
-                                                <FormControl>
-                                                    <Input type="number" {...field} disabled={readonly} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
                                 <FormField
                                     control={form.control as any}
-                                    name="bio"
+                                    name="yearsExperience"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Bio</FormLabel>
+                                            <FormLabel>Years of Experience</FormLabel>
                                             <FormControl>
-                                                <Textarea
-                                                    placeholder="Tell potential clients about yourself..."
-                                                    className="min-h-32"
-                                                    {...field}
-                                                    value={field.value || ""}
-                                                    disabled={readonly}
-                                                />
+                                                <Input type="number" {...field} disabled={readonly} className="bg-white/2 border-white/10" />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
-                            </CardContent>
-                        </Card>
+                            </div>
+                        </CardContent>
+                    </Card>
 
-                        <Card>
-                            <CardHeader className="flex flex-row items-center justify-between">
-                                <div>
-                                    <CardTitle>Certifications</CardTitle>
-                                    <CardDescription>Relevant culinary certifications.</CardDescription>
-                                </div>
-                                {!readonly && (
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={addCertification}
-                                    >
-                                        <Plus className="h-4 w-4 mr-2" />
-                                        Add
-                                    </Button>
-                                )}
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                {certifications.map((_, index) => (
-                                    <div key={index} className="flex gap-2">
-                                        <FormField
-                                            control={form.control as any}
-                                            name={`certifications.${index}`}
-                                            render={({ field }) => (
-                                                <FormItem className="flex-1">
-                                                    <FormControl>
-                                                        <Input placeholder="Certification name" {...field} disabled={readonly} />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                        {!readonly && (
-                                            <Button
-                                                type="button"
-                                                variant="ghost"
-                                                size="icon"
-                                                className="text-destructive"
-                                                onClick={() => removeCertification(index)}
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
-                                        )}
-                                    </div>
-                                ))}
-                                {certifications.length === 0 && (
-                                    <p className="text-sm text-muted-foreground text-center py-4">
-                                        No certifications added yet.
-                                    </p>
-                                )}
-                            </CardContent>
-                        </Card>
-                    </div>
+                    {/* Dynamic Lists - All Vertical */}
+                    <DynamicList
+                        name="specialties"
+                        label="Additional Specialties"
+                        placeholder="e.g. French Pastry"
+                        form={form}
+                        readonly={readonly}
+                        isPending={isPending}
+                    />
+
+                    <DynamicList
+                        name="experience"
+                        label="Professional Experience"
+                        placeholder="e.g. Head Chef at X Restaurant (2020-2023)"
+                        form={form}
+                        readonly={readonly}
+                        isPending={isPending}
+                    />
+
+                    <DynamicList
+                        name="education"
+                        label="Education"
+                        placeholder="e.g. Culinary Institute of America"
+                        form={form}
+                        readonly={readonly}
+                        isPending={isPending}
+                    />
+
+                    <DynamicList
+                        name="degrees"
+                        label="Degrees"
+                        placeholder="e.g. Bachelor of Culinary Arts"
+                        form={form}
+                        readonly={readonly}
+                        isPending={isPending}
+                    />
+
+                    <DynamicList
+                        name="certifications"
+                        label="Certifications"
+                        placeholder="Certification name"
+                        form={form}
+                        readonly={readonly}
+                        isPending={isPending}
+                    />
+
+                    <DynamicList
+                        name="events"
+                        label="Notable Events"
+                        placeholder="e.g. Asian Culinary Forum 2023"
+                        form={form}
+                        readonly={readonly}
+                        isPending={isPending}
+                    />
+
+                    <DynamicList
+                        name="awards"
+                        label="Awards & Honors"
+                        placeholder="e.g. Best Chef Award 2022"
+                        form={form}
+                        readonly={readonly}
+                        isPending={isPending}
+                    />
                 </div>
 
                 {!readonly && (

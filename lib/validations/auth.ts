@@ -77,6 +77,36 @@ export const getCompanySignupSchema = (t: any) =>
       path: ["confirmPassword"],
     });
 
+// Chef signup schema (client-side)
+export const getChefSignupSchema = (t: any) =>
+  z
+    .object({
+      firstName: z
+        .string()
+        .min(1, t("firstNameRequired"))
+        .min(2, t("firstNameMin"))
+        .max(50),
+      lastName: z
+        .string()
+        .min(1, t("lastNameRequired"))
+        .min(2, t("lastNameMin"))
+        .max(50),
+      email: z.string().min(1, t("emailRequired")).email(t("emailInvalid")),
+      phone: z
+        .string()
+        .min(1, t("phoneRequired"))
+        .regex(/^[+]?[0-9]{8,15}$/, t("phoneInvalid")),
+      password: getPasswordSchema(t),
+      confirmPassword: z.string().min(1, t("confirmPasswordRequired")),
+      acceptTerms: z
+        .boolean()
+        .refine((val) => val === true, t("termsRequired")),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t("passwordMismatch"),
+      path: ["confirmPassword"],
+    });
+
 // API signup schema (server-side) - discriminated union
 export const signupApiSchema = z.discriminatedUnion("userType", [
   z.object({
@@ -94,6 +124,17 @@ export const signupApiSchema = z.discriminatedUnion("userType", [
     userType: z.literal("CORPORATE"),
     companyName: z.string().min(1).min(2).max(100),
     companyLegalNo: z.string().min(1).min(5).max(20),
+    email: z.string().min(1).email(),
+    phone: z
+      .string()
+      .min(1)
+      .regex(/^[+]?[0-9]{8,15}$/),
+    password: z.string().min(1).min(8),
+  }),
+  z.object({
+    userType: z.literal("CHEF"),
+    firstName: z.string().min(1).min(2).max(50),
+    lastName: z.string().min(1).min(2).max(50),
     email: z.string().min(1).email(),
     phone: z
       .string()
@@ -130,4 +171,5 @@ export const companySignupSchema = z.object({
 export type LoginFormData = z.infer<typeof loginSchema>;
 export type IndividualSignupFormData = z.infer<typeof individualSignupSchema>;
 export type CompanySignupFormData = z.infer<typeof companySignupSchema>;
+export type ChefSignupFormData = IndividualSignupFormData; // They share the same fields for now
 export type SignupApiData = z.infer<typeof signupApiSchema>;

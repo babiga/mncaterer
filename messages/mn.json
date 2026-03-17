@@ -34,7 +34,8 @@
             "subtitle": "Бүртгэлээ үүсгээд онцгой хоолны туршлагыг мэдрээрэй",
             "tabs": {
                 "individual": "Хувь хүн",
-                "company": "Байгууллага"
+                "company": "Байгууллага",
+                "chef": "Тогооч"
             },
             "firstName": "Нэр",
             "firstNamePlaceholder": "Нэрээ оруулна уу",
@@ -230,6 +231,7 @@
         "chefRole": "Тогоочийн Боловсрол"
     },
     "Chefs": {
+        "back": "Буцах",
         "title": "Хоолны Урлагийн Мастерууд",
         "seeAllTitle": "Манай Тогооч Нар",
         "description": "Бидний хамгийн нэр хүндтэй арга хэмжээний хоолны чиглэлийг тодорхойлж буй шилдэг тогооч нар.",
@@ -280,7 +282,33 @@
         "certifications": "Сертификатууд",
         "portfolio": "Эвент багц",
         "detailDescription": "{name} нь өндөр зэрэглэлийн орц, нарийн гүйцэтгэлээр онцгой туршлагыг бүтээдэг.",
-        "bookConsultation": "Зөвлөгөө захиалах"
+        "bookConsultation": "Зөвлөгөө захиалах",
+        "professionalBackground": "Мэргэжлийн туршлага",
+        "professionalExperience": "Ажлын туршлага",
+        "yearsOfExperience": "Ажилласан жил",
+        "noExperienceProvided": "Туршлагатай холбоотой мэдээлэл одоогоор алга.",
+        "educationAndDegrees": "Боловсрол & Зэрэг",
+        "education": "Боловсрол",
+        "degrees": "Эрдмийн зэрэг",
+        "noEducationProvided": "Боловсролын мэдээлэл одоогоор алга.",
+        "noCertificationsProvided": "Сертификатын мэдээлэл одоогоор алга.",
+        "awardsAndRecognition": "Шагнал & Урамшуулал",
+        "noAwardsProvided": "Шагнал урамшууллын мэдээлэл одоогоор алга.",
+        "specialties": "Мэргэшил",
+        "noSpecialtiesProvided": "Мэргэшлийн мэдээлэл одоогоор алга.",
+        "notableEvents": "Онцлох эвентүүд",
+        "noEventsProvided": "Онцлох эвентийн мэдээлэл одоогоор алга.",
+        "viewDetails": "Дэлгэрэнгүй үзэх",
+        "dialogDescription": "Тогоочийн {title}-н дэлгэрэнгүй жагсаалт.",
+        "culinaryIdentity": "Хоолны онцлог",
+        "primarySpecialty": "Үндсэн мэргэшил",
+        "experienceLevel": "Туршлагын түвшин",
+        "directInquiry": "Шууд холбогдох",
+        "directInquiryDesc": "{name}-тай шууд холбогдож арга хэмжээ, хоолны тусгай шаардлага болон цэсээ ярилцаарай.",
+        "officialPortfolio": "Албан ёсны портфолио",
+        "eventsTitle": "Эвент",
+        "privateEvent": "Хувийн арга хэмжээ",
+        "guestsCount": "{count} зочин"
     },
     "Events": {
         "title": "Мартагдашгүй Мөчүүд",

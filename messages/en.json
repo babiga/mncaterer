@@ -34,7 +34,8 @@
             "subtitle": "Create your account and discover exceptional culinary experiences",
             "tabs": {
                 "individual": "Individual",
-                "company": "Company"
+                "company": "Company",
+                "chef": "Chef"
             },
             "firstName": "First Name",
             "firstNamePlaceholder": "Enter your first name",
@@ -230,6 +231,7 @@
         "chefRole": "Chef Education"
     },
     "Chefs": {
+        "back": "Back",
         "title": "Master Artists",
         "seeAllTitle": "Our Culinary Experts",
         "description": "The visionary chefs driving the culinary direction of our most prestigious events.",
@@ -280,7 +282,33 @@
         "certifications": "Certifications",
         "portfolio": "Event Portfolio",
         "detailDescription": "{name} crafts elevated experiences with precise execution and premium ingredients.",
-        "bookConsultation": "Book Private Consultation"
+        "bookConsultation": "Book Private Consultation",
+        "professionalBackground": "Professional Background",
+        "professionalExperience": "Professional Experience",
+        "yearsOfExperience": "Years of Experience",
+        "noExperienceProvided": "No experience details provided.",
+        "educationAndDegrees": "Education & Degrees",
+        "education": "Education",
+        "degrees": "Degrees",
+        "noEducationProvided": "No education details provided.",
+        "noCertificationsProvided": "No certifications provided.",
+        "awardsAndRecognition": "Awards & Recognition",
+        "noAwardsProvided": "No awards provided.",
+        "specialties": "Specialties",
+        "noSpecialtiesProvided": "No specialties provided.",
+        "notableEvents": "Notable Events",
+        "noEventsProvided": "No notable events provided.",
+        "viewDetails": "View Details",
+        "dialogDescription": "Detailed list of {title} for the chef.",
+        "culinaryIdentity": "Culinary Identity",
+        "primarySpecialty": "Primary Specialty",
+        "experienceLevel": "Experience Level",
+        "directInquiry": "Direct Inquiry",
+        "directInquiryDesc": "Connect directly with {name} to discuss your upcoming event, dietary requirements, and custom menu options.",
+        "officialPortfolio": "Official Portfolio",
+        "eventsTitle": "Events",
+        "privateEvent": "Private Event",
+        "guestsCount": "{count} Guests"
     },
     "Events": {
         "title": "Unforgettable Occasions",

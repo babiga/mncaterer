@@ -84,6 +84,35 @@ export async function POST(request: NextRequest) {
         message: "Account created successfully",
         user,
       });
+    } else if (data.userType === "CHEF") {
+      // CHEF user (DashboardUser + ChefProfile)
+      const user = await prisma.dashboardUser.create({
+        data: {
+          email: data.email,
+          name: `${data.firstName} ${data.lastName}`,
+          phone: data.phone,
+          password: hashedPassword,
+          role: "CHEF",
+          chefProfile: {
+            create: {
+              specialty: "General", // Default specialty
+              yearsExperience: 0, // Default experience
+            },
+          },
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          role: true,
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: "Chef account created successfully",
+        user,
+      });
     } else {
       // CORPORATE user
       const user = await prisma.user.create({
