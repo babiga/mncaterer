@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
-import { ArrowLeft, Users, Calendar } from "lucide-react";
+import { ArrowLeft, Users, Calendar, Play } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
@@ -18,19 +18,30 @@ const EVENT_TYPE_MAP: Record<string, string> = {
 export function EventDetailClient({ event }: { event: any }) {
   const t = useTranslations("Events");
   const tChefs = useTranslations("Chefs"); // for "back"
-  
-  const [activeImage, setActiveImage] = useState(
-    event.coverImageUrl || (event.imageUrls && event.imageUrls[0]) || "/event-private.png"
-  );
 
-  const images: string[] = [];
-  if (event.coverImageUrl) images.push(event.coverImageUrl);
+  const media: { type: "image" | "video"; url: string }[] = [];
+  
+  if (event.videoUrl) {
+    media.push({ type: "video", url: event.videoUrl });
+  }
+  
+  if (event.coverImageUrl) {
+    media.push({ type: "image", url: event.coverImageUrl });
+  }
+  
   if (event.imageUrls) {
     event.imageUrls.forEach((url: string) => {
-      if (!images.includes(url)) images.push(url);
+      if (!media.some(m => m.url === url)) {
+        media.push({ type: "image", url });
+      }
     });
   }
-  if (images.length === 0) images.push("/event-private.png");
+
+  if (media.length === 0) {
+    media.push({ type: "image", url: "/event-private.png" });
+  }
+
+  const [activeMedia, setActiveMedia] = useState(media[0]);
 
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
@@ -54,28 +65,52 @@ export function EventDetailClient({ event }: { event: any }) {
           <motion.div {...fadeIn} transition={{ delay: 0.2, duration: 0.6 }} className="space-y-8">
             <div className="aspect-4/3 relative rounded-3xl overflow-hidden border border-white/10 bg-white/5">
               <AnimatePresence mode="wait">
-                <motion.img
-                  key={activeImage}
-                  src={activeImage}
-                  alt={event.title}
-                  initial={{ opacity: 0, scale: 1.05 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="w-full h-full object-cover"
-                />
+                {activeMedia.type === "video" ? (
+                  <motion.video
+                    key={activeMedia.url}
+                    src={activeMedia.url}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="w-full h-full object-cover"
+                    controls
+                    autoPlay
+                    muted
+                  />
+                ) : (
+                  <motion.img
+                    key={activeMedia.url}
+                    src={activeMedia.url}
+                    alt={event.title}
+                    initial={{ opacity: 0, scale: 1.05 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="w-full h-full object-cover"
+                  />
+                )}
               </AnimatePresence>
             </div>
             
-            {images.length > 1 && (
+            {media.length > 1 && (
               <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                {images.map((img: string, idx: number) => (
+                {media.map((item, idx: number) => (
                   <button
                     key={idx}
-                    onClick={() => setActiveImage(img)}
-                    className={`relative w-24 h-24 shrink-0 rounded-2xl overflow-hidden border-2 transition-all ${activeImage === img ? "border-primary" : "border-transparent hover:border-white/20"}`}
+                    onClick={() => setActiveMedia(item)}
+                    className={`relative w-24 h-24 shrink-0 rounded-2xl overflow-hidden border-2 transition-all ${activeMedia.url === item.url ? "border-primary" : "border-transparent hover:border-white/20"}`}
                   >
-                    <img src={img} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover" />
+                    {item.type === "video" ? (
+                      <div className="relative w-full h-full bg-black/40 flex items-center justify-center">
+                        <video src={item.url} className="w-full h-full object-cover opacity-60" />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                           <Play className="w-8 h-8 text-white fill-white" />
+                        </div>
+                      </div>
+                    ) : (
+                      <img src={item.url} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover" />
+                    )}
                   </button>
                 ))}
               </div>

@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Link } from "@/i18n/routing";
-import { Users, Calendar } from "lucide-react";
+import { Users, Calendar, Video } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface EventCardProps {
@@ -48,6 +48,13 @@ export function EventCard({ event }: EventCardProps) {
                 {t(`types.${typeLabel}`)}
               </span>
             </div>
+
+            {/* Video indicator */}
+            {event.videoUrl && (
+              <div className="absolute top-4 right-4 h-8 w-8 rounded-full bg-black/50 backdrop-blur-md border border-white/10 flex items-center justify-center text-white">
+                <Video className="h-4 w-4" />
+              </div>
+            )}
           </div>
 
           {/* Content */}

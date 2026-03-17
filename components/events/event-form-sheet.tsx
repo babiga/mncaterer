@@ -49,6 +49,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { ImageUpload } from "@/components/ui/image-upload";
+import { VideoUpload } from "@/components/ui/video-upload";
 import type { EventItem } from "./events-columns";
 
 interface EventFormSheetProps {
@@ -118,6 +119,7 @@ export function EventFormSheet({
             eventDate: "",
             coverImageUrl: "",
             imageUrls: [],
+            videoUrl: "",
             isFeatured: false,
             chefProfileId: null,
             companyProfileId: null,
@@ -134,6 +136,7 @@ export function EventFormSheet({
             eventDate: "",
             coverImageUrl: "",
             imageUrls: [],
+            videoUrl: "",
             isFeatured: false,
         },
     });
@@ -150,6 +153,7 @@ export function EventFormSheet({
                     : "",
                 coverImageUrl: event.coverImageUrl || "",
                 imageUrls: event.imageUrls || [],
+                videoUrl: event.videoUrl || "",
                 isFeatured: event.isFeatured,
             });
         }
@@ -162,6 +166,7 @@ export function EventFormSheet({
                 eventDate: "",
                 coverImageUrl: "",
                 imageUrls: [],
+                videoUrl: "",
                 isFeatured: false,
                 chefProfileId: null,
                 companyProfileId: null,
@@ -368,6 +373,28 @@ export function EventFormSheet({
                 />
                 <FormField
                     control={form.control}
+                    name="videoUrl"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Event Video</FormLabel>
+                            <FormControl>
+                                <VideoUpload
+                                    value={field.value ?? null}
+                                    onChange={field.onChange}
+                                    onRemove={() => field.onChange("")}
+                                    disabled={isPending || isUploadingGallery}
+                                    aspectRatio="video"
+                                />
+                            </FormControl>
+                            <FormDescription className="text-xs">
+                                Upload a video for this event.
+                            </FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
                     name="imageUrls"
                     render={({ field }) => {
                         const urls = (field.value as string[] | undefined) || [];
@@ -546,6 +573,18 @@ export function EventFormSheet({
                                         src={event.coverImageUrl}
                                         alt={`${event.title} cover`}
                                         className="h-40 w-full object-cover"
+                                    />
+                                </div>
+                            </div>
+                        )}
+                        {event.videoUrl && (
+                            <div>
+                                <label className="text-muted-foreground">Video</label>
+                                <div className="mt-1 overflow-hidden rounded-md border aspect-video">
+                                    <video
+                                        src={event.videoUrl}
+                                        className="h-full w-full object-cover"
+                                        controls
                                     />
                                 </div>
                             </div>

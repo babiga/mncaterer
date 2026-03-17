@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export type ChefReviewItem = {
   id: string;
@@ -247,11 +248,19 @@ export function ChefReviewsSection({
           reviews.map((review) => (
             <article key={review.id} className="rounded-xl border border-white/10 bg-black/20 p-4 space-y-2">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <p className="text-sm font-medium">{review.customer?.name ?? "Anonymous"}</p>
-                  <p className="text-xs text-white/60">
-                    {new Date(review.createdAt).toLocaleDateString()}
-                  </p>
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-10 w-10 border border-white/5">
+                    <AvatarImage src={review.customer?.avatar || undefined} />
+                    <AvatarFallback className="text-xs bg-white/5">
+                      {review.customer?.name ? review.customer.name.charAt(0).toUpperCase() : "A"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm font-medium">{review.customer?.name ?? "Anonymous"}</p>
+                    <p className="text-xs text-white/60">
+                      {new Date(review.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
                 </div>
                 <ReviewStars value={review.rating} />
               </div>

@@ -100,7 +100,7 @@
         "services": "Services",
         "menus": "Menus",
         "howItWorks": "How It Works",
-        "vip": "VIP Experience",
+        "vip": "Premium Experience",
         "chefs": "Our Chefs",
         "events": "Events",
         "getStarted": "Get Started",
@@ -128,7 +128,7 @@
         "sitemap": "Sitemap"
     },
     "Hero": {
-        "tagline": "Private Events • Corporate Catering • VIP Experiences",
+        "tagline": "Private Events • Corporate Catering • Premium Experiences",
         "title1": "Mongolian National Caterer —",
         "title2": "Crafting Unforgettable Culinary Moments",
         "bookCatering": "Book Catering",
@@ -151,7 +151,7 @@
             "description": "Timeless flavors for your special day, from the first cocktail to the final toast."
         },
         "vip": {
-            "title": "VIP Premiere",
+            "title": "Premium Experience",
             "description": "Unparalleled luxury featuring bespoke menus, rare ingredients, and world-class service."
         },
         "exploreMore": "Explore More"
@@ -316,6 +316,8 @@
         "description": "Recent highlights from the world of Mongolian National Caterer.",
         "seeAllDescription": "Explore our portfolio of exceptional culinary experiences and bespoke event designs.",
         "guests": "Guests",
+        "video": "Event Video",
+        "videoDescription": "Upload a video for this event.",
         "openDetails": "View Details",
         "detailDescription": "A {type} experience tailored for {guests}.",
         "highlights": "Highlights",
@@ -605,7 +607,7 @@
             "CORPORATE": "Corporate",
             "PRIVATE": "Private",
             "WEDDING": "Wedding",
-            "VIP": "VIP",
+            "VIP": "Premium",
             "OTHER": "Other"
         },
         "statuses": {
@@ -753,11 +755,11 @@
         },
         "vip": {
             "backToServices": "Back",
-            "eyebrow": "VIP Premiere",
+            "eyebrow": "Premium Experience",
             "title": "Bespoke service for high-stakes and high-visibility events.",
-            "description": "VIP is engineered for hosts who need precision, discretion, and unmistakable quality at every touchpoint from first briefing to final guest departure.",
-            "cta": "Request VIP consultation",
-            "heroAlt": "VIP catering service",
+            "description": "Premium service is engineered for hosts who need precision, discretion, and unmistakable quality at every touchpoint from first briefing to final guest departure.",
+            "cta": "Request Premium consultation",
+            "heroAlt": "Premium catering service",
             "signatureTitle": "Signature moments",
             "cadenceTitle": "Service cadence",
             "signatureMoments": [
@@ -778,7 +780,7 @@
                 },
                 {
                     "title": "White-Glove Service",
-                    "description": "Senior service teams execute discreetly with VIP treatment standards."
+                    "description": "Senior service teams execute discreetly with Premium treatment standards."
                 },
                 {
                     "title": "Concierge Control",
@@ -808,7 +810,7 @@
                     "CORPORATE": "Corporate",
                     "PRIVATE": "Private",
                     "WEDDING": "Wedding",
-                    "VIP": "VIP",
+                    "VIP": "Premium",
                     "OTHER": "Other"
                 }
             },

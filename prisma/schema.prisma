@@ -357,6 +357,7 @@ model Event {
   guestCount  Int
   coverImageUrl String?  @map("cover_image_url")
   imageUrls     String[] @default([]) @map("image_urls")
+  videoUrl      String?  @map("video_url")
   eventDate   DateTime?
 
   chefProfileId String?

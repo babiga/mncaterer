@@ -23,6 +23,7 @@ export type EventItem = {
     guestCount: number;
     coverImageUrl: string | null;
     imageUrls: string[];
+    videoUrl: string | null;
     eventDate: string | null;
     chefProfileId: string | null;
     companyProfileId: string | null;
