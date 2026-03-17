@@ -8,7 +8,7 @@ import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import dynamic from "next/dynamic";
-import "plyr-react/dist/plyr.css";
+import "plyr-react/plyr.css";
 
 const Plyr = dynamic(() => import("plyr-react").then((mod) => mod.Plyr), { ssr: false });
 
@@ -25,15 +25,15 @@ export function EventDetailClient({ event }: { event: any }) {
   const tChefs = useTranslations("Chefs"); // for "back"
 
   const media: { type: "image" | "video"; url: string }[] = [];
-  
+
   if (event.videoUrl) {
     media.push({ type: "video", url: event.videoUrl });
   }
-  
+
   if (event.coverImageUrl) {
     media.push({ type: "image", url: event.coverImageUrl });
   }
-  
+
   if (event.imageUrls) {
     event.imageUrls.forEach((url: string) => {
       if (!media.some(m => m.url === url)) {
@@ -111,7 +111,7 @@ export function EventDetailClient({ event }: { event: any }) {
                 )}
               </AnimatePresence>
             </div>
-            
+
             {media.length > 1 && (
               <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
                 {media.map((item, idx: number) => (
@@ -124,7 +124,7 @@ export function EventDetailClient({ event }: { event: any }) {
                       <div className="relative w-full h-full bg-black/40 flex items-center justify-center">
                         <video src={item.url} className="w-full h-full object-cover opacity-60" />
                         <div className="absolute inset-0 flex items-center justify-center">
-                           <Play className="w-8 h-8 text-white fill-white" />
+                          <Play className="w-8 h-8 text-white fill-white" />
                         </div>
                       </div>
                     ) : (
@@ -158,7 +158,7 @@ export function EventDetailClient({ event }: { event: any }) {
                   </div>
                   <p className="text-3xl text-white font-light">{event.guestCount}</p>
                 </div>
-                
+
                 {event.eventDate && (
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-white/40">
@@ -187,7 +187,7 @@ export function EventDetailClient({ event }: { event: any }) {
               <Button asChild size="lg" className="bg-primary text-black hover:bg-white w-full sm:w-auto px-10 h-16 rounded-full font-semibold text-lg transition-all shadow-lg shadow-primary/20 hover:scale-105 active:scale-95">
                 <Link href="/inquiry">{t("inquiryButton")}</Link>
               </Button>
-              
+
               <p className="text-white/40 text-sm italic font-light">
                 {t("detailDescription", { type: t(`types.${EVENT_TYPE_MAP[event.eventType] || event.eventType}`), guests: event.guestCount })}
               </p>
