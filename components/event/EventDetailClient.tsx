@@ -7,6 +7,11 @@ import { ArrowLeft, Users, Calendar, Play, MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
+import dynamic from "next/dynamic";
+import "plyr-react/dist/plyr.css";
+
+const Plyr = dynamic(() => import("plyr-react").then((mod) => mod.Plyr), { ssr: false });
+
 
 const EVENT_TYPE_MAP: Record<string, string> = {
   WEDDING: "Wedding",
@@ -66,18 +71,32 @@ export function EventDetailClient({ event }: { event: any }) {
             <div className="aspect-4/3 relative rounded-3xl overflow-hidden border border-white/10 bg-white/5">
               <AnimatePresence mode="wait">
                 {activeMedia.type === "video" ? (
-                  <motion.video
+                  <motion.div
                     key={activeMedia.url}
-                    src={activeMedia.url}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.5 }}
-                    className="w-full h-full object-cover"
-                    controls
-                    autoPlay
-                    muted
-                  />
+                    className="w-full h-full"
+                  >
+                    <Plyr
+                      source={{
+                        type: "video",
+                        sources: [
+                          {
+                            src: activeMedia.url,
+                            provider: "html5",
+                          },
+                        ],
+                      }}
+                      options={{
+                        autoplay: true,
+                        muted: true,
+                        hideControls: false,
+                        resetOnEnd: true,
+                      }}
+                    />
+                  </motion.div>
                 ) : (
                   <motion.img
                     key={activeMedia.url}
