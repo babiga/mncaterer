@@ -1,0 +1,278 @@
+"use client";
+
+import { useMemo } from "react";
+import { useTranslations } from "next-intl";
+import { motion } from "framer-motion";
+import {
+  ArrowLeft,
+  CheckCircle2,
+  Loader2,
+  PartyPopper,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useBookingStore } from "@/lib/store/use-booking-store";
+import { Link } from "@/i18n/routing";
+import type { ServiceTierOption, MenuOption, ChefOption } from "../BookingFlow";
+
+interface ReviewStepProps {
+  serviceTiers: ServiceTierOption[];
+  menus: MenuOption[];
+  chefs: ChefOption[];
+}
+
+export function ReviewStep({ serviceTiers, menus, chefs }: ReviewStepProps) {
+  const t = useTranslations("Booking.steps.review");
+  const tOrders = useTranslations("UserOrders");
+  const store = useBookingStore();
+
+  const resolvedTier = useMemo(() => {
+    const sorted = [...serviceTiers].sort(
+      (a, b) => a.sortOrder - b.sortOrder,
+    );
+    if (store.serviceType === "VIP")
+      return sorted.find((t) => t.isVIP) ?? sorted[0];
+    return sorted.find((t) => !t.isVIP) ?? sorted[0];
+  }, [serviceTiers, store.serviceType]);
+
+  const selectedMenus = store.selectedMenuIds
+    .map((id) => menus.find((m) => m.id === id))
+    .filter(Boolean);
+  const selectedChef = chefs.find((c) => c.id === store.chefProfileId);
+
+  // Estimated total based on selected menus' tier prices × guest count (0 when no menus)
+  const estimatedTotal = useMemo(() => {
+    if (store.selectedMenuIds.length === 0 || store.eventDetails.guestCount <= 0) return 0;
+    if (selectedMenus.length === 0) return 0;
+    const prices = selectedMenus
+      .map((m) => (m!.serviceTier ? Number(m!.serviceTier.pricePerGuest) : 0))
+      .filter((p) => p > 0);
+    const unitPrice = prices.length > 0
+      ? Math.max(...prices)
+      : (resolvedTier?.pricePerGuest ?? 0);
+    return unitPrice * store.eventDetails.guestCount;
+  }, [store.selectedMenuIds, selectedMenus, store.eventDetails.guestCount, resolvedTier]);
+
+  async function handleSubmit() {
+    store.setSubmitting(true);
+    store.setSubmissionError(null);
+
+    const normalizedMenuIds = store.selectedMenuIds.filter(
+      (id) => id.trim().length > 0,
+    );
+
+    const payload = {
+      serviceType: store.serviceType,
+      serviceTierId: resolvedTier?.id,
+      menuId: normalizedMenuIds[0] ?? null,
+      menuIds: normalizedMenuIds,
+      chefProfileId: store.chefProfileId?.trim() || null,
+      guestCount: store.eventDetails.guestCount,
+      eventDate: store.eventDetails.eventDate,
+      eventTime: store.eventDetails.eventTime,
+      venue: store.eventDetails.venue.trim(),
+      venueAddress: store.eventDetails.venueAddress?.trim() || null,
+      contactName: store.contactInfo.contactName.trim(),
+      contactPhone: store.contactInfo.contactPhone.trim(),
+      contactEmail: store.contactInfo.contactEmail.trim(),
+      specialRequests: store.contactInfo.specialRequests?.trim() || null,
+    };
+
+    try {
+      const response = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        store.setSubmissionError(
+          result.error || tOrders("messages.createError"),
+        );
+        store.setSubmitting(false);
+        return;
+      }
+
+      store.setSubmitting(false);
+      store.setSubmitted(true);
+    } catch {
+      store.setSubmissionError(tOrders("messages.createError"));
+      store.setSubmitting(false);
+    }
+  }
+
+  // Success state
+  if (store.isSubmitted) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="flex flex-col items-center justify-center py-16 text-center"
+      >
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: "spring", damping: 12, delay: 0.1 }}
+          className="w-20 h-20 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mb-6"
+        >
+          <PartyPopper className="w-9 h-9 text-emerald-400" />
+        </motion.div>
+        <h2 className="text-3xl font-serif text-white mb-3">{t("successTitle")}</h2>
+        <p className="text-white/50 max-w-md mb-8">
+          {t("successDescription")}
+        </p>
+        <div className="flex gap-3">
+          <Button asChild variant="outline" className="border-white/10 text-white hover:bg-white/5">
+            <Link href="/">{t("backHome")}</Link>
+          </Button>
+          <Button
+            onClick={() => store.resetBooking()}
+            className="gap-2"
+          >
+            {t("newBooking")}
+          </Button>
+        </div>
+      </motion.div>
+    );
+  }
+
+  const summaryRows = [
+    {
+      label: tOrders("summary.serviceType"),
+      value: store.serviceType
+        ? tOrders(`serviceTypes.${store.serviceType}`)
+        : "—",
+    },
+    {
+      label: tOrders("summary.assignedPackage"),
+      value: resolvedTier?.name ?? tOrders("summary.autoSelectUnavailable"),
+    },
+    {
+      label: tOrders("list.menu"),
+      value:
+        selectedMenus.length > 0
+          ? selectedMenus.map((m) => m!.name).join(", ")
+          : tOrders("form.none.menu"),
+    },
+    {
+      label: tOrders("list.chef"),
+      value: selectedChef
+        ? `${selectedChef.name} (${selectedChef.specialty})`
+        : tOrders("form.none.chef"),
+    },
+    {
+      label: tOrders("summary.guests"),
+      value: tOrders("list.guests", {
+        count: store.eventDetails.guestCount,
+      }),
+    },
+    {
+      label: tOrders("summary.eventDateTime"),
+      value: `${store.eventDetails.eventDate} ${tOrders("list.at")} ${store.eventDetails.eventTime}`,
+    },
+    {
+      label: tOrders("summary.venue"),
+      value: store.eventDetails.venue || "—",
+    },
+    {
+      label: tOrders("summary.contact"),
+      value: `${store.contactInfo.contactName} | ${store.contactInfo.contactPhone}`,
+    },
+  ];
+
+  return (
+    <div>
+      <div className="mb-8">
+        <h2 className="text-2xl md:text-3xl font-serif text-white mb-2">
+          {t("heading")}
+        </h2>
+        <p className="text-white/50">{t("description")}</p>
+      </div>
+
+      {/* Summary grid */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="rounded-2xl border border-white/5 bg-white/2 overflow-hidden mb-6"
+      >
+        {summaryRows.map((row, i) => (
+          <div
+            key={i}
+            className={`flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 px-5 py-4 ${
+              i < summaryRows.length - 1 ? "border-b border-white/5" : ""
+            }`}
+          >
+            <span className="text-white/40 text-sm sm:w-44 shrink-0">
+              {row.label}
+            </span>
+            <span className="text-white font-medium text-sm">
+              {row.value}
+            </span>
+          </div>
+        ))}
+      </motion.div>
+
+      {/* Contact email */}
+      <div className="text-white/30 text-sm mb-6 px-1">
+        {store.contactInfo.contactEmail}
+      </div>
+
+      {/* Estimated total */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.1 }}
+        className="p-5 rounded-2xl bg-primary/5 border border-primary/20 mb-6"
+      >
+        <div className="flex items-center justify-between">
+          <p className="text-xs uppercase tracking-widest text-primary/60">
+            {tOrders("summary.estimatedTotal")}
+          </p>
+          <p className="text-2xl font-medium text-white">
+            {estimatedTotal.toLocaleString()}₮
+          </p>
+        </div>
+      </motion.div>
+
+      {/* Error */}
+      {store.submissionError && (
+        <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400 mb-6">
+          {store.submissionError}
+        </div>
+      )}
+
+      {/* Navigation */}
+      <div className="flex items-center justify-between pt-4 border-t border-white/5">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={store.prevStep}
+          disabled={store.isSubmitting}
+          className="border-white/10 text-white hover:bg-white/5 gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          {tOrders("actions.back")}
+        </Button>
+        <Button
+          type="button"
+          onClick={() => void handleSubmit()}
+          disabled={store.isSubmitting}
+          className="gap-2 min-w-[160px]"
+        >
+          {store.isSubmitting ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              {tOrders("actions.submitting")}
+            </>
+          ) : (
+            <>
+              <CheckCircle2 className="w-4 h-4" />
+              {tOrders("actions.createBooking")}
+            </>
+          )}
+        </Button>
+      </div>
+    </div>
+  );
+}

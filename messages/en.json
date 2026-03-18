@@ -840,5 +840,47 @@
             "submitSuccess": "Consultation inquiry sent successfully",
             "submitError": "Failed to submit inquiry"
         }
+    },
+    "Booking": {
+        "title": "Book Your Experience",
+        "subtitle": "Create a bespoke catering experience tailored to your event. Select your service, menus, and details.",
+        "steps": {
+            "serviceType": {
+                "title": "Service",
+                "heading": "Choose Your Service Type",
+                "description": "Select the type of event you are planning. This helps us tailor the perfect experience for you.",
+                "otherDescription": "Have a different event in mind? Choose this for a custom experience."
+            },
+            "menuSelection": {
+                "title": "Menu",
+                "heading": "Select Your Menus",
+                "description": "Browse our curated menus and add your favorites. This selection is optional — you can also decide later.",
+                "pricePerGuest": "Price per guest",
+                "noMenus": "No menus available for this service type."
+            },
+            "eventDetails": {
+                "title": "Event",
+                "heading": "Event Details",
+                "description": "Tell us about your event — when, where, and how many guests."
+            },
+            "contact": {
+                "title": "Contact",
+                "heading": "Contact Information",
+                "description": "Confirm the contact details and any special requirements for your event."
+            },
+            "review": {
+                "title": "Review",
+                "heading": "Review Your Booking",
+                "description": "Please verify all the details below before submitting your booking request.",
+                "successTitle": "Booking Submitted!",
+                "successDescription": "Your booking request has been submitted successfully. Our team will review it and contact you shortly.",
+                "backHome": "Back to Home",
+                "newBooking": "New Booking"
+            }
+        },
+        "basket": {
+            "title": "Your Selection",
+            "empty": "Start selecting to build your booking."
+        }
     }
 }
