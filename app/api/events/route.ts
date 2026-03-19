@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { eventsQuerySchema, createEventSchema } from "@/lib/validations/events";
+import { generateUniqueSlug, generateSlug } from "@/lib/slug";
 
 // GET /api/events - List all events with pagination, search, and filters
 export async function GET(request: NextRequest) {
@@ -148,6 +149,10 @@ export async function POST(request: NextRequest) {
 
     const event = await prisma.event.create({
       data: {
+        id: await generateUniqueSlug(
+          generateSlug(data.title),
+          async (slug) => !!(await prisma.event.findUnique({ where: { id: slug } }))
+        ),
         ...data,
         eventDate: eventDate ? new Date(eventDate) : null,
       },

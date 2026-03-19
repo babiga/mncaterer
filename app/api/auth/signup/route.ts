@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { signupApiSchema } from "@/lib/validations/auth";
 import { hashPassword } from "@/lib/auth";
+import { generateUniqueSlug, generateSlug } from "@/lib/slug";
 
 export async function POST(request: NextRequest) {
   try {
@@ -95,6 +96,10 @@ export async function POST(request: NextRequest) {
           role: "CHEF",
           chefProfile: {
             create: {
+              id: await generateUniqueSlug(
+                generateSlug(`${data.firstName} ${data.lastName}`),
+                async (slug) => !!(await prisma.chefProfile.findUnique({ where: { id: slug } }))
+              ),
               specialty: "General", // Default specialty
               yearsExperience: 0, // Default experience
             },

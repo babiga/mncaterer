@@ -3,6 +3,11 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient, MenuItemCategory } from "../generated/prisma/client";
 import bcrypt from "bcrypt";
 import { staticServiceData, type ServiceRoute } from "../lib/service-data";
+import slugify from "slugify";
+
+function generateSlug(text: string): string {
+  return slugify(text, { lower: true, strict: true });
+}
 
 const connectionString = `${process.env.DATABASE_URL}`;
 const adapter = new PrismaPg({ connectionString });
@@ -66,6 +71,7 @@ async function upsertMenu(data: {
       })
     : await prisma.menu.create({
         data: {
+          id: generateSlug(data.name),
           name: data.name,
           description: data.description,
           serviceTierId: data.serviceTierId,
@@ -90,7 +96,10 @@ async function upsertMenu(data: {
   for (const item of data.items) {
     const { sortOrder, ...itemData } = item;
     const menuItem = await prisma.menuItem.create({
-      data: itemData
+      data: {
+        id: generateSlug(itemData.name),
+        ...itemData
+      }
     });
 
     await prisma.menuMenuItem.create({
@@ -128,7 +137,12 @@ async function upsertEvent(data: {
     });
   }
 
-  return prisma.event.create({ data });
+  return prisma.event.create({ 
+    data: {
+      id: generateSlug(data.title),
+      ...data 
+    }
+  });
 }
 
 async function main() {
@@ -235,6 +249,7 @@ async function main() {
         "https://images.unsplash.com/photo-1607631568010-a87245c0daf8",
     },
     create: {
+      id: generateSlug(chefUser.name),
       dashboardUserId: chefUser.id,
       specialty: "Modern Mongolian Fine Dining",
       bio: "Executive chef focused on premium private and corporate events.",
@@ -492,7 +507,7 @@ async function main() {
   });
 
   const booking = await prisma.booking.upsert({
-    where: { bookingNumber: "SEED-BOOKING-001" },
+    where: { bookingNumber: "ord-bat-erdene-240319" },
     update: {
       customerId: customer.id,
       chefProfileId: chefProfile.id,
@@ -510,7 +525,8 @@ async function main() {
       depositAmount: 5220000,
     },
     create: {
-      bookingNumber: "SEED-BOOKING-001",
+      id: "ord-bat-erdene-240319",
+      bookingNumber: "ord-bat-erdene-240319",
       customerId: customer.id,
       chefProfileId: chefProfile.id,
       serviceTierId: serviceTiersByRoute.private.id,
@@ -756,7 +772,7 @@ async function main() {
       where: { id: userNotification.id },
       data: {
         type: "IN_APP",
-        message: "Your booking SEED-BOOKING-001 has been confirmed.",
+        message: "Your booking ord-bat-erdene-240319 has been confirmed.",
         isRead: false,
       },
     });
@@ -766,7 +782,7 @@ async function main() {
         userId: customer.id,
         type: "IN_APP",
         title: "Booking confirmed",
-        message: "Your booking SEED-BOOKING-001 has been confirmed.",
+        message: "Your booking ord-bat-erdene-240319 has been confirmed.",
       },
     });
   }

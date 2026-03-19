@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { createMenuSchema, menusQuerySchema } from "@/lib/validations/menus";
+import { generateUniqueSlug, generateSlug } from "@/lib/slug";
 
 function serializeMenu(menu: any) {
   return {
@@ -119,6 +120,10 @@ export async function POST(request: NextRequest) {
 
     const menu = await prisma.menu.create({
       data: {
+        id: await generateUniqueSlug(
+          generateSlug(result.data.name),
+          async (slug) => !!(await prisma.menu.findUnique({ where: { id: slug } }))
+        ),
         name: result.data.name,
         description: result.data.description || null,
         downloadUrl: result.data.downloadUrl || null,

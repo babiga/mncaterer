@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { createBookingApiSchema } from "@/lib/validations/bookings";
+import { generateUniqueSlug, generateSlug } from "@/lib/slug";
+import { format } from "date-fns";
 
 export async function GET() {
   try {
@@ -262,8 +264,15 @@ export async function POST(request: NextRequest) {
 
     const primaryMenuId = requestedMenuIds[0] ?? null;
 
+    const bookingId = await generateUniqueSlug(
+      generateSlug(`ord-${data.contactName}-${format(eventDate, "yyMMdd")}`),
+      async (slug) => !!(await prisma.booking.findUnique({ where: { id: slug } }))
+    );
+    
     const booking = await prisma.booking.create({
       data: {
+        id: bookingId,
+        bookingNumber: bookingId,
         customerId: session.userId,
         serviceTierId: serviceTier.id,
         menuId: primaryMenuId,
