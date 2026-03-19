@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../generated/prisma/client";
+import { PrismaClient, MenuItemCategory } from "../generated/prisma/client";
 import bcrypt from "bcrypt";
 import { staticServiceData, type ServiceRoute } from "../lib/service-data";
 
@@ -42,6 +42,7 @@ async function upsertMenu(data: {
     name: string;
     description?: string | null;
     price: number;
+    category: MenuItemCategory;
     ingredients: string[];
     allergens: string[];
     imageUrl?: string | null;
@@ -362,6 +363,7 @@ async function main() {
         name: "Seasonal Salad",
         description: "Fresh mixed greens with vinaigrette.",
         price: 18000,
+        category: "SALAD",
         ingredients: ["Lettuce", "Tomato", "Cucumber"],
         allergens: [],
         sortOrder: 1,
@@ -370,6 +372,7 @@ async function main() {
         name: "Beef Khuushuur Platter",
         description: "Classic Mongolian savory pastries.",
         price: 28000,
+        category: "MAIN_COURSE",
         ingredients: ["Beef", "Flour", "Onion"],
         allergens: ["Gluten"],
         sortOrder: 2,
@@ -378,6 +381,7 @@ async function main() {
         name: "Milk Tea Panna Cotta",
         description: "Creamy dessert with Mongolian milk tea notes.",
         price: 14000,
+        category: "DESSERT",
         ingredients: ["Milk", "Cream", "Tea"],
         allergens: ["Dairy"],
         sortOrder: 3,
@@ -396,6 +400,7 @@ async function main() {
         name: "Smoked Trout Canape",
         description: "Light canape with herb cream.",
         price: 24000,
+        category: "APPETIZER",
         ingredients: ["Trout", "Cream Cheese", "Dill"],
         allergens: ["Fish", "Dairy", "Gluten"],
         sortOrder: 1,
@@ -404,6 +409,7 @@ async function main() {
         name: "Lamb Shoulder Roast",
         description: "Slow-roasted lamb with seasonal vegetables.",
         price: 46000,
+        category: "MAIN_COURSE",
         ingredients: ["Lamb", "Carrot", "Potato"],
         allergens: [],
         sortOrder: 2,
@@ -412,6 +418,7 @@ async function main() {
         name: "Sea Buckthorn Mousse",
         description: "Tangy mousse with berry glaze.",
         price: 18000,
+        category: "DESSERT",
         ingredients: ["Sea Buckthorn", "Cream", "Sugar"],
         allergens: ["Dairy"],
         sortOrder: 3,
@@ -430,6 +437,7 @@ async function main() {
         name: "Caviar Blini",
         description: "House blini with caviar and creme fraiche.",
         price: 55000,
+        category: "APPETIZER",
         ingredients: ["Caviar", "Buckwheat", "Creme Fraiche"],
         allergens: ["Fish", "Dairy", "Gluten"],
         sortOrder: 1,
@@ -438,6 +446,7 @@ async function main() {
         name: "Wagyu Tenderloin",
         description: "Charcoal-seared wagyu with truffle jus.",
         price: 89000,
+        category: "MAIN_COURSE",
         ingredients: ["Wagyu Beef", "Truffle", "Shallot"],
         allergens: [],
         sortOrder: 2,
@@ -446,6 +455,7 @@ async function main() {
         name: "Golden Honey Cake",
         description: "Layered honey cake with saffron cream.",
         price: 26000,
+        category: "DESSERT",
         ingredients: ["Honey", "Flour", "Cream"],
         allergens: ["Dairy", "Gluten"],
         sortOrder: 3,
@@ -464,6 +474,7 @@ async function main() {
         name: "Mini Chicken Skewers",
         description: "Tender grilled chicken with mild seasoning.",
         price: 16000,
+        category: "APPETIZER",
         ingredients: ["Chicken", "Yogurt", "Spices"],
         allergens: ["Dairy"],
         sortOrder: 1,
@@ -472,6 +483,7 @@ async function main() {
         name: "Fruit Cups",
         description: "Seasonal mixed fruit selection.",
         price: 9000,
+        category: "DESSERT",
         ingredients: ["Apple", "Orange", "Grape"],
         allergens: [],
         sortOrder: 2,

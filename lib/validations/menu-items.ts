@@ -43,7 +43,7 @@ export const updateMenuItemSchema = createMenuItemSchema.partial();
 
 export const menuItemsQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
-  limit: z.coerce.number().min(1).max(100).default(20),
+  limit: z.coerce.number().min(1).max(1000).default(20),
   search: z.string().optional(),
   category: z.enum([...menuItemCategoryValues, "all"] as const).default("all"),
   isActive: z.enum(["true", "false", "all"]).default("all"),

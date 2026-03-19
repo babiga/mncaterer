@@ -42,16 +42,6 @@ const CATEGORY_LABELS: Record<string, string> = {
   OTHER: "Other",
 };
 
-const CATEGORY_COLORS: Record<string, string> = {
-  APPETIZER: "border-amber-500/30 text-amber-600 bg-amber-500/10",
-  MAIN_COURSE: "border-blue-500/30 text-blue-600 bg-blue-500/10",
-  DESSERT: "border-pink-500/30 text-pink-600 bg-pink-500/10",
-  BEVERAGE: "border-cyan-500/30 text-cyan-600 bg-cyan-500/10",
-  SIDE_DISH: "border-green-500/30 text-green-600 bg-green-500/10",
-  SALAD: "border-lime-500/30 text-lime-600 bg-lime-500/10",
-  SOUP: "border-orange-500/30 text-orange-600 bg-orange-500/10",
-  OTHER: "border-muted-foreground/30 text-muted-foreground",
-};
 
 interface MenuItemsColumnsProps {
   onView: (item: MenuItemRecord) => void;
@@ -138,12 +128,9 @@ export function getMenuItemsColumns({
       accessorKey: "category",
       header: "Category",
       cell: ({ row }) => (
-        <Badge
-          variant="outline"
-          className={`text-xs ${CATEGORY_COLORS[row.original.category] ?? CATEGORY_COLORS.OTHER}`}
-        >
+        <span className="text-sm">
           {CATEGORY_LABELS[row.original.category] ?? row.original.category}
-        </Badge>
+        </span>
       ),
     },
     {

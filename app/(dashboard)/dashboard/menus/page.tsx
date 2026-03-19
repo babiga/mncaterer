@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { PlusIcon } from "lucide-react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
-import { MenuFormSheet } from "@/components/menus/menu-form-sheet";
 import { getMenusColumns, type MenuRecord } from "@/components/menus/menus-columns";
 import { UsersDataTable } from "@/components/users/users-data-table";
 import {
@@ -21,13 +21,10 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function MenusPage() {
+  const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [menus, setMenus] = useState<MenuRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  const [sheetOpen, setSheetOpen] = useState(false);
-  const [selectedMenu, setSelectedMenu] = useState<MenuRecord | null>(null);
-  const [sheetMode, setSheetMode] = useState<"create" | "edit" | "view">("view");
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [menuToDelete, setMenuToDelete] = useState<MenuRecord | null>(null);
@@ -75,22 +72,16 @@ export default function MenusPage() {
   }, [fetchSession, fetchMenus]);
 
   const handleCreate = useCallback(() => {
-    setSelectedMenu(null);
-    setSheetMode("create");
-    setSheetOpen(true);
-  }, []);
+    router.push("/dashboard/menus/create");
+  }, [router]);
 
   const handleView = useCallback((menu: MenuRecord) => {
-    setSelectedMenu(menu);
-    setSheetMode("view");
-    setSheetOpen(true);
-  }, []);
+    router.push(`/dashboard/menus/${menu.id}?mode=view`);
+  }, [router]);
 
   const handleEdit = useCallback((menu: MenuRecord) => {
-    setSelectedMenu(menu);
-    setSheetMode("edit");
-    setSheetOpen(true);
-  }, []);
+    router.push(`/dashboard/menus/${menu.id}?mode=edit`);
+  }, [router]);
 
   const handleDelete = useCallback((menu: MenuRecord) => {
     setMenuToDelete(menu);
@@ -190,14 +181,6 @@ export default function MenusPage() {
         />
       </div>
 
-      <MenuFormSheet
-        open={sheetOpen}
-        onOpenChange={setSheetOpen}
-        menu={selectedMenu}
-        mode={sheetMode}
-        onSuccess={fetchMenus}
-      />
-
       {menuToDelete ? (
         <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
           <AlertDialogContent>
@@ -224,3 +207,4 @@ export default function MenusPage() {
     </div>
   );
 }
+
