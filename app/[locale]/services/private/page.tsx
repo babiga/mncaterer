@@ -61,7 +61,7 @@ export default async function PrivateServicePage() {
               alt={t("heroAlt")}
               className="h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#1b0d1f]/85 via-[#1b0d1f]/30 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-[#1b0d1f]/85 via-[#1b0d1f]/30 to-transparent" />
             <div className="absolute bottom-5 left-5 right-5 rounded-xl border border-rose-100/20 bg-black/30 p-4 backdrop-blur">
               <p className="text-xs uppercase tracking-[0.2em] text-rose-100">
                 {t("guestRangeTitle")}
@@ -87,7 +87,7 @@ export default async function PrivateServicePage() {
               size="lg"
               className="bg-rose-200 text-[#2b1230] hover:bg-rose-100 lg:text-lg mt-4"
             >
-              <Link href="/inquiry">{t("cta")}</Link>
+              <Link href="/booking">{t("cta")}</Link>
             </Button>
           </div>
         </section>

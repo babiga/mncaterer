@@ -83,7 +83,7 @@ export default async function VipServicePage() {
               asChild
               className="bg-amber-200 text-[#1f1a11] hover:bg-amber-100 lg:text-lg"
             >
-              <Link href="/inquiry">{t("cta")}</Link>
+              <Link href="/booking">{t("cta")}</Link>
             </Button>
             <div className="rounded-2xl border border-amber-200/20 bg-[#1f1a11]/75 p-4">
               <h2 className="mb-3 text-lg font-semibold">
@@ -104,7 +104,7 @@ export default async function VipServicePage() {
                 alt={t("heroAlt")}
                 className="h-full w-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0b0906]/90 via-[#1f1a11]/40 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-[#0b0906]/90 via-[#1f1a11]/40 to-transparent" />
             </div>
 
             <div className="grid gap-6 md:grid-cols-3">

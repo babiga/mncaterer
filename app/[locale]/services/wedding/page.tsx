@@ -81,7 +81,7 @@ export default async function WeddingServicePage() {
               asChild
               className="bg-[#8a5b35] text-amber-50 hover:bg-[#764c2d] lg:text-lg"
             >
-              <Link href="/inquiry">{t("cta")}</Link>
+              <Link href="/booking">{t("cta")}</Link>
             </Button>
           </div>
           <div className="relative mt-8 overflow-hidden rounded-2xl border border-[#d7c2a6]">
@@ -90,7 +90,7 @@ export default async function WeddingServicePage() {
               alt={t("heroAlt")}
               className="h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#4f3d2f]/65 via-[#8f765c]/30 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-[#4f3d2f]/65 via-[#8f765c]/30 to-transparent" />
           </div>
         </section>
 
@@ -116,7 +116,7 @@ export default async function WeddingServicePage() {
                 <span className="absolute left-0 top-3 flex h-8 w-8 items-center justify-center rounded-full border border-[#b99567] bg-[#f5e8d6] text-[11px] font-semibold tracking-[0.12em] text-[#6f4d2f] md:left-1/2 md:top-0 md:-translate-x-1/2">
                   {item.step}
                 </span>
-                <div className="h-full rounded-[1.5rem] border border-[#d7c2a6] bg-[#fffaf1]/95 p-5 shadow-[0_18px_40px_-32px_rgba(111,77,47,0.55)]">
+                <div className="h-full rounded-3xl border border-[#d7c2a6] bg-[#fffaf1]/95 p-5 shadow-[0_18px_40px_-32px_rgba(111,77,47,0.55)]">
                   <p className="mb-3 text-xs uppercase tracking-[0.18em] text-[#8a5b35]">
                     {item.step}
                   </p>

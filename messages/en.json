@@ -97,6 +97,7 @@
         }
     },
     "Navbar": {
+        "home": "Home",
         "services": "Services",
         "menus": "Menus",
         "howItWorks": "How It Works",
@@ -104,7 +105,9 @@
         "chefs": "Our Chefs",
         "events": "Events",
         "getStarted": "Get Started",
-        "international": "International"
+        "international": "International",
+        "viewProfile": "View My Profile",
+        "goDashboard": "Go to Dashboard"
     },
     "Footer": {
         "description": "Where luxury catering meets world-class culinary artistry.",

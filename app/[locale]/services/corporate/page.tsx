@@ -115,7 +115,7 @@ export default async function CorporateServicePage() {
               size="lg"
               className="bg-blue-200 text-[#0b1a33] hover:bg-blue-100 lg:text-lg mt-4"
             >
-              <Link href="/inquiry">{t("cta")}</Link>
+              <Link href="/booking">{t("cta")}</Link>
             </Button>
           </div>
 
@@ -126,7 +126,7 @@ export default async function CorporateServicePage() {
                 alt={t("heroAlt")}
                 className="h-full w-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#081222]/90 via-[#081222]/35 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-[#081222]/90 via-[#081222]/35 to-transparent" />
             </div>
             {/* <div className="rounded-2xl border border-blue-200/25 bg-[#12284b]/80 p-5">
               <p className="mb-1 text-xs uppercase tracking-[0.2em] text-blue-200">{t("deliveryTitle")}</p>
