@@ -164,11 +164,16 @@ export function UserBookingForm({
     const primaryMenuId = normalizedMenuIds[0]
       ?? (values.menuId?.trim() ? values.menuId : null);
 
+    const guestCount = Number(values.guestCount || 0);
+    const selectedMenus = normalizedMenuIds.map((menuId) => ({
+      menuId,
+      guestCount,
+    }));
+
     const payload = {
       ...values,
+      selectedMenus,
       serviceTierId: selectedTier?.id,
-      menuId: primaryMenuId,
-      menuIds: normalizedMenuIds,
       chefProfileId: values.chefProfileId?.trim() ? values.chefProfileId : null,
       venueAddress: values.venueAddress?.trim() || null,
       specialRequests: values.specialRequests?.trim() || null,
@@ -198,6 +203,7 @@ export function UserBookingForm({
         serviceTierId: "",
         menuId: "",
         menuIds: [],
+        selectedMenus: [],
         chefProfileId: "",
         specialRequests: "",
       });

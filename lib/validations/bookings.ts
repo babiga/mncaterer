@@ -45,7 +45,10 @@ export function getCreateBookingSchema(t: BookingValidationTranslator) {
     selectedMenus: z.array(z.object({
       menuId: z.string().min(1),
       guestCount: z.coerce.number().int().min(1).max(100000),
-    })).min(1),
+    })).min(1).optional(),
+    menuId: z.string().optional(),
+    menuIds: z.array(z.string()).optional(),
+    guestCount: z.coerce.number().int().min(1).max(100000).optional(),
     chefProfileId: z.string().optional(),
     serviceType: z.enum(bookingRequestServiceTypeValues, {
       required_error: t("serviceTypeRequired"),
