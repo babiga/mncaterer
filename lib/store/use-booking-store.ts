@@ -11,7 +11,6 @@ export type BookingServiceType =
   | "OTHER";
 
 export interface BookingEventDetails {
-  guestCount: number;
   eventDate: string;
   eventTime: string;
   venue: string;
@@ -33,7 +32,7 @@ interface BookingState {
   serviceType: BookingServiceType | null;
 
   // Step 2: Menu & Chef
-  selectedMenuIds: string[];
+  selectedMenus: { menuId: string; guestCount: number }[];
   chefProfileId: string;
 
   // Step 3: Event Details
@@ -49,7 +48,8 @@ interface BookingState {
 
   // Actions
   setServiceType: (type: BookingServiceType) => void;
-  toggleMenu: (menuId: string) => void;
+  toggleMenu: (menuId: string, defaultGuestCount?: number) => void;
+  updateMenuGuestCount: (menuId: string, guestCount: number) => void;
   setChef: (chefId: string) => void;
   setEventDetails: (details: Partial<BookingEventDetails>) => void;
   setContactInfo: (info: Partial<BookingContactInfo>) => void;
@@ -65,7 +65,6 @@ interface BookingState {
 const TOTAL_STEPS = 5;
 
 const initialEventDetails: BookingEventDetails = {
-  guestCount: 20,
   eventDate: "",
   eventTime: "18:00",
   venue: "",
@@ -84,7 +83,7 @@ export const useBookingStore = create<BookingState>()(
     (set) => ({
       currentStep: 0,
       serviceType: null,
-      selectedMenuIds: [],
+      selectedMenus: [],
       chefProfileId: "",
       eventDetails: { ...initialEventDetails },
       contactInfo: { ...initialContactInfo },
@@ -95,15 +94,22 @@ export const useBookingStore = create<BookingState>()(
       setServiceType: (type) =>
         set({ serviceType: type }),
 
-      toggleMenu: (menuId) =>
+      toggleMenu: (menuId, defaultGuestCount = 1) =>
         set((state) => {
-          const exists = state.selectedMenuIds.includes(menuId);
+          const exists = state.selectedMenus.some((m) => m.menuId === menuId);
           return {
-            selectedMenuIds: exists
-              ? state.selectedMenuIds.filter((id) => id !== menuId)
-              : [...state.selectedMenuIds, menuId],
+            selectedMenus: exists
+              ? state.selectedMenus.filter((m) => m.menuId !== menuId)
+              : [...state.selectedMenus, { menuId, guestCount: defaultGuestCount }],
           };
         }),
+
+      updateMenuGuestCount: (menuId, guestCount) =>
+        set((state) => ({
+          selectedMenus: state.selectedMenus.map((m) =>
+            m.menuId === menuId ? { ...m, guestCount } : m
+          ),
+        })),
 
       setChef: (chefId) => set({ chefProfileId: chefId }),
 
@@ -138,7 +144,7 @@ export const useBookingStore = create<BookingState>()(
         set({
           currentStep: 0,
           serviceType: null,
-          selectedMenuIds: [],
+          selectedMenus: [],
           chefProfileId: "",
           eventDetails: { ...initialEventDetails },
           contactInfo: { ...initialContactInfo },
@@ -153,7 +159,7 @@ export const useBookingStore = create<BookingState>()(
       partialize: (state) => ({
         currentStep: state.currentStep,
         serviceType: state.serviceType,
-        selectedMenuIds: state.selectedMenuIds,
+        selectedMenus: state.selectedMenus,
         chefProfileId: state.chefProfileId,
         eventDetails: state.eventDetails,
         contactInfo: state.contactInfo,

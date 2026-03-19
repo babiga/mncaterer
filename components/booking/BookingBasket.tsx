@@ -21,7 +21,7 @@ export function BookingBasket({
   const t = useTranslations("Booking.basket");
   const tOrders = useTranslations("UserOrders");
   const serviceType = useBookingStore((s) => s.serviceType);
-  const selectedMenuIds = useBookingStore((s) => s.selectedMenuIds);
+  const selectedMenusSelection = useBookingStore((s) => s.selectedMenus);
   const chefProfileId = useBookingStore((s) => s.chefProfileId);
   const eventDetails = useBookingStore((s) => s.eventDetails);
 
@@ -33,27 +33,27 @@ export function BookingBasket({
     return sorted.find((t) => !t.isVIP) ?? sorted[0];
   }, [serviceTiers, serviceType]);
 
-  const selectedMenus = selectedMenuIds
-    .map((id) => menus.find((m) => m.id === id))
+  const selectedMenus = selectedMenusSelection
+    .map((selection) => {
+      const menu = menus.find((m) => m.id === selection.menuId);
+      return menu ? { ...menu, guestCount: selection.guestCount } : null;
+    })
     .filter(Boolean);
   const selectedChef = chefs.find((c) => c.id === chefProfileId);
 
-  // Estimated total based on selected menus' tier prices × guest count (0 when no menus)
+  // Estimated total: sum of (menu.pricePerGuest * menu.guestCount)
   const estimatedTotal = useMemo(() => {
-    if (selectedMenuIds.length === 0 || eventDetails.guestCount <= 0) return 0;
-    if (selectedMenus.length === 0) return 0;
-    const prices = selectedMenus
-      .map((m) => (m!.serviceTier ? Number(m!.serviceTier.pricePerGuest) : 0))
-      .filter((p) => p > 0);
-    const unitPrice = prices.length > 0
-      ? Math.max(...prices)
-      : (resolvedTier?.pricePerGuest ?? 0);
-    return unitPrice * eventDetails.guestCount;
-  }, [selectedMenuIds, selectedMenus, eventDetails.guestCount, resolvedTier]);
+    if (selectedMenusSelection.length === 0) return 0;
+    return selectedMenusSelection.reduce((sum, selection) => {
+      const menu = menus.find((m) => m.id === selection.menuId);
+      const price = menu?.serviceTier ? Number(menu.serviceTier.pricePerGuest) : 0;
+      return sum + price * selection.guestCount;
+    }, 0);
+  }, [selectedMenusSelection, menus]);
 
   const hasAny =
     serviceType ||
-    selectedMenuIds.length > 0 ||
+    selectedMenusSelection.length > 0 ||
     eventDetails.venue ||
     eventDetails.eventDate;
 
@@ -105,12 +105,14 @@ export function BookingBasket({
                     {tOrders("list.menu")}
                   </p>
                   {selectedMenus.map((menu) => (
-                    <p
-                      key={menu!.id}
-                      className="text-sm text-white font-medium"
-                    >
-                      {menu!.name}
-                    </p>
+                    <div key={menu!.id} className="flex items-center justify-between gap-2 mt-0.5">
+                      <p className="text-sm text-white font-medium truncate">
+                        {menu!.name}
+                      </p>
+                      <p className="text-xs text-white/40 shrink-0">
+                        {menu!.guestCount} {tOrders("summary.guests")}
+                      </p>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -132,26 +134,11 @@ export function BookingBasket({
             )}
 
             {/* Event info */}
-            {(eventDetails.eventDate || eventDetails.guestCount > 0) && (
-              <div className="flex items-start gap-3">
-                <Calendar className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-                <div>
                   {eventDetails.eventDate && (
                     <p className="text-sm text-white">
                       {eventDetails.eventDate} • {eventDetails.eventTime}
                     </p>
                   )}
-                  {eventDetails.guestCount > 0 && (
-                    <div className="flex items-center gap-1 text-xs text-white/40 mt-0.5">
-                      <Users className="w-3 h-3" />
-                      {tOrders("list.guests", {
-                        count: eventDetails.guestCount,
-                      })}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
 
             {eventDetails.venue && (
               <p className="text-xs text-white/40 pl-7 -mt-2">

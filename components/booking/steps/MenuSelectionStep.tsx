@@ -39,9 +39,10 @@ export function MenuSelectionStep({
   const t = useTranslations("Booking.steps.menuSelection");
   const tOrders = useTranslations("UserOrders");
   const serviceType = useBookingStore((s) => s.serviceType);
-  const selectedMenuIds = useBookingStore((s) => s.selectedMenuIds);
+  const selectedMenus = useBookingStore((s) => s.selectedMenus);
   const chefProfileId = useBookingStore((s) => s.chefProfileId);
   const toggleMenu = useBookingStore((s) => s.toggleMenu);
+  const updateMenuGuestCount = useBookingStore((s) => s.updateMenuGuestCount);
   const setChef = useBookingStore((s) => s.setChef);
   const nextStep = useBookingStore((s) => s.nextStep);
   const prevStep = useBookingStore((s) => s.prevStep);
@@ -78,16 +79,16 @@ export function MenuSelectionStep({
       {filteredMenus.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
           {filteredMenus.map((menu, i) => {
-            const isSelected = selectedMenuIds.includes(menu.id);
+            const menuState = selectedMenus.find((m) => m.menuId === menu.id);
+            const isSelected = !!menuState;
             return (
-              <motion.button
+              <motion.div
                 key={menu.id}
-                type="button"
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
                 onClick={() => toggleMenu(menu.id)}
-                className={`group relative p-6 rounded-2xl border-2 text-left transition-all duration-300 ${
+                className={`group relative p-6 rounded-2xl border-2 text-left transition-all duration-300 cursor-pointer ${
                   isSelected
                     ? "border-primary bg-primary/5 ring-1 ring-primary/20"
                     : "border-white/5 bg-white/2 hover:border-white/15"
@@ -121,15 +122,34 @@ export function MenuSelectionStep({
                   )}
                 </div>
 
-                {/* Price */}
+                {/* Price & Guest Count */}
                 {menu.serviceTier?.pricePerGuest && (
-                  <div className="mb-4 p-3 bg-white/3 rounded-xl border border-white/5">
-                    <div className="text-[10px] uppercase tracking-widest text-white/30 mb-1">
-                      {t("pricePerGuest")}
+                  <div className="mb-4 grid grid-cols-2 gap-3">
+                    <div className="p-3 bg-white/3 rounded-xl border border-white/5">
+                      <div className="text-[10px] uppercase tracking-widest text-white/30 mb-1">
+                        {t("pricePerGuest")}
+                      </div>
+                      <div className="text-lg text-white font-medium">
+                        {Number(menu.serviceTier.pricePerGuest).toLocaleString()}₮
+                      </div>
                     </div>
-                    <div className="text-lg text-white font-medium">
-                      {Number(menu.serviceTier.pricePerGuest).toLocaleString()}₮
-                    </div>
+                    {isSelected && (
+                      <div 
+                        className="p-3 bg-white/5 rounded-xl border border-primary/30"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <div className="text-[10px] uppercase tracking-widest text-primary mb-1">
+                          {tOrders("form.fields.guestCount")}
+                        </div>
+                        <input
+                          type="number"
+                          min="1"
+                          value={menuState.guestCount}
+                          onChange={(e) => updateMenuGuestCount(menu.id, parseInt(e.target.value) || 0)}
+                          className="bg-transparent border-none text-white w-full text-lg font-medium focus:ring-0 p-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -153,7 +173,7 @@ export function MenuSelectionStep({
                     </p>
                   )}
                 </div>
-              </motion.button>
+              </motion.div>
             );
           })}
         </div>

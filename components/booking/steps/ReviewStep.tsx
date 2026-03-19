@@ -34,39 +34,33 @@ export function ReviewStep({ serviceTiers, menus, chefs }: ReviewStepProps) {
     return sorted.find((t) => !t.isVIP) ?? sorted[0];
   }, [serviceTiers, store.serviceType]);
 
-  const selectedMenus = store.selectedMenuIds
-    .map((id) => menus.find((m) => m.id === id))
+  const selectedMenus = store.selectedMenus
+    .map((selection) => {
+      const menu = menus.find((m) => m.id === selection.menuId);
+      return menu ? { ...menu, guestCount: selection.guestCount } : null;
+    })
     .filter(Boolean);
   const selectedChef = chefs.find((c) => c.id === store.chefProfileId);
 
-  // Estimated total based on selected menus' tier prices × guest count (0 when no menus)
+  // Estimated total: sum of (menu.pricePerGuest * menu.guestCount)
   const estimatedTotal = useMemo(() => {
-    if (store.selectedMenuIds.length === 0 || store.eventDetails.guestCount <= 0) return 0;
-    if (selectedMenus.length === 0) return 0;
-    const prices = selectedMenus
-      .map((m) => (m!.serviceTier ? Number(m!.serviceTier.pricePerGuest) : 0))
-      .filter((p) => p > 0);
-    const unitPrice = prices.length > 0
-      ? Math.max(...prices)
-      : (resolvedTier?.pricePerGuest ?? 0);
-    return unitPrice * store.eventDetails.guestCount;
-  }, [store.selectedMenuIds, selectedMenus, store.eventDetails.guestCount, resolvedTier]);
+    if (store.selectedMenus.length === 0) return 0;
+    return store.selectedMenus.reduce((sum, selection) => {
+      const menu = menus.find((m) => m.id === selection.menuId);
+      const price = menu?.serviceTier ? Number(menu.serviceTier.pricePerGuest) : 0;
+      return sum + price * selection.guestCount;
+    }, 0);
+  }, [store.selectedMenus, menus]);
 
   async function handleSubmit() {
     store.setSubmitting(true);
     store.setSubmissionError(null);
 
-    const normalizedMenuIds = store.selectedMenuIds.filter(
-      (id) => id.trim().length > 0,
-    );
-
     const payload = {
       serviceType: store.serviceType,
       serviceTierId: resolvedTier?.id,
-      menuId: normalizedMenuIds[0] ?? null,
-      menuIds: normalizedMenuIds,
+      selectedMenus: store.selectedMenus,
       chefProfileId: store.chefProfileId?.trim() || null,
-      guestCount: store.eventDetails.guestCount,
       eventDate: store.eventDetails.eventDate,
       eventTime: store.eventDetails.eventTime,
       venue: store.eventDetails.venue.trim(),
@@ -152,7 +146,9 @@ export function ReviewStep({ serviceTiers, menus, chefs }: ReviewStepProps) {
       label: tOrders("list.menu"),
       value:
         selectedMenus.length > 0
-          ? selectedMenus.map((m) => m!.name).join(", ")
+          ? selectedMenus
+              .map((m) => `${m!.name} (${m!.guestCount} ${tOrders("summary.guests")})`)
+              .join(", ")
           : tOrders("form.none.menu"),
     },
     {
@@ -160,12 +156,6 @@ export function ReviewStep({ serviceTiers, menus, chefs }: ReviewStepProps) {
       value: selectedChef
         ? `${selectedChef.name} (${selectedChef.specialty})`
         : tOrders("form.none.chef"),
-    },
-    {
-      label: tOrders("summary.guests"),
-      value: tOrders("list.guests", {
-        count: store.eventDetails.guestCount,
-      }),
     },
     {
       label: tOrders("summary.eventDateTime"),

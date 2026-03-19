@@ -146,13 +146,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const requestedMenuIds = Array.from(
-      new Set(
-        [...(data.menuIds ?? []), ...(data.menuId ? [data.menuId] : [])]
-          .map((menuId) => menuId.trim())
-          .filter((menuId) => menuId.length > 0),
-      ),
-    );
+    const requestedMenuIds = data.selectedMenus.map((m) => m.menuId);
 
     const selectedMenus = requestedMenuIds.length > 0
       ? await prisma.menu.findMany({
@@ -164,6 +158,11 @@ export async function POST(request: NextRequest) {
           id: true,
           name: true,
           serviceTierId: true,
+          serviceTier: {
+            select: {
+              pricePerGuest: true,
+            },
+          },
         },
       })
       : [];
@@ -175,14 +174,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const invalidTierMenu = selectedMenus.find(
-      (menu) => menu.serviceTierId && menu.serviceTierId !== serviceTier.id,
-    );
-    if (invalidTierMenu) {
-      return NextResponse.json(
-        { success: false, error: "One or more menus do not match selected service type package" },
-        { status: 400 },
-      );
+    // Validation remains similar, but we check each menu
+    for (const menu of selectedMenus) {
+      if (menu.serviceTierId && menu.serviceTierId !== serviceTier.id) {
+        return NextResponse.json(
+          { success: false, error: `Menu ${menu.name} does not match selected service type package` },
+          { status: 400 },
+        );
+      }
     }
 
     if (data.chefProfileId) {
@@ -212,7 +211,17 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const totalPrice = Number(serviceTier.pricePerGuest) * data.guestCount;
+    // Calculate total price and total guest count
+    let totalPrice = 0;
+    let totalGuestCount = 0;
+
+    for (const selection of data.selectedMenus) {
+      const menu = selectedMenus.find((m) => m.id === selection.menuId);
+      const price = menu?.serviceTier ? Number(menu.serviceTier.pricePerGuest) : Number(serviceTier.pricePerGuest);
+      totalPrice += price * selection.guestCount;
+      totalGuestCount += selection.guestCount;
+    }
+
     const depositAmount = Number((totalPrice * 0.3).toFixed(2));
 
     const user = await prisma.user.findUnique({
@@ -239,12 +248,12 @@ export async function POST(request: NextRequest) {
     if (data.specialRequests?.trim()) {
       requestDetails.push(data.specialRequests.trim());
     }
-    if (selectedMenus.length > 1) {
-      const namesById = new Map(selectedMenus.map((menu) => [menu.id, menu.name]));
-      const orderedNames = requestedMenuIds
-        .map((menuId) => namesById.get(menuId))
-        .filter((menuName): menuName is string => Boolean(menuName));
-      requestDetails.push(`Selected menus: ${orderedNames.join(", ")}`);
+    if (selectedMenus.length > 0) {
+      const namesWithGuests = data.selectedMenus.map((selection) => {
+        const menu = selectedMenus.find((m) => m.id === selection.menuId);
+        return `${menu?.name} (${selection.guestCount} guests)`;
+      });
+      requestDetails.push(`Selected menus:\n- ${namesWithGuests.join("\n- ")}`);
     }
     const normalizedContactEmail = data.contactEmail.trim();
     if (normalizedContactEmail !== user.email) {
@@ -262,7 +271,7 @@ export async function POST(request: NextRequest) {
         serviceType: data.serviceType,
         eventDate,
         eventTime: data.eventTime,
-        guestCount: data.guestCount,
+        guestCount: totalGuestCount,
         venue: data.venue.trim(),
         venueAddress: data.venueAddress?.trim() || null,
         specialRequests: requestDetails.length > 0 ? requestDetails.join("\n") : null,

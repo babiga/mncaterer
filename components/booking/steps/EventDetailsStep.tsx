@@ -40,7 +40,7 @@ export function EventDetailsStep({
   const tOrders = useTranslations("UserOrders");
   const eventDetails = useBookingStore((s) => s.eventDetails);
   const serviceType = useBookingStore((s) => s.serviceType);
-  const selectedMenuIds = useBookingStore((s) => s.selectedMenuIds);
+  const selectedMenus = useBookingStore((s) => s.selectedMenus);
   const setEventDetails = useBookingStore((s) => s.setEventDetails);
   const nextStep = useBookingStore((s) => s.nextStep);
   const prevStep = useBookingStore((s) => s.prevStep);
@@ -53,26 +53,17 @@ export function EventDetailsStep({
     return sorted.find((t) => !t.isVIP) ?? sorted[0];
   }, [serviceTiers, serviceType]);
 
-  // Estimated total: sum of selected menus' tier pricePerGuest × guestCount
-  // If no menus selected, total is 0
+  // Estimated total: sum of (menu.pricePerGuest * menu.guestCount)
   const estimatedTotal = useMemo(() => {
-    if (selectedMenuIds.length === 0 || eventDetails.guestCount <= 0) return 0;
-    const selectedMenus = selectedMenuIds
-      .map((id) => menus.find((m) => m.id === id))
-      .filter(Boolean);
     if (selectedMenus.length === 0) return 0;
-    // Use the highest pricePerGuest among selected menus' tiers, or fallback to resolved tier
-    const prices = selectedMenus
-      .map((m) => (m!.serviceTier ? Number(m!.serviceTier.pricePerGuest) : 0))
-      .filter((p) => p > 0);
-    const unitPrice = prices.length > 0
-      ? Math.max(...prices)
-      : (resolvedTier?.pricePerGuest ?? 0);
-    return unitPrice * eventDetails.guestCount;
-  }, [selectedMenuIds, menus, eventDetails.guestCount, resolvedTier]);
+    return selectedMenus.reduce((sum, selection) => {
+      const menu = menus.find((m) => m.id === selection.menuId);
+      const price = menu?.serviceTier ? Number(menu.serviceTier.pricePerGuest) : 0;
+      return sum + price * selection.guestCount;
+    }, 0);
+  }, [selectedMenus, menus]);
 
   const canProceed =
-    eventDetails.guestCount > 0 &&
     eventDetails.eventDate &&
     eventDetails.eventTime &&
     eventDetails.venue.trim().length >= 2;
@@ -87,29 +78,6 @@ export function EventDetailsStep({
       </div>
 
       <div className="space-y-6">
-        {/* Guest Count */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="p-5 rounded-2xl border border-white/5 bg-white/2"
-        >
-          <div className="flex items-center gap-3 mb-3">
-            <Users className="w-5 h-5 text-primary" />
-            <label className="text-sm font-medium text-white">
-              {tOrders("form.fields.guestCount")}
-            </label>
-          </div>
-          <Input
-            type="number"
-            min={1}
-            value={eventDetails.guestCount}
-            onChange={(e) =>
-              setEventDetails({ guestCount: Number(e.target.value) || 0 })
-            }
-            className="bg-white/5 border-white/10 h-12 rounded-xl text-white text-lg"
-          />
-        </motion.div>
-
         {/* Date & Time */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <motion.div
@@ -245,8 +213,7 @@ export function EventDetailsStep({
               </div>
               <div className="text-right text-white/40 text-sm">
                 <p>
-                  {Math.round(estimatedTotal / eventDetails.guestCount).toLocaleString()}₮ ×{" "}
-                  {eventDetails.guestCount}
+                  {selectedMenus.length} {tOrders("form.fields.menuOptional")}
                 </p>
                 {resolvedTier && <p className="text-xs">{resolvedTier.name}</p>}
               </div>
