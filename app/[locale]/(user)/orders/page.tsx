@@ -50,8 +50,8 @@ export default async function UserOrdersPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-        <p className="text-muted-foreground mt-1">{t("description")}</p>
+        <h1 className="text-3xl md:text-4xl font-serif tracking-tight">{t("title")}</h1>
+        <p className="text-muted-foreground mt-1 text-lg">{t("description")}</p>
       </div>
 
       <UserOrdersList

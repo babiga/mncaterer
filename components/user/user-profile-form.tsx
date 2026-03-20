@@ -95,55 +95,58 @@ export function UserProfileForm({ initialData }: UserProfileFormProps) {
     }
   }
 
+  const labelClasses = "text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground/70 mb-2 block";
+
   return (
-    <Card>
+    <Card className="rounded-2xl border bg-card shadow-sm max-w-4xl">
       <CardHeader>
-        <CardTitle>{t("title")}</CardTitle>
+        <CardTitle className="text-xl font-serif">{t("title")}</CardTitle>
         <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {statusMessage && (
-              <div className="rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-700">
+              <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700 animate-in fade-in slide-in-from-top-2">
                 {statusMessage}
               </div>
             )}
             {errorMessage && (
-              <div className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+              <div className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive animate-in fade-in slide-in-from-top-2">
                 {errorMessage}
               </div>
             )}
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("fields.name")}</FormLabel>
+                    <FormLabel className={labelClasses}>{t("fields.name")}</FormLabel>
                     <FormControl>
-                      <Input placeholder={t("placeholders.name")} {...field} />
+                      <Input className="h-10 rounded-xl" placeholder={t("placeholders.name")} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <div className="space-y-2">
-                <Label htmlFor="email">{t("fields.email")}</Label>
-                <Input id="email" value={initialData.email} disabled readOnly />
+                <Label className={labelClasses} htmlFor="email">{t("fields.email")}</Label>
+                <Input className="h-10 rounded-xl bg-muted/30" id="email" value={initialData.email} disabled readOnly />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <FormField
                 control={form.control}
                 name="firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("fields.firstName")}</FormLabel>
+                    <FormLabel className={labelClasses}>{t("fields.firstName")}</FormLabel>
                     <FormControl>
                       <Input
+                        className="h-10 rounded-xl"
                         placeholder={t("placeholders.firstName")}
                         {...field}
                       />
@@ -157,9 +160,10 @@ export function UserProfileForm({ initialData }: UserProfileFormProps) {
                 name="lastName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("fields.lastName")}</FormLabel>
+                    <FormLabel className={labelClasses}>{t("fields.lastName")}</FormLabel>
                     <FormControl>
                       <Input
+                        className="h-10 rounded-xl"
                         placeholder={t("placeholders.lastName")}
                         {...field}
                       />
@@ -170,23 +174,24 @@ export function UserProfileForm({ initialData }: UserProfileFormProps) {
               />
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <FormField
                 control={form.control}
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("fields.phone")}</FormLabel>
+                    <FormLabel className={labelClasses}>{t("fields.phone")}</FormLabel>
                     <FormControl>
-                      <Input placeholder={t("placeholders.phone")} {...field} />
+                      <Input className="h-10 rounded-xl" placeholder={t("placeholders.phone")} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <div className="space-y-2">
-                <Label htmlFor="user-type">{t("fields.userType")}</Label>
+                <Label className={labelClasses} htmlFor="user-type">{t("fields.userType")}</Label>
                 <Input
+                  className="h-10 rounded-xl bg-muted/30 capitalize"
                   id="user-type"
                   value={t(`userType.${initialData.userType}`)}
                   disabled
@@ -196,12 +201,13 @@ export function UserProfileForm({ initialData }: UserProfileFormProps) {
             </div>
 
             {initialData.userType === "CORPORATE" && (
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="organization-name">
+                  <Label className={labelClasses} htmlFor="organization-name">
                     {t("fields.organizationName")}
                   </Label>
                   <Input
+                    className="h-10 rounded-xl bg-muted/30"
                     id="organization-name"
                     value={initialData.organizationName || "-"}
                     disabled
@@ -209,10 +215,11 @@ export function UserProfileForm({ initialData }: UserProfileFormProps) {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="company-legal-no">
+                  <Label className={labelClasses} htmlFor="company-legal-no">
                     {t("fields.companyLegalNo")}
                   </Label>
                   <Input
+                    className="h-10 rounded-xl bg-muted/30"
                     id="company-legal-no"
                     value={initialData.companyLegalNo || "-"}
                     disabled
@@ -227,10 +234,11 @@ export function UserProfileForm({ initialData }: UserProfileFormProps) {
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t("fields.address")}</FormLabel>
+                  <FormLabel className={labelClasses}>{t("fields.address")}</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder={t("placeholders.address")}
+                      className="rounded-xl min-h-[120px] resize-none"
                       rows={4}
                       {...field}
                     />
@@ -240,9 +248,11 @@ export function UserProfileForm({ initialData }: UserProfileFormProps) {
               )}
             />
 
-            <Button type="submit" disabled={isSaving}>
-              {isSaving ? t("actions.saving") : t("actions.save")}
-            </Button>
+            <div className="flex justify-end pt-4">
+              <Button type="submit" disabled={isSaving} size="lg" className="rounded-xl px-8 min-w-[160px] shadow-lg shadow-primary/20">
+                {isSaving ? t("actions.saving") : t("actions.save")}
+              </Button>
+            </div>
           </form>
         </Form>
       </CardContent>
