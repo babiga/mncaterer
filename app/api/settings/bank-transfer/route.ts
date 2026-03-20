@@ -6,7 +6,7 @@ import { bankTransferSettingsSchema } from "@/lib/validations/settings";
 export async function GET() {
   try {
     const session = await getSession();
-    if (!session || session.userType !== "dashboard") {
+    if (!session || (session.userType !== "dashboard" && session.userType !== "customer")) {
       return NextResponse.json(
         { success: false, error: "Unauthorized" },
         { status: 401 },

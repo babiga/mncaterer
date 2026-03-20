@@ -605,6 +605,23 @@
             "chef": "Chef",
             "submitted": "Submitted"
         },
+        "payment": "Payment",
+        "paymentDetails": "Payment details",
+        "pricePerGuest": "Price per guest",
+        "totalGuests": "Total guests",
+        "depositRequired": "Deposit required",
+        "bankTransfer": {
+            "title": "Bank Transfer",
+            "bankName": "Bank",
+            "accountNumber": "Account Number",
+            "accountHolder": "Account Holder",
+            "instructions": "Instructions",
+            "amount": "Amount to Pay",
+            "reference": "Reference / Description",
+            "unavailable": "Bank transfer is currently unavailable. Please contact support.",
+            "copied": "Copied to clipboard",
+            "close": "Close"
+        },
         "messages": {
             "createSuccess": "Booking request submitted successfully.",
             "createError": "Failed to create booking."
@@ -878,7 +895,7 @@
                 "successTitle": "Booking Submitted!",
                 "successDescription": "Your booking request has been submitted successfully. Our team will review it and contact you shortly.",
                 "backHome": "Back to Home",
-                "newBooking": "New Booking"
+                "newBooking": "Confirm"
             }
         },
         "basket": {

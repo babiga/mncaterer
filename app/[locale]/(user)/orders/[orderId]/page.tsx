@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
+import { PaymentButton } from "@/components/booking/PaymentButton";
 
 const bookingStatusVariant: Record<string, string> = {
     PENDING: "bg-amber-500/10 text-amber-700 border-amber-500/20",
@@ -80,7 +81,13 @@ export default async function OrderDetailsPage({
                         {format(new Date(booking.createdAt), "PPP")}
                     </p>
                 </div>
-                <div className="ml-auto">
+                <div className="ml-auto flex items-center gap-3">
+                    {booking.status === "PENDING" && (
+                        <PaymentButton
+                            bookingNumber={booking.bookingNumber}
+                            amount={Number(booking.totalPrice)}
+                        />
+                    )}
                     <Badge variant="outline" className={bookingStatusVariant[booking.status]}>
                         {t(`statuses.${booking.status}`)}
                     </Badge>
@@ -153,23 +160,17 @@ export default async function OrderDetailsPage({
                 <Card className="md:col-span-2">
                     <CardHeader>
                         <CardTitle>{t("summary.total")}</CardTitle>
-                        <CardDescription>Payment details</CardDescription>
+                        <CardDescription>{t("paymentDetails")}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="flex justify-between items-center py-2 border-b">
-                            <span className="text-muted-foreground">Price per guest</span>
+                            <span className="text-muted-foreground">{t("pricePerGuest")}</span>
                             <span>{formatPrice(Number(booking.serviceTier.pricePerGuest))}₮</span>
                         </div>
                         <div className="flex justify-between items-center py-2 border-b">
-                            <span className="text-muted-foreground">Total guests</span>
+                            <span className="text-muted-foreground">{t("totalGuests")}</span>
                             <span>x {booking.guestCount}</span>
                         </div>
-                        {booking.depositAmount && (
-                            <div className="flex justify-between items-center py-2 border-b text-amber-600">
-                                <span>Deposit required</span>
-                                <span>{formatPrice(Number(booking.depositAmount))}₮</span>
-                            </div>
-                        )}
                         <div className="flex justify-between items-center py-2 font-medium text-lg">
                             <span>{t("summary.total")}</span>
                             <span>{formatPrice(Number(booking.totalPrice))}₮</span>

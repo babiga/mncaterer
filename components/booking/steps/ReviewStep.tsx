@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import {
@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useBookingStore } from "@/lib/store/use-booking-store";
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import type { ServiceTierOption, MenuOption, ChefOption } from "../BookingFlow";
 
 interface ReviewStepProps {
@@ -24,6 +24,8 @@ export function ReviewStep({ serviceTiers, menus, chefs }: ReviewStepProps) {
   const t = useTranslations("Booking.steps.review");
   const tOrders = useTranslations("UserOrders");
   const store = useBookingStore();
+  const router = useRouter();
+  const [bookingId, setBookingId] = useState<string | null>(null);
 
   const resolvedTier = useMemo(() => {
     const sorted = [...serviceTiers].sort(
@@ -88,6 +90,7 @@ export function ReviewStep({ serviceTiers, menus, chefs }: ReviewStepProps) {
         return;
       }
 
+      setBookingId(result.data.id);
       store.setSubmitting(false);
       store.setSubmitted(true);
     } catch {
@@ -121,7 +124,14 @@ export function ReviewStep({ serviceTiers, menus, chefs }: ReviewStepProps) {
             <Link href="/">{t("backHome")}</Link>
           </Button>
           <Button
-            onClick={() => store.resetBooking()}
+            onClick={() => {
+              if (bookingId) {
+                router.push(`/orders/${bookingId}`);
+                store.resetBooking();
+              } else {
+                store.resetBooking();
+              }
+            }}
             className="gap-2"
           >
             {t("newBooking")}

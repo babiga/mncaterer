@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
-import { ShoppingBag, Utensils, ChefHat, Users, Calendar } from "lucide-react";
+import { ShoppingBag, Utensils, ChefHat, Calendar, MapPin, Sparkles, AlignLeft } from "lucide-react";
 import { useBookingStore } from "@/lib/store/use-booking-store";
 import type { ServiceTierOption, MenuOption, ChefOption } from "./BookingFlow";
 
@@ -24,6 +24,7 @@ export function BookingBasket({
   const selectedMenusSelection = useBookingStore((s) => s.selectedMenus);
   const chefProfileId = useBookingStore((s) => s.chefProfileId);
   const eventDetails = useBookingStore((s) => s.eventDetails);
+  const contactInfo = useBookingStore((s) => s.contactInfo);
 
   const resolvedTier = useMemo(() => {
     const sorted = [...serviceTiers].sort(
@@ -79,7 +80,7 @@ export function BookingBasket({
             {/* Service Type */}
             {serviceType && (
               <div className="flex items-start gap-3">
-                <Utensils className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                <Sparkles className="w-4 h-4 text-primary mt-0.5 shrink-0" />
                 <div>
                   <p className="text-[10px] uppercase tracking-widest text-white/30">
                     {tOrders("summary.serviceType")}
@@ -88,7 +89,7 @@ export function BookingBasket({
                     {tOrders(`serviceTypes.${serviceType}`)}
                   </p>
                   {resolvedTier && (
-                    <p className="text-xs text-white/40 mt-0.5">
+                    <p className="text-xs text-white/40 mt-0.5 capitalize">
                       {resolvedTier.name}
                     </p>
                   )}
@@ -134,16 +135,46 @@ export function BookingBasket({
             )}
 
             {/* Event info */}
-                  {eventDetails.eventDate && (
-                    <p className="text-sm text-white">
-                      {eventDetails.eventDate} • {eventDetails.eventTime}
-                    </p>
-                  )}
+            {eventDetails.eventDate && (
+              <div className="flex items-start gap-3">
+                <Calendar className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-white/30">
+                    {tOrders("summary.eventDateTime")}
+                  </p>
+                  <p className="text-sm text-white font-medium">
+                    {eventDetails.eventDate} {eventDetails.eventTime && `• ${eventDetails.eventTime}`}
+                  </p>
+                </div>
+              </div>
+            )}
 
             {eventDetails.venue && (
-              <p className="text-xs text-white/40 pl-7 -mt-2">
-                {eventDetails.venue}
-              </p>
+              <div className="flex items-start gap-3">
+                <MapPin className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-white/30">
+                    {tOrders("summary.venue")}
+                  </p>
+                  <p className="text-sm text-white font-medium capitalize">
+                    {eventDetails.venue}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {contactInfo.specialRequests && (
+              <div className="flex items-start gap-3">
+                <AlignLeft className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-white/30">
+                    {tOrders("form.fields.specialRequestsOptional")}
+                  </p>
+                  <p className="text-xs text-white/60 line-clamp-2 first-letter:uppercase">
+                    {contactInfo.specialRequests}
+                  </p>
+                </div>
+              </div>
             )}
           </>
         )}
