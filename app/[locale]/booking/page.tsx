@@ -107,7 +107,7 @@ export default async function BookingPage({
   }));
 
   return (
-    <main className="pt-24 pb-12">
+    <main className="pt-24 pb-12 lg:pt-36">
       <BookingFlow
         serviceTiers={formattedServiceTiers}
         menus={formattedMenus}
