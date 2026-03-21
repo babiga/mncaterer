@@ -5,23 +5,27 @@ import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { ShoppingBag, Utensils, ChefHat, Calendar, MapPin, Sparkles, AlignLeft } from "lucide-react";
 import { useBookingStore } from "@/lib/store/use-booking-store";
-import type { ServiceTierOption, MenuOption, ChefOption } from "./BookingFlow";
+import type { ServiceTierOption, MenuOption, ChefOption, MenuItemOption } from "./BookingFlow";
 
 interface BookingBasketProps {
   serviceTiers: ServiceTierOption[];
   menus: MenuOption[];
   chefs: ChefOption[];
+  menuItems: MenuItemOption[];
 }
 
 export function BookingBasket({
   serviceTiers,
   menus,
   chefs,
+  menuItems,
 }: BookingBasketProps) {
   const t = useTranslations("Booking.basket");
   const tOrders = useTranslations("UserOrders");
   const serviceType = useBookingStore((s) => s.serviceType);
   const selectedMenusSelection = useBookingStore((s) => s.selectedMenus);
+  const isCustomMenu = useBookingStore((s) => s.isCustomMenu);
+  const customMenuItems = useBookingStore((s) => s.customMenuItems);
   const chefProfileId = useBookingStore((s) => s.chefProfileId);
   const eventDetails = useBookingStore((s) => s.eventDetails);
   const contactInfo = useBookingStore((s) => s.contactInfo);
@@ -44,17 +48,23 @@ export function BookingBasket({
 
   // Estimated total: sum of (menu.pricePerGuest * menu.guestCount)
   const estimatedTotal = useMemo(() => {
+    if (isCustomMenu) {
+      return customMenuItems.reduce((sum, item) => {
+        const menuItem = menuItems.find((m) => m.id === item.menuItemId);
+        return sum + (Number(menuItem?.price) || 0) * item.quantity;
+      }, 0);
+    }
     if (selectedMenusSelection.length === 0) return 0;
     return selectedMenusSelection.reduce((sum, selection) => {
       const menu = menus.find((m) => m.id === selection.menuId);
       const price = menu?.serviceTier ? Number(menu.serviceTier.pricePerGuest) : 0;
       return sum + price * selection.guestCount;
     }, 0);
-  }, [selectedMenusSelection, menus]);
+  }, [isCustomMenu, customMenuItems, selectedMenusSelection, menus, menuItems]);
 
   const hasAny =
     serviceType ||
-    selectedMenusSelection.length > 0 ||
+    (isCustomMenu ? customMenuItems.length > 0 : selectedMenusSelection.length > 0) ||
     eventDetails.venue ||
     eventDetails.eventDate;
 
@@ -97,8 +107,8 @@ export function BookingBasket({
               </div>
             )}
 
-            {/* Menus */}
-            {selectedMenus.length > 0 && (
+            {/* Menus / Custom Items */}
+            {!isCustomMenu && selectedMenus.length > 0 && (
               <div className="flex items-start gap-3">
                 <Utensils className="w-4 h-4 text-primary mt-0.5 shrink-0" />
                 <div>
@@ -115,6 +125,30 @@ export function BookingBasket({
                       </p>
                     </div>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {isCustomMenu && customMenuItems.length > 0 && (
+              <div className="flex items-start gap-3">
+                <Utensils className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-white/30">
+                    {t("customItemsTitle")}
+                  </p>
+                  {customMenuItems.map((item) => {
+                    const menuItem = menuItems.find((m) => m.id === item.menuItemId);
+                    return (
+                      <div key={item.menuItemId} className="flex items-center justify-between gap-2 mt-0.5">
+                        <p className="text-sm text-white font-medium truncate">
+                          {menuItem?.name || "Item"}
+                        </p>
+                        <p className="text-xs text-white/40 shrink-0">
+                          x{item.quantity}
+                        </p>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}

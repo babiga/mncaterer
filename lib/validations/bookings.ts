@@ -10,7 +10,12 @@ export const createBookingApiSchema = z.object({
   selectedMenus: z.array(z.object({
     menuId: z.string().min(1),
     guestCount: z.coerce.number().int().min(1).max(100000),
-  })).min(1),
+  })).min(1).optional(),
+  isCustomMenu: z.boolean().default(false),
+  customMenuItems: z.array(z.object({
+    menuItemId: z.string().min(1),
+    quantity: z.coerce.number().int().min(1).max(100000),
+  })).optional(),
   chefProfileId: z.string().nullable().optional(),
   serviceType: z.enum(bookingRequestServiceTypeValues),
   eventDate: z
@@ -46,6 +51,11 @@ export function getCreateBookingSchema(t: BookingValidationTranslator) {
       menuId: z.string().min(1),
       guestCount: z.coerce.number().int().min(1).max(100000),
     })).min(1).optional(),
+    isCustomMenu: z.boolean().optional(),
+    customMenuItems: z.array(z.object({
+      menuItemId: z.string().min(1),
+      quantity: z.coerce.number().int().min(1).max(100000),
+    })).optional(),
     menuId: z.string().optional(),
     menuIds: z.array(z.string()).optional(),
     guestCount: z.coerce.number().int().min(1).max(100000).optional(),

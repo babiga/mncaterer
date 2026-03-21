@@ -32,7 +32,7 @@ export default async function BookingPage({
     redirect(`/${locale}/login`);
   }
 
-  const [serviceTiers, menus, chefs] = await Promise.all([
+  const [serviceTiers, menus, chefs, menuItems] = await Promise.all([
     prisma.serviceTier.findMany({
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
       select: {
@@ -90,6 +90,18 @@ export default async function BookingPage({
         },
       },
     }),
+    prisma.menuItem.findMany({
+      where: { isActive: true },
+      orderBy: { name: "asc" },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        price: true,
+        category: true,
+        imageUrl: true,
+      },
+    }),
   ]);
 
   const formattedServiceTiers = serviceTiers.map((t) => ({
@@ -106,12 +118,18 @@ export default async function BookingPage({
     rating: chef.rating,
   }));
 
+  const formattedMenuItems = menuItems.map((item) => ({
+    ...item,
+    price: Number(item.price),
+  }));
+
   return (
     <main className="pt-24 pb-12 lg:pt-36">
       <BookingFlow
         serviceTiers={formattedServiceTiers}
         menus={formattedMenus}
         chefs={formattedChefs}
+        menuItems={formattedMenuItems}
         initialCustomer={{
           name: user.name,
           email: user.email,

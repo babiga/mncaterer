@@ -12,15 +12,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { useBookingStore } from "@/lib/store/use-booking-store";
 import { Link, useRouter } from "@/i18n/routing";
-import type { ServiceTierOption, MenuOption, ChefOption } from "../BookingFlow";
+import type { ServiceTierOption, MenuOption, ChefOption, MenuItemOption } from "../BookingFlow";
 
 interface ReviewStepProps {
   serviceTiers: ServiceTierOption[];
   menus: MenuOption[];
   chefs: ChefOption[];
+  menuItems: MenuItemOption[];
 }
 
-export function ReviewStep({ serviceTiers, menus, chefs }: ReviewStepProps) {
+export function ReviewStep({ serviceTiers, menus, chefs, menuItems }: ReviewStepProps) {
   const t = useTranslations("Booking.steps.review");
   const tOrders = useTranslations("UserOrders");
   const store = useBookingStore();
@@ -46,13 +47,19 @@ export function ReviewStep({ serviceTiers, menus, chefs }: ReviewStepProps) {
 
   // Estimated total: sum of (menu.pricePerGuest * menu.guestCount)
   const estimatedTotal = useMemo(() => {
+    if (store.isCustomMenu) {
+      return store.customMenuItems.reduce((sum, item) => {
+        const menuItem = menuItems.find((m) => m.id === item.menuItemId);
+        return sum + (Number(menuItem?.price) || 0) * item.quantity;
+      }, 0);
+    }
     if (store.selectedMenus.length === 0) return 0;
     return store.selectedMenus.reduce((sum, selection) => {
       const menu = menus.find((m) => m.id === selection.menuId);
       const price = menu?.serviceTier ? Number(menu.serviceTier.pricePerGuest) : 0;
       return sum + price * selection.guestCount;
     }, 0);
-  }, [store.selectedMenus, menus]);
+  }, [store.isCustomMenu, store.customMenuItems, store.selectedMenus, menus, menuItems]);
 
   async function handleSubmit() {
     store.setSubmitting(true);
@@ -62,6 +69,8 @@ export function ReviewStep({ serviceTiers, menus, chefs }: ReviewStepProps) {
       serviceType: store.serviceType,
       serviceTierId: resolvedTier?.id,
       selectedMenus: store.selectedMenus,
+      isCustomMenu: store.isCustomMenu,
+      customMenuItems: store.customMenuItems,
       chefProfileId: store.chefProfileId?.trim() || null,
       eventDate: store.eventDetails.eventDate,
       eventTime: store.eventDetails.eventTime,
@@ -154,8 +163,14 @@ export function ReviewStep({ serviceTiers, menus, chefs }: ReviewStepProps) {
     },
     {
       label: tOrders("list.menu"),
-      value:
-        selectedMenus.length > 0
+      value: store.isCustomMenu
+        ? store.customMenuItems
+            .map((item) => {
+              const menuItem = menuItems.find((m) => m.id === item.menuItemId);
+              return `${menuItem?.name || "Item"} (x${item.quantity})`;
+            })
+            .join(", ")
+        : selectedMenus.length > 0
           ? selectedMenus
               .map((m) => `${m!.name} (${m!.guestCount} ${tOrders("summary.guests")})`)
               .join(", ")

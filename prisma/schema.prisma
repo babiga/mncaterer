@@ -341,6 +341,9 @@ model Booking {
   totalPrice    Decimal       @db.Decimal(12, 2)
   depositAmount Decimal?      @db.Decimal(12, 2)
 
+  isCustomMenu    Boolean       @default(false)
+  customMenuData  Json?
+
   contract Contract?
   payments Payment[]
   reviews  Review[]

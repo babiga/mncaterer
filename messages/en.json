@@ -876,7 +876,12 @@
                 "heading": "Select Your Menus",
                 "description": "Browse our curated menus and add your favorites. This selection is optional — you can also decide later.",
                 "pricePerGuest": "Price per guest",
-                "noMenus": "No menus available for this service type."
+                "noMenus": "No menus available for this service type.",
+                "customOption": "Custom Selection",
+                "customOptionDesc": "Select individual dishes. Best for specific dietary needs or customized events.",
+                "customOptionTag": "Flexible Option",
+                "customOptionFooter": "Curate your own culinary journey",
+                "customItemsTitle": "Custom Menu Items"
             },
             "eventDetails": {
                 "title": "Event",

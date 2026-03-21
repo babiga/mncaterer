@@ -33,6 +33,8 @@ interface BookingState {
 
   // Step 2: Menu & Chef
   selectedMenus: { menuId: string; guestCount: number }[];
+  isCustomMenu: boolean;
+  customMenuItems: { menuItemId: string; quantity: number }[];
   chefProfileId: string;
 
   // Step 3: Event Details
@@ -51,6 +53,9 @@ interface BookingState {
   toggleMenu: (menuId: string, defaultGuestCount?: number) => void;
   updateMenuGuestCount: (menuId: string, guestCount: number) => void;
   setChef: (chefId: string) => void;
+  setCustomMenuMode: (active: boolean) => void;
+  toggleCustomMenuItem: (itemId: string, defaultQuantity?: number) => void;
+  updateCustomMenuItemQuantity: (itemId: string, quantity: number) => void;
   setEventDetails: (details: Partial<BookingEventDetails>) => void;
   setContactInfo: (info: Partial<BookingContactInfo>) => void;
   nextStep: () => void;
@@ -84,6 +89,8 @@ export const useBookingStore = create<BookingState>()(
       currentStep: 0,
       serviceType: null,
       selectedMenus: [],
+      isCustomMenu: false,
+      customMenuItems: [],
       chefProfileId: "",
       eventDetails: { ...initialEventDetails },
       contactInfo: { ...initialContactInfo },
@@ -112,6 +119,25 @@ export const useBookingStore = create<BookingState>()(
         })),
 
       setChef: (chefId) => set({ chefProfileId: chefId }),
+
+      setCustomMenuMode: (active) => set({ isCustomMenu: active }),
+
+      toggleCustomMenuItem: (itemId, defaultQuantity = 1) =>
+        set((state) => {
+          const exists = state.customMenuItems.some((m) => m.menuItemId === itemId);
+          return {
+            customMenuItems: exists
+              ? state.customMenuItems.filter((m) => m.menuItemId !== itemId)
+              : [...state.customMenuItems, { menuItemId: itemId, quantity: defaultQuantity }],
+          };
+        }),
+
+      updateCustomMenuItemQuantity: (itemId, quantity) =>
+        set((state) => ({
+          customMenuItems: state.customMenuItems.map((m) =>
+            m.menuItemId === itemId ? { ...m, quantity } : m
+          ),
+        })),
 
       setEventDetails: (details) =>
         set((state) => ({
@@ -145,6 +171,8 @@ export const useBookingStore = create<BookingState>()(
           currentStep: 0,
           serviceType: null,
           selectedMenus: [],
+          isCustomMenu: false,
+          customMenuItems: [],
           chefProfileId: "",
           eventDetails: { ...initialEventDetails },
           contactInfo: { ...initialContactInfo },
@@ -160,6 +188,8 @@ export const useBookingStore = create<BookingState>()(
         currentStep: state.currentStep,
         serviceType: state.serviceType,
         selectedMenus: state.selectedMenus,
+        isCustomMenu: state.isCustomMenu,
+        customMenuItems: state.customMenuItems,
         chefProfileId: state.chefProfileId,
         eventDetails: state.eventDetails,
         contactInfo: state.contactInfo,

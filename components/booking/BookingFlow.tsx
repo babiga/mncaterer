@@ -60,10 +60,13 @@ export type InitialCustomer = {
   address: string | null;
 };
 
+export type MenuItemOption = MenuItemInfo;
+
 type BookingFlowProps = {
   serviceTiers: ServiceTierOption[];
   menus: MenuOption[];
   chefs: ChefOption[];
+  menuItems: MenuItemOption[];
   initialCustomer: InitialCustomer;
 };
 
@@ -79,6 +82,7 @@ export function BookingFlow({
   serviceTiers,
   menus,
   chefs,
+  menuItems,
   initialCustomer,
 }: BookingFlowProps) {
   const t = useTranslations("Booking");
@@ -104,6 +108,7 @@ export function BookingFlow({
       serviceTiers={serviceTiers}
       menus={menus}
       chefs={chefs}
+      menuItems={menuItems}
     />,
     <EventDetailsStep key="event" serviceTiers={serviceTiers} menus={menus} />,
     <ContactStep key="contact" />,
@@ -112,6 +117,7 @@ export function BookingFlow({
       serviceTiers={serviceTiers}
       menus={menus}
       chefs={chefs}
+      menuItems={menuItems}
     />,
   ];
 
@@ -160,6 +166,7 @@ export function BookingFlow({
             serviceTiers={serviceTiers}
             menus={menus}
             chefs={chefs}
+            menuItems={menuItems}
           />
         </div>
       </div>
