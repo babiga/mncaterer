@@ -163,11 +163,11 @@ model User {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  bookings      Booking[]
-  reviews       Review[]
-  notifications Notification[]
+  bookings          Booking[]
+  reviews           Review[]
+  notifications     Notification[]
   pushSubscriptions PushSubscription[]
-  inquiries     Inquiry[]
+  inquiries         Inquiry[]
 }
 
 // ============================================
@@ -188,11 +188,11 @@ model DashboardUser {
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 
-  chefProfile    ChefProfile?
-  companyProfile CompanyProfile?
-  jobPostings    JobPosting[]
-  jobInvitations JobInvitation[]
-  notifications  DashboardNotification[]
+  chefProfile       ChefProfile?
+  companyProfile    CompanyProfile?
+  jobPostings       JobPosting[]
+  jobInvitations    JobInvitation[]
+  notifications     DashboardNotification[]
   pushSubscriptions PushSubscription[]
 }
 
@@ -206,14 +206,14 @@ model ChefProfile {
   dashboardUser   DashboardUser @relation(fields: [dashboardUserId], references: [id], onDelete: Cascade)
 
   specialty       String
-  specialties     String[]      @default([])
-  education       String[]      @default([])
-  experience      String[]      @default([])
-  events          String[]      @default([])
-  degrees         String[]      @default([])
-  awards          String[]      @default([])
-  bio             String?       @db.Text
-  yearsExperience Int           @default(0)
+  specialties     String[] @default([])
+  education       String[] @default([])
+  experience      String[] @default([])
+  events          String[] @default([])
+  degrees         String[] @default([])
+  awards          String[] @default([])
+  bio             String?  @db.Text
+  yearsExperience Int      @default(0)
   certifications  String[]
   rating          Float    @default(0)
   reviewCount     Int      @default(0)
@@ -280,7 +280,6 @@ model Menu {
   updatedAt DateTime       @updatedAt
 }
 
-
 model MenuItem {
   id          String           @id @default(cuid())
   name        String
@@ -294,8 +293,8 @@ model MenuItem {
   sortOrder   Int              @default(0)
 
   menus     MenuMenuItem[]
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 }
 
 model MenuMenuItem {
@@ -341,8 +340,8 @@ model Booking {
   totalPrice    Decimal       @db.Decimal(12, 2)
   depositAmount Decimal?      @db.Decimal(12, 2)
 
-  isCustomMenu    Boolean       @default(false)
-  customMenuData  Json?
+  isCustomMenu   Boolean @default(false)
+  customMenuData Json?
 
   contract Contract?
   payments Payment[]
@@ -353,16 +352,16 @@ model Booking {
 }
 
 model Event {
-  id          String    @id @default(cuid())
-  title       String
-  description String?   @db.Text
-  eventType   EventType
-  guestCount  Int
-  coverImageUrl String?  @map("cover_image_url")
-  imageUrls     String[] @default([]) @map("image_urls")
-  videoUrl      String?  @map("video_url")
-  eventDate   DateTime?
-  location    String?
+  id            String    @id @default(cuid())
+  title         String
+  description   String?   @db.Text
+  eventType     EventType
+  guestCount    Int
+  coverImageUrl String?   @map("cover_image_url")
+  imageUrls     String[]  @default([]) @map("image_urls")
+  videoUrl      String?   @map("video_url")
+  eventDate     DateTime?
+  location      String?
 
   chefProfileId String?
   chefProfile   ChefProfile? @relation(fields: [chefProfileId], references: [id])
@@ -576,13 +575,13 @@ model PushSubscription {
   userAgent String?
 
   userId String?
-  user   User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   dashboardUserId String?
   dashboardUser   DashboardUser? @relation(fields: [dashboardUserId], references: [id], onDelete: SetNull)
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
   lastUsedAt DateTime?
 
   @@index([userId])
@@ -593,14 +592,14 @@ model Inquiry {
   id String @id @default(cuid())
 
   userId String?
-  user   User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   type        InquiryRequesterType
   name        String
   phone       String
   email       String
   serviceType InquiryServiceType
-  message     String? @db.Text
+  message     String?              @db.Text
 
   status InquiryStatus @default(NEW)
 
@@ -636,18 +635,17 @@ model SiteContent {
 }
 
 model BankTransferSetting {
-  id                  String   @id @default(cuid())
-  key                 String   @unique @default("default")
+  id                  String  @id @default(cuid())
+  key                 String  @unique @default("default")
   bankName            String
   accountNumber       String
   accountHolderName   String
   iban                String?
-  paymentInstructions String?  @db.Text
-  isActive            Boolean  @default(true)
+  paymentInstructions String? @db.Text
+  isActive            Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
 }
 
 model VisitorMetric {
