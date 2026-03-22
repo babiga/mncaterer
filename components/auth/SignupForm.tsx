@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
@@ -42,7 +43,20 @@ type UserType = "individual" | "company" | "chef";
 export function SignupForm() {
   const t = useTranslations("Auth.signup");
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<UserType>("individual");
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab") as UserType | null;
+  const [activeTab, setActiveTab] = useState<UserType>(() => {
+    if (tabParam && ["individual", "company", "chef"].includes(tabParam)) {
+      return tabParam;
+    }
+    return "individual";
+  });
+
+  useEffect(() => {
+    if (tabParam && ["individual", "company", "chef"].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);

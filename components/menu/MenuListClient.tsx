@@ -123,7 +123,7 @@ export function MenuListClient({ initialMenus, totalCount, serviceTiers }: MenuL
 
         <div className="flex items-center gap-4">
           <div className="text-white/40 text-sm uppercase tracking-widest text-right">
-            {tEvents("stats.results", { count: total })}
+            {t("stats.results", { count: total })}
           </div>
           <Button
             variant="outline"

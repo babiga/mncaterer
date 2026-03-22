@@ -10,7 +10,7 @@ export const createBookingApiSchema = z.object({
   selectedMenus: z.array(z.object({
     menuId: z.string().min(1),
     guestCount: z.coerce.number().int().min(1).max(100000),
-  })).min(1).optional(),
+  })).optional(),
   isCustomMenu: z.boolean().default(false),
   customMenuItems: z.array(z.object({
     menuItemId: z.string().min(1),
@@ -26,6 +26,7 @@ export const createBookingApiSchema = z.object({
     .regex(/^([01]\d|2[0-3]):([0-5]\d)$/),
   venue: z.string().min(2).max(300),
   venueAddress: z.string().max(500).nullable().optional(),
+  guestCount: z.coerce.number().int().min(1).max(100000).optional(),
   specialRequests: z.string().max(2000).nullable().optional(),
   contactName: z.string().min(2).max(100),
   contactPhone: z.string().regex(/^[+]?[0-9]{8,15}$/),
@@ -50,7 +51,7 @@ export function getCreateBookingSchema(t: BookingValidationTranslator) {
     selectedMenus: z.array(z.object({
       menuId: z.string().min(1),
       guestCount: z.coerce.number().int().min(1).max(100000),
-    })).min(1).optional(),
+    })).optional(),
     isCustomMenu: z.boolean().optional(),
     customMenuItems: z.array(z.object({
       menuItemId: z.string().min(1),

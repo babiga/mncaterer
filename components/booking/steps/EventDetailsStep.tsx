@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/popover";
 import { useBookingStore } from "@/lib/store/use-booking-store";
 import { cn } from "@/lib/utils";
-import type { ServiceTierOption, MenuOption } from "../BookingFlow";
+import type { ServiceTierOption, MenuOption, MenuItemOption } from "../BookingFlow";
 
 function getTodayDate() {
   const now = new Date();
@@ -32,15 +32,20 @@ function getTodayDate() {
 export function EventDetailsStep({
   serviceTiers,
   menus,
+  menuItems,
 }: {
   serviceTiers: ServiceTierOption[];
   menus: MenuOption[];
+  menuItems: MenuItemOption[];
 }) {
   const t = useTranslations("Booking.steps.eventDetails");
+  const tCommon = useTranslations("Booking.common");
   const tOrders = useTranslations("UserOrders");
   const eventDetails = useBookingStore((s) => s.eventDetails);
   const serviceType = useBookingStore((s) => s.serviceType);
   const selectedMenus = useBookingStore((s) => s.selectedMenus);
+  const isCustomMenu = useBookingStore((s) => s.isCustomMenu);
+  const customMenuItems = useBookingStore((s) => s.customMenuItems);
   const setEventDetails = useBookingStore((s) => s.setEventDetails);
   const nextStep = useBookingStore((s) => s.nextStep);
   const prevStep = useBookingStore((s) => s.prevStep);
@@ -55,13 +60,19 @@ export function EventDetailsStep({
 
   // Estimated total: sum of (menu.pricePerGuest * menu.guestCount)
   const estimatedTotal = useMemo(() => {
+    if (isCustomMenu) {
+      return customMenuItems.reduce((sum, item) => {
+        const menuItem = menuItems.find((m) => m.id === item.menuItemId);
+        return sum + (Number(menuItem?.price) || 0) * item.quantity;
+      }, 0);
+    }
     if (selectedMenus.length === 0) return 0;
     return selectedMenus.reduce((sum, selection) => {
       const menu = menus.find((m) => m.id === selection.menuId);
       const price = menu?.serviceTier ? Number(menu.serviceTier.pricePerGuest) : 0;
       return sum + price * selection.guestCount;
     }, 0);
-  }, [selectedMenus, menus]);
+  }, [isCustomMenu, customMenuItems, selectedMenus, menus, menuItems]);
 
   const canProceed =
     eventDetails.eventDate &&
@@ -179,18 +190,20 @@ export function EventDetailsStep({
             className="p-5 rounded-2xl border border-white/5 bg-white/2"
           >
             <div className="flex items-center gap-3 mb-3">
-              <MapPin className="w-5 h-5 text-white/30" />
+              <Users className="w-5 h-5 text-white/30" />
               <label className="text-sm font-medium text-white">
-                {tOrders("form.fields.addressOptional")}
+                {tOrders("form.fields.guestCount")}
               </label>
             </div>
             <Input
-              value={eventDetails.venueAddress}
+              type="number"
+              min="1"
+              value={eventDetails.guestCount}
               onChange={(e) =>
-                setEventDetails({ venueAddress: e.target.value })
+                setEventDetails({ guestCount: parseInt(e.target.value) || 0 })
               }
-              placeholder={tOrders("form.placeholders.address")}
-              className="bg-white/5 border-white/10 h-12 rounded-xl text-white"
+              placeholder={tOrders("form.fields.guestCount")}
+              className="bg-white/5 border-white/10 h-12 rounded-xl text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
           </motion.div>
         </div>
@@ -213,9 +226,11 @@ export function EventDetailsStep({
               </div>
               <div className="text-right text-white/40 text-sm">
                 <p>
-                  {selectedMenus.length} {tOrders("form.fields.menuOptional")}
+                  {isCustomMenu
+                    ? `${customMenuItems.length} ${tCommon("items")}`
+                    : `${selectedMenus.length} ${tOrders("form.fields.menuOptional")}`}
                 </p>
-                {resolvedTier && <p className="text-xs">{resolvedTier.name}</p>}
+                {resolvedTier && !isCustomMenu && <p className="text-xs">{resolvedTier.name}</p>}
               </div>
             </div>
           </motion.div>

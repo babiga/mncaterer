@@ -157,11 +157,12 @@
             "title": "Premium Experience",
             "description": "Unparalleled luxury featuring bespoke menus, rare ingredients, and world-class service."
         },
-        "exploreMore": "Explore More"
+        "exploreMore": "Custom Menu"
     },
     "HowItWorks": {
         "title": "The Journey to Excellence",
         "description": "A seamless path from curated selection to unforgettable celebration.",
+        "customMenuHeading": "Custom Menu",
         "step1": {
             "title": "Service Selection",
             "description": "Choose from our Luxury, Premium, or Standard tiers to perfectly match your event's needs."
@@ -184,6 +185,9 @@
         "seeAllTitle": "Culinary Collections",
         "description": "Exquisite seasonal selections curated by our executive chefs.",
         "seeAllDescription": "Explore our diverse range of culinary experiences, from intimate private dinners to grand corporate galas.",
+        "stats": {
+            "results": "{count} menus discovered"
+        },
         "downloadMenu": "Full Catalog",
         "perGuest": "per guest",
         "addToBooking": "Add to Booking",
@@ -631,7 +635,7 @@
             "PRIVATE": "Private",
             "WEDDING": "Wedding",
             "VIP": "Premium",
-            "OTHER": "Other"
+            "OTHER": "Custom Menu"
         },
         "statuses": {
             "PENDING": "Pending",
@@ -874,14 +878,14 @@
             "menuSelection": {
                 "title": "Menu",
                 "heading": "Select Your Menus",
+                "headingCustom": "Build Your Custom Menu",
                 "description": "Browse our curated menus and add your favorites. This selection is optional — you can also decide later.",
                 "pricePerGuest": "Price per guest",
                 "noMenus": "No menus available for this service type.",
                 "customOption": "Custom Selection",
                 "customOptionDesc": "Select individual dishes. Best for specific dietary needs or customized events.",
                 "customOptionTag": "Flexible Option",
-                "customOptionFooter": "Curate your own culinary journey",
-                "customItemsTitle": "Custom Menu Items"
+                "customOptionFooter": "Curate your own culinary journey"
             },
             "eventDetails": {
                 "title": "Event",
@@ -901,11 +905,18 @@
                 "successDescription": "Your booking request has been submitted successfully. Our team will review it and contact you shortly.",
                 "backHome": "Back to Home",
                 "newBooking": "Confirm"
+            },
+            "common": {
+                "qty": "Qty",
+                "items": "Items",
+                "item": "Item",
+                "more": "more"
             }
         },
         "basket": {
             "title": "Your Selection",
-            "empty": "Start selecting to build your booking."
+            "empty": "Start selecting to build your booking.",
+            "customItemsTitle": "Custom Items"
         }
     }
 }

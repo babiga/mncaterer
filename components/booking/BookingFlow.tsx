@@ -110,7 +110,12 @@ export function BookingFlow({
       chefs={chefs}
       menuItems={menuItems}
     />,
-    <EventDetailsStep key="event" serviceTiers={serviceTiers} menus={menus} />,
+    <EventDetailsStep
+      key="event"
+      serviceTiers={serviceTiers}
+      menus={menus}
+      menuItems={menuItems}
+    />,
     <ContactStep key="contact" />,
     <ReviewStep
       key="review"

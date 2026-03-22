@@ -23,6 +23,7 @@ interface ReviewStepProps {
 
 export function ReviewStep({ serviceTiers, menus, chefs, menuItems }: ReviewStepProps) {
   const t = useTranslations("Booking.steps.review");
+  const tCommon = useTranslations("Booking.common");
   const tOrders = useTranslations("UserOrders");
   const store = useBookingStore();
   const router = useRouter();
@@ -75,7 +76,7 @@ export function ReviewStep({ serviceTiers, menus, chefs, menuItems }: ReviewStep
       eventDate: store.eventDetails.eventDate,
       eventTime: store.eventDetails.eventTime,
       venue: store.eventDetails.venue.trim(),
-      venueAddress: store.eventDetails.venueAddress?.trim() || null,
+      guestCount: store.eventDetails.guestCount,
       contactName: store.contactInfo.contactName.trim(),
       contactPhone: store.contactInfo.contactPhone.trim(),
       contactEmail: store.contactInfo.contactEmail.trim(),
@@ -167,7 +168,7 @@ export function ReviewStep({ serviceTiers, menus, chefs, menuItems }: ReviewStep
         ? store.customMenuItems
             .map((item) => {
               const menuItem = menuItems.find((m) => m.id === item.menuItemId);
-              return `${menuItem?.name || "Item"} (x${item.quantity})`;
+              return `${menuItem?.name || tCommon("item")} (x${item.quantity})`;
             })
             .join(", ")
         : selectedMenus.length > 0
@@ -189,6 +190,10 @@ export function ReviewStep({ serviceTiers, menus, chefs, menuItems }: ReviewStep
     {
       label: tOrders("summary.venue"),
       value: store.eventDetails.venue || "—",
+    },
+    {
+      label: tOrders("form.fields.guestCount"),
+      value: `${store.eventDetails.guestCount} ${tOrders("summary.guests")}`,
     },
     {
       label: tOrders("summary.contact"),

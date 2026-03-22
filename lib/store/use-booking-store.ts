@@ -14,7 +14,7 @@ export interface BookingEventDetails {
   eventDate: string;
   eventTime: string;
   venue: string;
-  venueAddress: string;
+  guestCount: number;
 }
 
 export interface BookingContactInfo {
@@ -73,7 +73,7 @@ const initialEventDetails: BookingEventDetails = {
   eventDate: "",
   eventTime: "18:00",
   venue: "",
-  venueAddress: "",
+  guestCount: 1,
 };
 
 const initialContactInfo: BookingContactInfo = {
@@ -99,7 +99,10 @@ export const useBookingStore = create<BookingState>()(
       submissionError: null,
 
       setServiceType: (type) =>
-        set({ serviceType: type }),
+        set({ 
+          serviceType: type,
+          isCustomMenu: type === "OTHER"
+        }),
 
       toggleMenu: (menuId, defaultGuestCount = 1) =>
         set((state) => {

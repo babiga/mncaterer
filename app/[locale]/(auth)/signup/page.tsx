@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { setRequestLocale } from "next-intl/server";
 import { SignupForm } from "@/components/auth/SignupForm";
 
@@ -9,5 +10,9 @@ export default async function SignupPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  return <SignupForm />;
+  return (
+    <Suspense fallback={null}>
+      <SignupForm />
+    </Suspense>
+  );
 }

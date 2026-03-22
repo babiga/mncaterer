@@ -319,7 +319,7 @@ export async function POST(request: NextRequest) {
         serviceType: data.serviceType,
         eventDate,
         eventTime: data.eventTime,
-        guestCount: totalGuestCount,
+        guestCount: data.guestCount ?? totalGuestCount,
         venue: data.venue.trim(),
         venueAddress: data.venueAddress?.trim() || null,
         specialRequests: requestDetails.length > 0 ? requestDetails.join("\n") : null,

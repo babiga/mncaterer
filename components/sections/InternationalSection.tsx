@@ -45,7 +45,7 @@ export default function InternationalSection() {
 
             <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
               <Button asChild className="bg-primary text-black hover:bg-primary/90 text-base md:text-lg px-8 py-6 rounded-none transition-all w-full sm:w-auto">
-                <Link href="/inquiry">{t("requestAccess")}</Link>
+                <Link href="/signup?tab=chef">{t("requestAccess")}</Link>
               </Button>
             </div>
           </motion.div>

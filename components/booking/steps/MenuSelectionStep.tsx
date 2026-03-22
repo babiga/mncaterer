@@ -40,6 +40,7 @@ export function MenuSelectionStep({
   menuItems,
 }: MenuSelectionStepProps) {
   const t = useTranslations("Booking.steps.menuSelection");
+  const tCommon = useTranslations("Booking.common");
   const tOrders = useTranslations("UserOrders");
   const serviceType = useBookingStore((s) => s.serviceType);
   const selectedMenus = useBookingStore((s) => s.selectedMenus);
@@ -88,150 +89,152 @@ export function MenuSelectionStep({
     <div>
       <div className="mb-8">
         <h2 className="text-2xl md:text-3xl font-serif text-white mb-2">
-          {t("heading")}
+          {isCustomMenu ? t("headingCustom") : t("heading")}
         </h2>
         <p className="text-white/50">{t("description")}</p>
       </div>
 
       {/* Menu cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
-        {/* Custom Menu Option */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          onClick={() => setCustomMenuMode(!isCustomMenu)}
-          className={`group relative p-6 rounded-2xl border-2 text-left transition-all duration-300 cursor-pointer ${
-            isCustomMenu
-              ? "border-primary bg-primary/5 ring-1 ring-primary/20"
-              : "border-white/5 bg-white/2 hover:border-white/15"
-          }`}
-        >
-          <div
-            className={`absolute top-4 right-4 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all ${
+      {serviceType !== "OTHER" && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+          {/* Custom Menu Option */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            onClick={() => setCustomMenuMode(!isCustomMenu)}
+            className={`group relative p-6 rounded-2xl border-2 text-left transition-all duration-300 cursor-pointer ${
               isCustomMenu
-                ? "border-primary bg-primary"
-                : "border-white/20 bg-transparent"
+                ? "border-primary bg-primary/5 ring-1 ring-primary/20"
+                : "border-white/5 bg-white/2 hover:border-white/15"
             }`}
           >
-            {isCustomMenu && <Check className="w-4 h-4 text-black" />}
-          </div>
-          <div className="mb-4">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-primary font-medium mb-1 block">
-              {t("customOptionTag")}
-            </span>
-            <h3 className="text-lg font-medium text-white pr-8">{t("customOption")}</h3>
-            <p className="text-white/40 text-sm mt-1">
-              {t("customOptionDesc")}
-            </p>
-          </div>
-          <div className="flex items-center gap-2 text-white/50 text-sm italic">
-            <UtensilsCrossed className="w-4 h-4" />
-            <span>{t("customOptionFooter")}</span>
-          </div>
-        </motion.div>
-
-        {filteredMenus.map((menu, i) => {
-          const menuState = selectedMenus.find((m) => m.menuId === menu.id);
-          const isSelected = !!menuState && !isCustomMenu;
-          return (
-            <motion.div
-              key={menu.id}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: (i + 1) * 0.05 }}
-              onClick={() => {
-                if (isCustomMenu) setCustomMenuMode(false);
-                toggleMenu(menu.id);
-              }}
-              className={`group relative p-6 rounded-2xl border-2 text-left transition-all duration-300 cursor-pointer ${
-                isSelected
-                  ? "border-primary bg-primary/5 ring-1 ring-primary/20"
-                  : "border-white/5 bg-white/2 hover:border-white/15"
+            <div
+              className={`absolute top-4 right-4 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all ${
+                isCustomMenu
+                  ? "border-primary bg-primary"
+                  : "border-white/20 bg-transparent"
               }`}
             >
-              {/* Selected checkmark */}
-              <div
-                className={`absolute top-4 right-4 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all ${
+              {isCustomMenu && <Check className="w-4 h-4 text-black" />}
+            </div>
+            <div className="mb-4">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-primary font-medium mb-1 block">
+                {t("customOptionTag")}
+              </span>
+              <h3 className="text-lg font-medium text-white pr-8">{t("customOption")}</h3>
+              <p className="text-white/40 text-sm mt-1">
+                {t("customOptionDesc")}
+              </p>
+            </div>
+            <div className="flex items-center gap-2 text-white/50 text-sm italic">
+              <UtensilsCrossed className="w-4 h-4" />
+              <span>{t("customOptionFooter")}</span>
+            </div>
+          </motion.div>
+
+          {filteredMenus.map((menu, i) => {
+            const menuState = selectedMenus.find((m) => m.menuId === menu.id);
+            const isSelected = !!menuState && !isCustomMenu;
+            return (
+              <motion.div
+                key={menu.id}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: (i + 1) * 0.05 }}
+                onClick={() => {
+                  if (isCustomMenu) setCustomMenuMode(false);
+                  toggleMenu(menu.id);
+                }}
+                className={`group relative p-6 rounded-2xl border-2 text-left transition-all duration-300 cursor-pointer ${
                   isSelected
-                    ? "border-primary bg-primary"
-                    : "border-white/20 bg-transparent"
+                    ? "border-primary bg-primary/5 ring-1 ring-primary/20"
+                    : "border-white/5 bg-white/2 hover:border-white/15"
                 }`}
               >
-                {isSelected && <Check className="w-4 h-4 text-black" />}
-              </div>
+                {/* Selected checkmark */}
+                <div
+                  className={`absolute top-4 right-4 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all ${
+                    isSelected
+                      ? "border-primary bg-primary"
+                      : "border-white/20 bg-transparent"
+                  }`}
+                >
+                  {isSelected && <Check className="w-4 h-4 text-black" />}
+                </div>
 
-              {/* Header */}
-              <div className="mb-4">
-                <span className="text-[10px] uppercase tracking-[0.3em] text-primary font-medium mb-1 block">
-                  {menu.serviceTier?.name || tOrders("form.none.menu")}
-                </span>
-                <h3 className="text-lg font-medium text-white pr-8">
-                  {menu.name}
-                </h3>
-                {menu.description && (
-                  <p className="text-white/40 text-sm mt-1 line-clamp-2">
-                    {menu.description}
-                  </p>
-                )}
-              </div>
-
-              {/* Price & Guest Count */}
-              {menu.serviceTier?.pricePerGuest && (
-                <div className="mb-4 grid grid-cols-2 gap-3">
-                  <div className="p-3 bg-white/3 rounded-xl border border-white/5">
-                    <div className="text-[10px] uppercase tracking-widest text-white/30 mb-1">
-                      {t("pricePerGuest")}
-                    </div>
-                    <div className="text-lg text-white font-medium">
-                      {Number(menu.serviceTier.pricePerGuest).toLocaleString()}₮
-                    </div>
-                  </div>
-                  {isSelected && (
-                    <div
-                      className="p-3 bg-white/5 rounded-xl border border-primary/30"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <div className="text-[10px] uppercase tracking-widest text-primary mb-1">
-                        {tOrders("form.fields.guestCount")}
-                      </div>
-                      <input
-                        type="number"
-                        min="1"
-                        value={menuState.guestCount}
-                        onChange={(e) =>
-                          updateMenuGuestCount(menu.id, parseInt(e.target.value) || 0)
-                        }
-                        className="bg-transparent border-none text-white w-full text-lg font-medium focus:ring-0 p-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      />
-                    </div>
+                {/* Header */}
+                <div className="mb-4">
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-primary font-medium mb-1 block">
+                    {menu.serviceTier?.name || tOrders("form.none.menu")}
+                  </span>
+                  <h3 className="text-lg font-medium text-white pr-8">
+                    {menu.name}
+                  </h3>
+                  {menu.description && (
+                    <p className="text-white/40 text-sm mt-1 line-clamp-2">
+                      {menu.description}
+                    </p>
                   )}
                 </div>
-              )}
 
-              {/* Items */}
-              <div className="space-y-2">
-                {menu.items?.slice(0, 5).map((item) => (
-                  <div
-                    key={item.menuItem.id}
-                    className="flex items-center gap-2 text-white/50 text-sm"
-                  >
-                    <div className="w-1 h-1 rounded-full bg-primary shrink-0" />
-                    <span className="truncate">{item.menuItem.name}</span>
-                    <span className="ml-auto text-[10px] uppercase tracking-wider text-white/25 shrink-0">
-                      {item.menuItem.category.replace("_", " ")}
-                    </span>
+                {/* Price & Guest Count */}
+                {menu.serviceTier?.pricePerGuest && (
+                  <div className="mb-4 grid grid-cols-2 gap-3">
+                    <div className="p-3 bg-white/3 rounded-xl border border-white/5">
+                      <div className="text-[10px] uppercase tracking-widest text-white/30 mb-1">
+                        {t("pricePerGuest")}
+                      </div>
+                      <div className="text-lg text-white font-medium">
+                        {Number(menu.serviceTier.pricePerGuest).toLocaleString()}₮
+                      </div>
+                    </div>
+                    {isSelected && (
+                      <div
+                        className="p-3 bg-white/5 rounded-xl border border-primary/30"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <div className="text-[10px] uppercase tracking-widest text-primary mb-1">
+                          {tOrders("form.fields.guestCount")}
+                        </div>
+                        <input
+                          type="number"
+                          min="1"
+                          value={menuState.guestCount}
+                          onChange={(e) =>
+                            updateMenuGuestCount(menu.id, parseInt(e.target.value) || 0)
+                          }
+                          className="bg-transparent border-none text-white w-full text-lg font-medium focus:ring-0 p-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        />
+                      </div>
+                    )}
                   </div>
-                ))}
-                {(menu.items?.length ?? 0) > 5 && (
-                  <p className="text-[10px] uppercase tracking-widest text-primary/50 pt-1">
-                    + {menu.items.length - 5} more
-                  </p>
                 )}
-              </div>
-            </motion.div>
-          );
-        })}
-      </div>
+
+                {/* Items */}
+                <div className="space-y-2">
+                  {menu.items?.slice(0, 5).map((item) => (
+                    <div
+                      key={item.menuItem.id}
+                      className="flex items-center gap-2 text-white/50 text-sm"
+                    >
+                      <div className="w-1 h-1 rounded-full bg-primary shrink-0" />
+                      <span className="truncate">{item.menuItem.name}</span>
+                      <span className="ml-auto text-[10px] uppercase tracking-wider text-white/25 shrink-0">
+                        {item.menuItem.category.replace("_", " ")}
+                      </span>
+                    </div>
+                  ))}
+                  {(menu.items?.length ?? 0) > 5 && (
+                    <p className="text-[10px] uppercase tracking-widest text-primary/50 pt-1">
+                      + {menu.items.length - 5} {tCommon("more")}
+                    </p>
+                  )}
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Custom Menu Item Selection */}
       {isCustomMenu && (
@@ -289,7 +292,7 @@ export function MenuSelectionStep({
                           onClick={(e) => e.stopPropagation()}
                         >
                           <span className="text-[10px] text-white/40 uppercase tracking-tighter">
-                            Qty:
+                            {tCommon("qty")}:
                           </span>
                           <input
                             type="number"

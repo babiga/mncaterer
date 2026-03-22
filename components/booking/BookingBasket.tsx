@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
-import { ShoppingBag, Utensils, ChefHat, Calendar, MapPin, Sparkles, AlignLeft } from "lucide-react";
+import { ShoppingBag, Utensils, ChefHat, Calendar, MapPin, Sparkles, AlignLeft, Users } from "lucide-react";
 import { useBookingStore } from "@/lib/store/use-booking-store";
 import type { ServiceTierOption, MenuOption, ChefOption, MenuItemOption } from "./BookingFlow";
 
@@ -21,6 +21,7 @@ export function BookingBasket({
   menuItems,
 }: BookingBasketProps) {
   const t = useTranslations("Booking.basket");
+  const tCommon = useTranslations("Booking.common");
   const tOrders = useTranslations("UserOrders");
   const serviceType = useBookingStore((s) => s.serviceType);
   const selectedMenusSelection = useBookingStore((s) => s.selectedMenus);
@@ -141,7 +142,7 @@ export function BookingBasket({
                     return (
                       <div key={item.menuItemId} className="flex items-center justify-between gap-2 mt-0.5">
                         <p className="text-sm text-white font-medium truncate">
-                          {menuItem?.name || "Item"}
+                          {menuItem?.name || tCommon("item")}
                         </p>
                         <p className="text-xs text-white/40 shrink-0">
                           x{item.quantity}
@@ -178,6 +179,20 @@ export function BookingBasket({
                   </p>
                   <p className="text-sm text-white font-medium">
                     {eventDetails.eventDate} {eventDetails.eventTime && `• ${eventDetails.eventTime}`}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {eventDetails.guestCount > 0 && (
+              <div className="flex items-start gap-3">
+                <Users className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-white/30">
+                    {tOrders("form.fields.guestCount")}
+                  </p>
+                  <p className="text-sm text-white font-medium">
+                    {eventDetails.guestCount} {tOrders("summary.guests")}
                   </p>
                 </div>
               </div>

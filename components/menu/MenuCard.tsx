@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { Plus, ChevronRight, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/routing";
+import { useBookingStore } from "@/lib/store/use-booking-store";
 
 interface MenuCardProps {
   menu: any;
@@ -11,6 +13,17 @@ interface MenuCardProps {
 
 export function MenuCard({ menu }: MenuCardProps) {
   const t = useTranslations("SignatureMenus");
+  const router = useRouter();
+  const toggleMenu = useBookingStore((s) => s.toggleMenu);
+  const selectedMenus = useBookingStore((s) => s.selectedMenus);
+
+  const handleBooking = () => {
+    // If not already selected, add it
+    if (!selectedMenus.some(m => m.menuId === menu.id)) {
+      toggleMenu(menu.id);
+    }
+    router.push("/booking");
+  };
 
   return (
     <motion.div
@@ -63,10 +76,19 @@ export function MenuCard({ menu }: MenuCardProps) {
       </div>
 
       <div className="flex gap-2 pt-6 border-t border-white/5">
-        <Button variant="outline" className="grow border-white/10 hover:border-primary/50 text-white rounded-xl gap-2 h-12">
+        <Button 
+          variant="outline" 
+          onClick={handleBooking}
+          className="grow border-white/10 hover:border-primary/50 text-white rounded-xl gap-2 h-12"
+        >
           {t("addToBooking")} <Plus className="w-4 h-4" />
         </Button>
-        <Button size="icon" variant="ghost" className="shrink-0 w-12 h-12 rounded-xl bg-white/5 border border-white/10 hover:bg-primary hover:text-black transition-all">
+        <Button 
+          size="icon" 
+          variant="ghost" 
+          onClick={handleBooking}
+          className="shrink-0 w-12 h-12 rounded-xl bg-white/5 border border-white/10 hover:bg-primary hover:text-black transition-all"
+        >
           <ChevronRight className="w-5 h-5" />
         </Button>
       </div>
