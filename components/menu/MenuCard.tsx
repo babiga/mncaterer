@@ -1,11 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Plus, ChevronRight, UtensilsCrossed } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { useBookingStore } from "@/lib/store/use-booking-store";
+import { motion } from "framer-motion";
+import { ChevronRight, Plus, Utensils } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface MenuCardProps {
   menu: any;
@@ -43,7 +43,7 @@ export function MenuCard({ menu }: MenuCardProps) {
           </h3>
         </div>
         <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
-          <UtensilsCrossed className="w-5 h-5 text-primary/60 group-hover:text-primary transition-colors" />
+          <Utensils className="w-5 h-5 text-primary/60 group-hover:text-primary transition-colors" />
         </div>
       </div>
 
@@ -76,16 +76,16 @@ export function MenuCard({ menu }: MenuCardProps) {
       </div>
 
       <div className="flex gap-2 pt-6 border-t border-white/5">
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           onClick={handleBooking}
           className="grow border-white/10 hover:border-primary/50 text-white rounded-xl gap-2 h-12"
         >
           {t("addToBooking")} <Plus className="w-4 h-4" />
         </Button>
-        <Button 
-          size="icon" 
-          variant="ghost" 
+        <Button
+          size="icon"
+          variant="ghost"
           onClick={handleBooking}
           className="shrink-0 w-12 h-12 rounded-xl bg-white/5 border border-white/10 hover:bg-primary hover:text-black transition-all"
         >

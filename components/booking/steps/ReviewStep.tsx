@@ -23,7 +23,7 @@ interface ReviewStepProps {
 
 export function ReviewStep({ serviceTiers, menus, chefs, menuItems }: ReviewStepProps) {
   const t = useTranslations("Booking.steps.review");
-  const tCommon = useTranslations("Booking.common");
+  const tCommon = useTranslations("Booking.steps.common");
   const tOrders = useTranslations("UserOrders");
   const store = useBookingStore();
   const router = useRouter();
@@ -166,15 +166,15 @@ export function ReviewStep({ serviceTiers, menus, chefs, menuItems }: ReviewStep
       label: tOrders("list.menu"),
       value: store.isCustomMenu
         ? store.customMenuItems
-            .map((item) => {
-              const menuItem = menuItems.find((m) => m.id === item.menuItemId);
-              return `${menuItem?.name || tCommon("item")} (x${item.quantity})`;
-            })
-            .join(", ")
+          .map((item) => {
+            const menuItem = menuItems.find((m) => m.id === item.menuItemId);
+            return `${menuItem?.name || tCommon("item")} (x${item.quantity})`;
+          })
+          .join(", ")
         : selectedMenus.length > 0
           ? selectedMenus
-              .map((m) => `${m!.name} (${m!.guestCount} ${tOrders("summary.guests")})`)
-              .join(", ")
+            .map((m) => `${m!.name} (${m!.guestCount} ${tOrders("summary.guests")})`)
+            .join(", ")
           : tOrders("form.none.menu"),
     },
     {
@@ -219,9 +219,8 @@ export function ReviewStep({ serviceTiers, menus, chefs, menuItems }: ReviewStep
         {summaryRows.map((row, i) => (
           <div
             key={i}
-            className={`flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 px-5 py-4 ${
-              i < summaryRows.length - 1 ? "border-b border-white/5" : ""
-            }`}
+            className={`flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 px-5 py-4 ${i < summaryRows.length - 1 ? "border-b border-white/5" : ""
+              }`}
           >
             <span className="text-white/40 text-sm sm:w-44 shrink-0">
               {row.label}

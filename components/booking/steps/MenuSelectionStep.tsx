@@ -40,7 +40,7 @@ export function MenuSelectionStep({
   menuItems,
 }: MenuSelectionStepProps) {
   const t = useTranslations("Booking.steps.menuSelection");
-  const tCommon = useTranslations("Booking.common");
+  const tCommon = useTranslations("Booking.steps.common");
   const tOrders = useTranslations("UserOrders");
   const serviceType = useBookingStore((s) => s.serviceType);
   const selectedMenus = useBookingStore((s) => s.selectedMenus);
@@ -102,18 +102,16 @@ export function MenuSelectionStep({
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             onClick={() => setCustomMenuMode(!isCustomMenu)}
-            className={`group relative p-6 rounded-2xl border-2 text-left transition-all duration-300 cursor-pointer ${
-              isCustomMenu
+            className={`group relative p-6 rounded-2xl border-2 text-left transition-all duration-300 cursor-pointer ${isCustomMenu
                 ? "border-primary bg-primary/5 ring-1 ring-primary/20"
                 : "border-white/5 bg-white/2 hover:border-white/15"
-            }`}
+              }`}
           >
             <div
-              className={`absolute top-4 right-4 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all ${
-                isCustomMenu
+              className={`absolute top-4 right-4 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all ${isCustomMenu
                   ? "border-primary bg-primary"
                   : "border-white/20 bg-transparent"
-              }`}
+                }`}
             >
               {isCustomMenu && <Check className="w-4 h-4 text-black" />}
             </div>
@@ -145,19 +143,17 @@ export function MenuSelectionStep({
                   if (isCustomMenu) setCustomMenuMode(false);
                   toggleMenu(menu.id);
                 }}
-                className={`group relative p-6 rounded-2xl border-2 text-left transition-all duration-300 cursor-pointer ${
-                  isSelected
+                className={`group relative p-6 rounded-2xl border-2 text-left transition-all duration-300 cursor-pointer ${isSelected
                     ? "border-primary bg-primary/5 ring-1 ring-primary/20"
                     : "border-white/5 bg-white/2 hover:border-white/15"
-                }`}
+                  }`}
               >
                 {/* Selected checkmark */}
                 <div
-                  className={`absolute top-4 right-4 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all ${
-                    isSelected
+                  className={`absolute top-4 right-4 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all ${isSelected
                       ? "border-primary bg-primary"
                       : "border-white/20 bg-transparent"
-                  }`}
+                    }`}
                 >
                   {isSelected && <Check className="w-4 h-4 text-black" />}
                 </div>
@@ -259,11 +255,10 @@ export function MenuSelectionStep({
                     <div
                       key={item.id}
                       onClick={() => toggleCustomMenuItem(item.id)}
-                      className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${
-                        isItemSelected
+                      className={`p-4 rounded-xl border-2 transition-all cursor-pointer ${isItemSelected
                           ? "border-primary bg-primary/5"
                           : "border-white/5 bg-white/2 hover:border-white/10"
-                      }`}
+                        }`}
                     >
                       <div className="flex justify-between items-start mb-2">
                         <div className="flex-1 min-w-0 pr-2">
@@ -275,11 +270,10 @@ export function MenuSelectionStep({
                           </p>
                         </div>
                         <div
-                          className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
-                            isItemSelected
+                          className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${isItemSelected
                               ? "border-primary bg-primary"
                               : "border-white/20"
-                          }`}
+                            }`}
                         >
                           {isItemSelected && (
                             <Check className="w-3 h-3 text-black" />

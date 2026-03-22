@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
 import { useBookingStore } from "@/lib/store/use-booking-store";
@@ -89,6 +89,7 @@ export function BookingFlow({
   const currentStep = useBookingStore((s) => s.currentStep);
   const contactInfo = useBookingStore((s) => s.contactInfo);
   const setContactInfo = useBookingStore((s) => s.setContactInfo);
+  const titleRef = useRef<HTMLDivElement>(null);
 
   // Pre-fill contact info from user profile on first mount
   useEffect(() => {
@@ -100,6 +101,11 @@ export function BookingFlow({
       });
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    // Scroll to title whenever currentStep changes
+    titleRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [currentStep]);
 
   const stepComponents = [
     <ServiceTypeStep key="service" />,
@@ -130,9 +136,10 @@ export function BookingFlow({
     <div className="container mx-auto px-4 sm:px-6">
       {/* Header */}
       <motion.div
+        ref={titleRef}
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-10"
+        className="text-center mb-10 scroll-mt-32"
       >
         <h1 className="text-3xl md:text-5xl font-serif text-white mb-3">
           {t("title")}

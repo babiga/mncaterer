@@ -8,11 +8,12 @@ import {
   CalendarDays,
   User,
   FileCheck,
+  HandPlatter,
 } from "lucide-react";
 import { useBookingStore } from "@/lib/store/use-booking-store";
 import { cn } from "@/lib/utils";
 
-const STEP_ICONS = [Utensils, Utensils, CalendarDays, User, FileCheck];
+const STEP_ICONS = [HandPlatter, Utensils, CalendarDays, User, FileCheck];
 
 export function BookingProgressBar({
   currentStep,

@@ -21,7 +21,7 @@ export function BookingBasket({
   menuItems,
 }: BookingBasketProps) {
   const t = useTranslations("Booking.basket");
-  const tCommon = useTranslations("Booking.common");
+  const tCommon = useTranslations("Booking.steps.common");
   const tOrders = useTranslations("UserOrders");
   const serviceType = useBookingStore((s) => s.serviceType);
   const selectedMenusSelection = useBookingStore((s) => s.selectedMenus);

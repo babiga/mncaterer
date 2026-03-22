@@ -39,7 +39,7 @@ export function EventDetailsStep({
   menuItems: MenuItemOption[];
 }) {
   const t = useTranslations("Booking.steps.eventDetails");
-  const tCommon = useTranslations("Booking.common");
+  const tCommon = useTranslations("Booking.steps.common");
   const tOrders = useTranslations("UserOrders");
   const eventDetails = useBookingStore((s) => s.eventDetails);
   const serviceType = useBookingStore((s) => s.serviceType);
