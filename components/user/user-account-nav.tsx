@@ -15,7 +15,7 @@ const navItems: NavItem[] = [
   { key: "profile", href: "/profile" },
   { key: "booking", href: "/booking" },
   { key: "orders", href: "/orders" },
-  { key: "feedbacks" },
+  { key: "feedbacks", href: "/feedbacks" },
 ];
 
 export function UserAccountNav() {

@@ -31,11 +31,30 @@ export async function PUT(
 ) {
   try {
     const session = await getSession();
-    if (!isAdminSession(session)) {
+    if (!session) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
     const { id } = await params;
+    const existing = await prisma.review.findUnique({
+      where: { id },
+      select: { id: true, chefProfileId: true, customerId: true },
+    });
+
+    if (!existing) {
+      return NextResponse.json(
+        { success: false, error: "Review not found" },
+        { status: 404 },
+      );
+    }
+
+    const isAdmin = isAdminSession(session);
+    const isOwner = session.userType === "customer" && session.userId === existing.customerId;
+
+    if (!isAdmin && !isOwner) {
+      return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
+    }
+
     const body = await request.json();
     const parseResult = updateReviewAdminSchema.safeParse(body);
     if (!parseResult.success) {
@@ -46,17 +65,6 @@ export async function PUT(
           details: parseResult.error.flatten(),
         },
         { status: 400 },
-      );
-    }
-
-    const existing = await prisma.review.findUnique({
-      where: { id },
-      select: { id: true, chefProfileId: true },
-    });
-    if (!existing) {
-      return NextResponse.json(
-        { success: false, error: "Review not found" },
-        { status: 404 },
       );
     }
 
@@ -117,20 +125,28 @@ export async function DELETE(
 ) {
   try {
     const session = await getSession();
-    if (!isAdminSession(session)) {
+    if (!session) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
     const { id } = await params;
     const existing = await prisma.review.findUnique({
       where: { id },
-      select: { id: true, chefProfileId: true },
+      select: { id: true, chefProfileId: true, customerId: true },
     });
+
     if (!existing) {
       return NextResponse.json(
         { success: false, error: "Review not found" },
         { status: 404 },
       );
+    }
+
+    const isAdmin = isAdminSession(session);
+    const isOwner = session.userType === "customer" && session.userId === existing.customerId;
+
+    if (!isAdmin && !isOwner) {
+      return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
     }
 
     await prisma.review.delete({

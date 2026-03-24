@@ -665,6 +665,38 @@
             "menuSelectionMax": "Та хамгийн ихдээ 10 цэс сонгох боломжтой"
         }
     },
+    "UserFeedbacks": {
+        "page": {
+            "title": "Миний сэтгэгдлүүд",
+            "description": "Тогооч болон үйлчилгээний талаарх өөрийн сэтгэгдлүүдээ удирдах."
+        },
+        "list": {
+            "empty": "Одоогоор сэтгэгдэл алга.",
+            "chef": "Тогооч",
+            "rating": "Үнэлгээ",
+            "comment": "Сэтгэгдэл",
+            "date": "Огноо",
+            "booking": "Захиалга",
+            "bookingNumber": "Захиалга #{number}"
+        },
+        "actions": {
+            "edit": "Засах",
+            "delete": "Устгах",
+            "save": "Хадгалах",
+            "cancel": "Болих",
+            "confirmDelete": "Та энэ сэтгэгдлийг устгахдаа итгэлтэй байна уу?",
+            "confirmDeleteTitle": "Сэтгэгдэл устгах",
+            "confirmDeleteDescription": "Энэ үйлдлийг буцаах боломжгүй.",
+            "deleting": "Устгаж байна...",
+            "saving": "Хадгалж байна..."
+        },
+        "messages": {
+            "updateSuccess": "Сэтгэгдэл амжилттай шинэчлэгдлээ.",
+            "updateError": "Сэтгэгдэл шинэчлэхэд алдаа гарлаа.",
+            "deleteSuccess": "Сэтгэгдэл амжилттай устгагдлаа.",
+            "deleteError": "Сэтгэгдэл устгахад алдаа гарлаа."
+        }
+    },
     "ServiceDetails": {
         "corporate": {
             "backToServices": "Үйлчилгээ рүү буцах",

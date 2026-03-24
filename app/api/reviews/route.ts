@@ -12,8 +12,15 @@ function isAdminSession(
 export async function GET(request: NextRequest) {
   try {
     const session = await getSession();
-    if (!isAdminSession(session)) {
+    if (!session) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+
+    const isAdmin = isAdminSession(session);
+    const isCustomer = session.userType === "customer";
+
+    if (!isAdmin && !isCustomer) {
+      return NextResponse.json({ success: false, error: "Forbidden" }, { status: 403 });
     }
 
     const searchParams = request.nextUrl.searchParams;
@@ -38,6 +45,10 @@ export async function GET(request: NextRequest) {
     const where: Record<string, unknown> = {};
     if (typeof minRating === "number") {
       where.rating = { gte: minRating };
+    }
+
+    if (isCustomer) {
+      where.customerId = session.userId;
     }
 
     const reviews = await prisma.review.findMany({
