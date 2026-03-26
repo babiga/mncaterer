@@ -106,6 +106,12 @@ enum TransactionType {
   REFUND
 }
 
+enum ChefTaxStatus {
+  PENDING
+  PAID
+  WAIVED
+}
+
 enum NotificationType {
   EMAIL
   PUSH
@@ -218,6 +224,7 @@ model ChefProfile {
   rating          Float    @default(0)
   reviewCount     Int      @default(0)
   coverImage      String?
+  taxStatus       ChefTaxStatus @default(PENDING)
 
   bookings        Booking[]
   reviews         Review[]
@@ -642,6 +649,7 @@ model BankTransferSetting {
   accountHolderName   String
   iban                String?
   paymentInstructions String? @db.Text
+  initialTaxAmount    Decimal @default(100000) @db.Decimal(12, 2)
   isActive            Boolean @default(true)
 
   createdAt DateTime @default(now())

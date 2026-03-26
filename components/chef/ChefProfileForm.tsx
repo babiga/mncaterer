@@ -23,6 +23,83 @@ import { Textarea } from "@/components/ui/textarea";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { UserStatusBadge } from "@/components/users/user-status-badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle, CreditCard } from "lucide-react";
+import { ChefPaymentDialog } from "./ChefPaymentDialog";
+import { useLanguage } from "@/components/language-context";
+import { LanguageToggler } from "@/components/language-toggler";
+
+const translations = {
+    en: {
+        profileStatus: "Profile Status",
+        profileStatusDesc: "Your current standing on the platform.",
+        registrationStatus: "Registration Status",
+        profileDetails: "Profile Details",
+        profileDetailsDesc: "Update your profile photo and public biography.",
+        profileDetailsReadonly: "Chef profile photo and bio.",
+        bioLabel: "Professional Biography",
+        bioPlaceholder: "Share your culinary journey, style, and philosophy...",
+        basicInfo: "Basic Information",
+        fullName: "Full Name",
+        phone: "Phone Number",
+        primarySpecialty: "Primary Specialty",
+        yearsExp: "Years of Experience",
+        addSpecialties: "Additional Specialties",
+        profExperience: "Professional Experience",
+        education: "Education",
+        degrees: "Degrees",
+        certifications: "Certifications",
+        notableEvents: "Notable Events",
+        awards: "Awards & Honors",
+        saveBtn: "Save Profile",
+        savingBtn: "Saving Changes...",
+        successMsg: "Profile updated successfully",
+        errorMsg: "Failed to update profile",
+        wrongMsg: "Something went wrong",
+        feePendingTitle: "Registration Fee Pending",
+        feePendingDesc: "Your registration fee payment is currently pending. Some platform features may be restricted until payment is confirmed by an administrator.",
+        payNow: "Pay Now",
+        add: "Add",
+        noItems: "No {label} added yet.",
+        pageTitle: "Chef Profile",
+        pageDesc: "Manage your public profile information and culinary credentials."
+    },
+    mn: {
+        profileStatus: "Профайлын төлөв",
+        profileStatusDesc: "Платформ дээрх таны одоогийн байдал.",
+        registrationStatus: "Бүртгэлийн төлөв",
+        profileDetails: "Профайлын дэлгэрэнгүй",
+        profileDetailsDesc: "Профайл зураг болон намтраа шинэчилнэ үү.",
+        profileDetailsReadonly: "Чэф-ийн профайл зураг болон намтар.",
+        bioLabel: "Мэргэжлийн намтар",
+        bioPlaceholder: "Хоол хийх туршлага, арга барил, философиосоо хуваалцаарай...",
+        basicInfo: "Үндсэн мэдээлэл",
+        fullName: "Овог нэр",
+        phone: "Утасны дугаар",
+        primarySpecialty: "Үндсэн мэргэжил",
+        yearsExp: "Ажлын туршлага (жил)",
+        addSpecialties: "Нэмэлт мэргэжил",
+        profExperience: "Мэргэжлийн туршлага",
+        education: "Боловсрол",
+        degrees: "Зэрэг хамгаалалт",
+        certifications: "Сертификат",
+        notableEvents: "Онцлох үйл явдлууд",
+        awards: "Шагнал урамшуулал",
+        saveBtn: "Профайл хадгалах",
+        savingBtn: "Өөрчлөлтийг хадгалж байна...",
+        successMsg: "Профайл амжилттай шинэчлэгдлээ",
+        errorMsg: "Профайл шинэчлэхэд алдаа гарлаа",
+        wrongMsg: "Ямар нэг зүйл буруу боллоо",
+        feePendingTitle: "Бүртгэлийн хураамж хүлээгдэж байна",
+        feePendingDesc: "Таны бүртгэлийн хураамжийн төлбөр одоогоор хүлээгдэж байна. Төлбөр баталгаажих хүртэл платформын зарим функцууд хязгаарлагдмал байж болно.",
+        payNow: "Одоо төлөх",
+        add: "Нэмэх",
+        noItems: "Одоогоор {label} нэмээгүй байна.",
+        pageTitle: "Чэф-ийн профайл",
+        pageDesc: "Өөрийн нийтийн профайлын мэдээлэл болон туршлагаа энд удирдана уу."
+    }
+};
 
 interface DynamicListProps {
     name: keyof ChefProfileData;
@@ -35,6 +112,8 @@ interface DynamicListProps {
 }
 
 function DynamicList({ name, label, description, placeholder, form, readonly, isPending }: DynamicListProps) {
+    const { language } = useLanguage();
+    const t = translations[language];
     const items = (form.watch(name as any) || []) as string[];
 
     const addItem = () => {
@@ -66,7 +145,7 @@ function DynamicList({ name, label, description, placeholder, form, readonly, is
                         disabled={isPending}
                     >
                         <Plus className="h-4 w-4 mr-2" />
-                        Add
+                        {t.add}
                     </Button>
                 )}
             </CardHeader>
@@ -101,7 +180,7 @@ function DynamicList({ name, label, description, placeholder, form, readonly, is
                 ))}
                 {items.length === 0 && (
                     <p className="text-sm text-muted-foreground text-center py-4">
-                        No {label.toLowerCase()} added yet.
+                        {t.noItems.replace("{label}", label.toLowerCase())}
                     </p>
                 )}
             </CardContent>
@@ -115,6 +194,8 @@ interface ChefProfileFormProps {
 }
 
 export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFormProps) {
+    const { language } = useLanguage();
+    const t = translations[language];
     const [isPending, setIsPending] = useState(false);
 
     const form: UseFormReturn<ChefProfileData> = useForm<ChefProfileData>({
@@ -122,19 +203,21 @@ export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFo
         defaultValues: initialData,
     });
 
+    const [showPaymentDialog, setShowPaymentDialog] = useState(false);
+
     async function onSubmit(data: ChefProfileData) {
         if (readonly) return;
         setIsPending(true);
         try {
             const result = await updateChefProfile(data);
             if (result.success) {
-                toast.success("Profile updated successfully");
+                toast.success(t.successMsg);
             } else {
-                toast.error(result.error || "Failed to update profile");
+                toast.error(result.error || t.errorMsg);
             }
         } catch (error) {
             console.error(error);
-            toast.error("Something went wrong");
+            toast.error(t.wrongMsg);
         } finally {
             setIsPending(false);
         }
@@ -143,13 +226,69 @@ export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFo
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-8">
+                <ChefPaymentDialog
+                    isOpen={showPaymentDialog}
+                    onOpenChange={setShowPaymentDialog}
+                    chefName={form.watch("name")}
+                />
+                
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 max-w-4xl mx-auto">
+                    <div className="flex flex-col gap-1">
+                        <h1 className="text-2xl font-bold lg:text-3xl">{t.pageTitle}</h1>
+                        <p className="text-muted-foreground">
+                            {t.pageDesc}
+                        </p>
+                    </div>
+                    <LanguageToggler />
+                </div>
+
                 <div className="flex flex-col gap-8 max-w-4xl mx-auto">
+                    {/* Registration Fee Alert */}
+                    {form.watch("taxStatus") === "PENDING" && !readonly && (
+                        <Alert variant="destructive" className="border-amber-500/50 bg-amber-500/10 text-amber-700 dark:text-amber-400 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div className="flex gap-4">
+                                <AlertCircle className="h-5 w-5 mt-0.5 shrink-0" />
+                                <div>
+                                    <AlertTitle className="font-serif text-lg">{t.feePendingTitle}</AlertTitle>
+                                    <AlertDescription className="text-sm opacity-90">
+                                        {t.feePendingDesc}
+                                    </AlertDescription>
+                                </div>
+                            </div>
+                            <Button 
+                                type="button" 
+                                size="sm" 
+                                className="bg-amber-600 hover:bg-amber-700 text-white border-none shadow-lg shrink-0"
+                                onClick={() => setShowPaymentDialog(true)}
+                            >
+                                <CreditCard className="mr-2 h-4 w-4" />
+                                {t.payNow}
+                            </Button>
+                        </Alert>
+                    )}
+
+                    {/* Profile Status Card */}
+                    <Card className="border-white/5 bg-white/2 shadow-md">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <div>
+                                <CardTitle>{t.profileStatus}</CardTitle>
+                                <CardDescription>{t.profileStatusDesc}</CardDescription>
+                            </div>
+                            <div className="flex gap-2">
+                                <div className="flex flex-col items-end gap-1">
+                                    <span className="text-[10px] uppercase font-bold text-muted-foreground">{t.registrationStatus}</span>
+                                    <UserStatusBadge type="taxStatus" value={form.watch("taxStatus") || "PENDING"} />
+                                </div>
+                            </div>
+                        </CardHeader>
+                    </Card>
+
                     {/* Profile Details (Avatar + Bio) */}
                     <Card className="shadow-lg border-white/5 bg-white/2">
                         <CardHeader>
-                            <CardTitle>Profile Details</CardTitle>
+                            <CardTitle>{t.profileDetails}</CardTitle>
                             <CardDescription>
-                                {readonly ? "Chef profile photo and bio." : "Update your profile photo and public biography."}
+                                {readonly ? t.profileDetailsReadonly : t.profileDetailsDesc}
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
@@ -183,10 +322,10 @@ export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFo
                                 name="bio"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-sm font-medium text-white/70">Professional Biography</FormLabel>
+                                        <FormLabel className="text-sm font-medium text-white/70">{t.bioLabel}</FormLabel>
                                         <FormControl>
                                             <Textarea
-                                                placeholder="Share your culinary journey, style, and philosophy..."
+                                                placeholder={t.bioPlaceholder}
                                                 className="min-h-[200px] bg-white/1 border-white/10 focus:border-primary/50 transition-all resize-none leading-relaxed"
                                                 {...field}
                                                 value={field.value || ""}
@@ -203,7 +342,7 @@ export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFo
                     {/* Basic Information */}
                     <Card className="border-white/5 bg-white/2 shadow-md">
                         <CardHeader>
-                            <CardTitle>Basic Information</CardTitle>
+                            <CardTitle>{t.basicInfo}</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-6">
                             <FormField
@@ -211,9 +350,9 @@ export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFo
                                 name="name"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Full Name</FormLabel>
+                                        <FormLabel>{t.fullName}</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Chef Name" {...field} disabled={readonly} className="bg-white/2 border-white/10" />
+                                            <Input placeholder={t.fullName} {...field} disabled={readonly} className="bg-white/2 border-white/10" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -224,7 +363,7 @@ export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFo
                                 name="phone"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Phone Number</FormLabel>
+                                        <FormLabel>{t.phone}</FormLabel>
                                         <FormControl>
                                             <Input placeholder="+976 99999999" {...field} value={field.value || ""} disabled={readonly} className="bg-white/2 border-white/10" />
                                         </FormControl>
@@ -238,7 +377,7 @@ export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFo
                                     name="specialty"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Primary Specialty</FormLabel>
+                                            <FormLabel>{t.primarySpecialty}</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="e.g. Italian" {...field} disabled={readonly} className="bg-white/2 border-white/10" />
                                             </FormControl>
@@ -251,7 +390,7 @@ export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFo
                                     name="yearsExperience"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Years of Experience</FormLabel>
+                                            <FormLabel>{t.yearsExp}</FormLabel>
                                             <FormControl>
                                                 <Input type="number" {...field} disabled={readonly} className="bg-white/2 border-white/10" />
                                             </FormControl>
@@ -266,7 +405,7 @@ export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFo
                     {/* Dynamic Lists - All Vertical */}
                     <DynamicList
                         name="specialties"
-                        label="Additional Specialties"
+                        label={t.addSpecialties}
                         placeholder="e.g. French Pastry"
                         form={form}
                         readonly={readonly}
@@ -275,7 +414,7 @@ export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFo
 
                     <DynamicList
                         name="experience"
-                        label="Professional Experience"
+                        label={t.profExperience}
                         placeholder="e.g. Head Chef at X Restaurant (2020-2023)"
                         form={form}
                         readonly={readonly}
@@ -284,7 +423,7 @@ export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFo
 
                     <DynamicList
                         name="education"
-                        label="Education"
+                        label={t.education}
                         placeholder="e.g. Culinary Institute of America"
                         form={form}
                         readonly={readonly}
@@ -293,7 +432,7 @@ export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFo
 
                     <DynamicList
                         name="degrees"
-                        label="Degrees"
+                        label={t.degrees}
                         placeholder="e.g. Bachelor of Culinary Arts"
                         form={form}
                         readonly={readonly}
@@ -302,7 +441,7 @@ export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFo
 
                     <DynamicList
                         name="certifications"
-                        label="Certifications"
+                        label={t.certifications}
                         placeholder="Certification name"
                         form={form}
                         readonly={readonly}
@@ -311,7 +450,7 @@ export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFo
 
                     <DynamicList
                         name="events"
-                        label="Notable Events"
+                        label={t.notableEvents}
                         placeholder="e.g. Asian Culinary Forum 2023"
                         form={form}
                         readonly={readonly}
@@ -320,7 +459,7 @@ export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFo
 
                     <DynamicList
                         name="awards"
-                        label="Awards & Honors"
+                        label={t.awards}
                         placeholder="e.g. Best Chef Award 2022"
                         form={form}
                         readonly={readonly}
@@ -334,10 +473,10 @@ export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFo
                             {isPending ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Saving Changes...
+                                    {t.savingBtn}
                                 </>
                             ) : (
-                                "Save Profile"
+                                t.saveBtn
                             )}
                         </Button>
                     </div>

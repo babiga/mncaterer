@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { getCurrentUserWithProfile } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
+import { LanguageProvider } from "@/components/language-context";
 
 export default async function DashboardLayout({
   children,
@@ -21,7 +22,7 @@ export default async function DashboardLayout({
   }
 
   return (
-    <>
+    <LanguageProvider>
       <SidebarProvider
         style={
           {
@@ -41,6 +42,6 @@ export default async function DashboardLayout({
         </SidebarInset>
       </SidebarProvider>
       <Toaster />
-    </>
+    </LanguageProvider>
   );
 }

@@ -121,6 +121,34 @@ export default function ChefsManagementPage() {
         }
     };
 
+    const handleToggleTaxStatus = async (chef: ChefUser, taxStatus: "PENDING" | "PAID" | "WAIVED") => {
+        try {
+            const response = await fetch(`/api/dashboard-users/chefs/${chef.id}/tax-status`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ taxStatus }),
+            });
+            const result = await response.json();
+            if (result.success) {
+                setChefs((prev) =>
+                    prev.map((c) =>
+                        c.id === chef.id
+                            ? {
+                                  ...c,
+                                  chefProfile: c.chefProfile
+                                      ? { ...c.chefProfile, taxStatus }
+                                      : null,
+                              }
+                            : c
+                    )
+                );
+                toast.success(`Registration status updated to ${taxStatus}`);
+            }
+        } catch {
+            toast.error("Failed to update registration status");
+        }
+    };
+
     const onDeleteConfirmed = () => {
         if (!userToDelete) return;
         setChefs((prev) => prev.filter((c) => c.id !== userToDelete.id));
@@ -135,9 +163,10 @@ export default function ChefsManagementPage() {
                 onDelete: handleDelete,
                 onToggleActive: handleToggleActive,
                 onToggleVerify: handleToggleVerify,
+                onToggleTaxStatus: handleToggleTaxStatus,
                 role: user?.role,
             }),
-        [handleDelete, handleEdit, handleToggleActive, handleToggleVerify, handleView, user?.role]
+        [handleDelete, handleEdit, handleToggleActive, handleToggleVerify, handleToggleTaxStatus, handleView, user?.role]
     );
 
     if (isLoading) {

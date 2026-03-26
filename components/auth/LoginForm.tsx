@@ -80,7 +80,8 @@ export function LoginForm() {
       if (result.userType === "dashboard") {
         setSuccess(t("success.dashboard"));
         setTimeout(() => {
-          baseRouter.push("/dashboard");
+          const redirectPath = result.user?.role === "CHEF" ? "/dashboard/profile" : "/dashboard";
+          baseRouter.push(redirectPath);
         }, 700);
       } else {
         setSuccess(t("success.customer"));

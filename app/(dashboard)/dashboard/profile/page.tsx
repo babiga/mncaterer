@@ -41,17 +41,11 @@ export default async function ProfilePage() {
             bio: chefProfile.bio || "",
             yearsExperience: chefProfile.yearsExperience,
             certifications: chefProfile.certifications || [],
+            taxStatus: chefProfile.taxStatus as any,
         };
 
         return (
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 lg:gap-8 lg:py-8">
-                <div className="px-4 lg:px-6">
-                    <h1 className="text-2xl font-bold lg:text-3xl">Chef Profile</h1>
-                    <p className="text-muted-foreground mt-1">
-                        Manage your public profile information and culinary credentials.
-                    </p>
-                </div>
-
                 <div className="px-4 lg:px-6 max-w-6xl mx-auto w-full">
                     <ChefProfileForm initialData={initialData} />
                 </div>

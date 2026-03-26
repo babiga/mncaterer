@@ -19,6 +19,7 @@ export const bankTransferSettingsSchema = z.object({
     .max(1000)
     .optional()
     .or(z.literal("")),
+  initialTaxAmount: z.coerce.number().min(1, "Initial tax amount is required"),
   isActive: z.boolean(),
 });
 

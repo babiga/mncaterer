@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 interface UserStatusBadgeProps {
-  type: "active" | "verified" | "role" | "userType";
+  type: "active" | "verified" | "role" | "userType" | "taxStatus";
   value: boolean | string;
   className?: string;
 }
@@ -77,6 +77,23 @@ export function UserStatusBadge({
       <Badge
         variant="outline"
         className={cn(typeStyles[value as string] || "", className)}
+      >
+        {value}
+      </Badge>
+    );
+  }
+
+  if (type === "taxStatus") {
+    const taxStyles: Record<string, string> = {
+      PAID: "border-green-500/50 bg-green-500/10 text-green-700 dark:text-green-400",
+      PENDING: "border-amber-500/50 bg-amber-500/10 text-amber-700 dark:text-amber-400",
+      WAIVED: "border-blue-500/50 bg-blue-500/10 text-blue-700 dark:text-blue-400",
+    };
+
+    return (
+      <Badge
+        variant="outline"
+        className={cn(taxStyles[value as string] || "", className)}
       >
         {value}
       </Badge>

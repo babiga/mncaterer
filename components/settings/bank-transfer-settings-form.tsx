@@ -135,6 +135,20 @@ export function BankTransferSettingsForm({
 
             <FormField
               control={form.control}
+              name="initialTaxAmount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Chef Registration Fee (MNT)</FormLabel>
+                  <FormControl>
+                    <Input type="number" placeholder="100000" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="paymentInstructions"
               render={({ field }) => (
                 <FormItem>

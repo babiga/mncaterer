@@ -76,6 +76,7 @@ export async function PUT(request: NextRequest) {
         accountHolderName: data.accountHolderName,
         iban: data.iban || null,
         paymentInstructions: data.paymentInstructions || null,
+        initialTaxAmount: data.initialTaxAmount,
         isActive: data.isActive,
       },
       create: {
@@ -85,6 +86,7 @@ export async function PUT(request: NextRequest) {
         accountHolderName: data.accountHolderName,
         iban: data.iban || null,
         paymentInstructions: data.paymentInstructions || null,
+        initialTaxAmount: data.initialTaxAmount,
         isActive: data.isActive,
       },
     });

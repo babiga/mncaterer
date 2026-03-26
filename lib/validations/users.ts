@@ -110,6 +110,10 @@ export const toggleVerifySchema = z.object({
   isVerified: z.boolean(),
 });
 
+export const updateChefTaxStatusSchema = z.object({
+  taxStatus: z.enum(["PENDING", "PAID", "WAIVED"]),
+});
+
 // Query params schema for customers list endpoint
 export const usersQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),

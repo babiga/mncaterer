@@ -48,6 +48,7 @@ export default async function SettingsPage() {
     accountHolderName: settings?.accountHolderName ?? "",
     iban: settings?.iban ?? "",
     paymentInstructions: settings?.paymentInstructions ?? "",
+    initialTaxAmount: Number(settings?.initialTaxAmount ?? 100000),
     isActive: settings?.isActive ?? true,
   };
 

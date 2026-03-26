@@ -43,13 +43,13 @@ const data = {
       title: "Bookings",
       url: "/dashboard/bookings",
       icon: CalendarIcon,
-      hiddenFrom: [],
+      hiddenFrom: ["CHEF"],
     },
     {
       title: "Events",
       url: "/dashboard/events",
       icon: PartyPopperIcon,
-      hiddenFrom: [],
+      hiddenFrom: ["CHEF"],
     },
     {
       title: "Contents",
@@ -73,31 +73,31 @@ const data = {
       name: "Food Items",
       url: "/dashboard/menu-items",
       icon: UtensilsIcon,
-      hiddenFrom: [],
+      hiddenFrom: ["CHEF"],
     },
     {
       name: "Menus",
       url: "/dashboard/menus",
       icon: UtensilsIcon,
-      hiddenFrom: [],
+      hiddenFrom: ["CHEF"],
     },
     {
       name: "Chefs",
       url: "/dashboard/chefs",
       icon: UsersIcon,
-      hiddenFrom: [],
+      hiddenFrom: ["CHEF"],
     },
     {
       name: "Users",
       url: "/dashboard/users",
       icon: UsersIcon,
-      hiddenFrom: [],
+      hiddenFrom: ["CHEF"],
     },
     {
       name: "Inquiries",
       url: "/dashboard/inquiries",
       icon: MessageSquareIcon,
-      hiddenFrom: [],
+      hiddenFrom: ["CHEF"],
     },
     // {
     //   name: "Finance",
@@ -110,7 +110,7 @@ const data = {
       title: "Reviews",
       url: "/dashboard/reviews",
       icon: StarIcon,
-      hiddenFrom: [],
+      hiddenFrom: ["CHEF"],
     },
     // {
     //   title: "Memberships",
@@ -136,6 +136,8 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   user: DashboardUserWithProfile;
 }
 
+import { LanguageToggler } from "@/components/language-toggler";
+
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
   const navUser = {
     name: user.name,
@@ -143,13 +145,17 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
     avatar: user.avatar || "/avatars/default.png",
   };
 
+  const navMainItems = data.navMain.filter((item) => !(item.hiddenFrom as string[])?.includes(user.role));
+  const navManagementItems = data.navManagement.filter((item) => !(item.hiddenFrom as string[])?.includes(user.role));
+  const navSecondaryItems = data.navSecondary.filter((item) => !(item.hiddenFrom as string[])?.includes(user.role));
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarContent>
         <NavUser user={navUser} />
-        <NavMain items={data.navMain.filter((item) => !(item.hiddenFrom as string[])?.includes(user.role))} />
-        <NavDocuments items={data.navManagement.filter((item) => !(item.hiddenFrom as string[])?.includes(user.role))} />
-        <NavSecondary items={data.navSecondary.filter((item) => !(item.hiddenFrom as string[])?.includes(user.role))} />
+        {navMainItems.length > 0 && <NavMain items={navMainItems} />}
+        {navManagementItems.length > 0 && <NavDocuments items={navManagementItems} />}
+        {navSecondaryItems.length > 0 && <NavSecondary items={navSecondaryItems} />}
       </SidebarContent>
     </Sidebar>
   );

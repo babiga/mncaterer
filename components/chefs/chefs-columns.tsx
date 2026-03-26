@@ -31,6 +31,7 @@ export type ChefUser = {
     chefProfile: {
         specialty: string;
         rating: number;
+        taxStatus: "PENDING" | "PAID" | "WAIVED";
     } | null;
 };
 
@@ -40,6 +41,7 @@ interface ChefsColumnsProps {
     onDelete: (user: ChefUser) => void;
     onToggleActive: (user: ChefUser) => void;
     onToggleVerify: (user: ChefUser) => void;
+    onToggleTaxStatus: (user: ChefUser, status: "PENDING" | "PAID" | "WAIVED") => void;
     role?: string;
 }
 
@@ -49,6 +51,7 @@ export function getChefsColumns({
     onDelete,
     onToggleActive,
     onToggleVerify,
+    onToggleTaxStatus,
     role,
 }: ChefsColumnsProps): ColumnDef<ChefUser>[] {
     const isAdmin = role === "ADMIN";
@@ -136,6 +139,13 @@ export function getChefsColumns({
             },
         },
         {
+            accessorKey: "taxStatus",
+            header: "Registration Status",
+            cell: ({ row }) => (
+                <UserStatusBadge type="taxStatus" value={row.original.chefProfile?.taxStatus || "PENDING"} />
+            ),
+        },
+        {
             accessorKey: "isActive",
             header: "Status",
             cell: ({ row }) => (
@@ -184,6 +194,19 @@ export function getChefsColumns({
                                     </DropdownMenuItem>
                                     <DropdownMenuItem onClick={() => onToggleVerify(user)}>
                                         {user.isVerified ? "Unverify" : "Verify"}
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem disabled className="font-semibold">
+                                        Registration Status:
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => onToggleTaxStatus(user, "PAID")}>
+                                        Mark as PAID
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => onToggleTaxStatus(user, "PENDING")}>
+                                        Mark as PENDING
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => onToggleTaxStatus(user, "WAIVED")}>
+                                        Mark as WAIVED
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem

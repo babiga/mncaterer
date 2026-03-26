@@ -15,6 +15,7 @@ export const chefProfileSchema = z.object({
   bio: z.string().max(1000, "Bio is too long"),
   yearsExperience: z.coerce.number().min(0).max(50),
   certifications: z.array(z.string()),
+  taxStatus: z.enum(["PENDING", "PAID", "WAIVED"]).optional(),
 });
 
 export type ChefProfileData = z.infer<typeof chefProfileSchema>;
