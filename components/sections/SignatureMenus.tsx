@@ -59,14 +59,14 @@ export default function SignatureMenus({ menus }: { menus?: MenuType[] }) {
             </h2>
             <p className="text-muted-foreground">{t("description")}</p>
           </div>
-          <div className="flex gap-4">
+          {/* <div className="flex gap-4">
             <Button asChild variant="outline" className="hidden md:flex border-white/10 hover:border-primary px-8 py-6 rounded-none text-lg">
               <Link href="/menus">{t("seeAllTitle")}</Link>
             </Button>
             <Button className="bg-primary text-black hover:bg-white px-8 py-6 rounded-none text-lg">
               {t("downloadMenu")}
             </Button>
-          </div>
+          </div> */}
         </div>
 
         <Carousel
@@ -80,7 +80,7 @@ export default function SignatureMenus({ menus }: { menus?: MenuType[] }) {
             {menuCards.map((menu, index) => (
               <CarouselItem
                 key={menu.id}
-                className="pl-4 md:basis-1/2 lg:basis-1/3"
+                className="pl-4 basis-[calc(100%/1.3)] md:basis-1/2 lg:basis-1/3"
               >
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
@@ -126,7 +126,12 @@ export default function SignatureMenus({ menus }: { menus?: MenuType[] }) {
         </Carousel>
 
         <div className="mt-16 text-center">
-          <Button asChild variant="outline" size="lg" className="border-white/10 hover:border-primary px-10 py-6 text-lg rounded-none transition-all">
+          <Button
+            asChild
+            variant="outline"
+            size="lg"
+            className="border-white/10 hover:border-primary px-10 py-6 text-lg rounded-none transition-all"
+          >
             <Link href="/menus">{t("seeAllTitle")}</Link>
           </Button>
         </div>

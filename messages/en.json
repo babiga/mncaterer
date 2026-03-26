@@ -242,7 +242,7 @@
         "title": "Master Artists",
         "seeAllTitle": "Our Culinary Experts",
         "description": "The visionary chefs driving the culinary direction of our most prestigious events.",
-        "seeAllDescription": "Meet the exceptional talent behind our bespoke catering experiences. Filter by specialty or experience to find your perfect match.",
+        "seeAllDescription": "Meet the exceptional talent behind our bespoke catering experiences.",
         "role": "Executive Chef",
         "reviews": "Reviews",
         "specialty": "Specialty",
@@ -262,8 +262,9 @@
             "clear": "Reset"
         },
         "stats": {
-            "results": "{count} chefs available"
+            "results": "{count} available"
         },
+        "registerAsChef": "Register as Chef",
         "loginAction": "Log in",
         "requestConsultation": "Request Consultation",
         "reviewsSectionTitle": "Reviews",

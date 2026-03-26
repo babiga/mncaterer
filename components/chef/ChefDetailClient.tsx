@@ -2,15 +2,36 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ChefReviewsSection, type ChefReviewItem } from "@/components/chef/chef-reviews-section";
+import {
+  ChefReviewsSection,
+  type ChefReviewItem,
+} from "@/components/chef/chef-reviews-section";
 import { Link } from "@/i18n/routing";
-import { ArrowLeft, Star, Award, MapPin, Clock, Users, Calendar, Briefcase, GraduationCap, Trophy, ChefHat } from "lucide-react";
+import {
+  ArrowLeft,
+  Star,
+  Award,
+  MapPin,
+  Clock,
+  Users,
+  Calendar,
+  Briefcase,
+  GraduationCap,
+  Trophy,
+  ChefHat,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { motion } from "framer-motion";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 type PortfolioEvent = {
   id: string;
@@ -45,8 +66,14 @@ export function ChefDetailClient({
   const displayName = chef?.name ?? fallbackChef?.name ?? "";
   const rawAvatar = chef?.avatar ?? fallbackChef?.image;
   const avatar = rawAvatar && rawAvatar !== "" ? rawAvatar : null;
-  const specialty = chef?.chefProfile?.specialty ?? fallbackChef?.specialty ?? t("defaultSpecialty");
-  const bio = chef?.chefProfile?.bio ?? fallbackChef?.bio ?? t("detailDescription", { name: displayName });
+  const specialty =
+    chef?.chefProfile?.specialty ??
+    fallbackChef?.specialty ??
+    t("defaultSpecialty");
+  const bio =
+    chef?.chefProfile?.bio ??
+    fallbackChef?.bio ??
+    t("detailDescription", { name: displayName });
   const yearsExperience = chef?.chefProfile?.yearsExperience ?? 0;
   const certifications = (chef?.chefProfile?.certifications as string[]) ?? [];
   const specialties = (chef?.chefProfile?.specialties as string[]) ?? [];
@@ -58,7 +85,10 @@ export function ChefDetailClient({
   const events = (chef?.chefProfile?.portfolioEvents as PortfolioEvent[]) ?? [];
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogContent, setDialogContent] = useState<{ title: string, items: string[] }>({ title: "", items: [] });
+  const [dialogContent, setDialogContent] = useState<{
+    title: string;
+    items: string[];
+  }>({ title: "", items: [] });
 
   const statsCards = [
     {
@@ -66,49 +96,56 @@ export function ChefDetailClient({
       value: yearsExperience,
       label: t("yearsOfExperience"),
       title: t("professionalExperience"),
-      items: experience.length > 0 ? experience : [t("noExperienceProvided")]
+      items: experience.length > 0 ? experience : [t("noExperienceProvided")],
     },
     {
       icon: GraduationCap,
       value: education.length + degrees.length,
       label: t("educationAndDegrees"),
       title: t("educationAndDegrees"),
-      items: [...education, ...degrees].length > 0 ? [...education, ...degrees] : [t("noEducationProvided")]
+      items:
+        [...education, ...degrees].length > 0
+          ? [...education, ...degrees]
+          : [t("noEducationProvided")],
     },
     {
       icon: Award,
       value: certifications.length,
       label: t("certifications"),
       title: t("certifications"),
-      items: certifications.length > 0 ? certifications : [t("noCertificationsProvided")]
+      items:
+        certifications.length > 0
+          ? certifications
+          : [t("noCertificationsProvided")],
     },
     {
       icon: Trophy,
       value: awards.length,
       label: t("awardsAndRecognition"),
       title: t("awardsAndRecognition"),
-      items: awards.length > 0 ? awards : [t("noAwardsProvided")]
+      items: awards.length > 0 ? awards : [t("noAwardsProvided")],
     },
     {
       icon: ChefHat,
       value: specialties.length,
       label: t("specialties"),
       title: t("specialties"),
-      items: specialties.length > 0 ? specialties : [t("noSpecialtiesProvided")]
+      items:
+        specialties.length > 0 ? specialties : [t("noSpecialtiesProvided")],
     },
     {
       icon: Calendar,
       value: displayEvents.length,
       label: t("notableEvents"),
       title: t("notableEvents"),
-      items: displayEvents.length > 0 ? displayEvents : [t("noEventsProvided")]
-    }
+      items: displayEvents.length > 0 ? displayEvents : [t("noEventsProvided")],
+    },
   ];
 
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6 }
+    transition: { duration: 0.6 },
   };
 
   return (
@@ -117,7 +154,11 @@ export function ChefDetailClient({
       <div className="relative pt-32 pb-16 w-full">
         <div className="container relative mx-auto px-6">
           <motion.div {...fadeIn}>
-            <Button asChild variant="ghost" className="mb-12 w-fit text-white/60 hover:text-white hover:bg-white/10">
+            <Button
+              asChild
+              variant="ghost"
+              className="mb-12 w-fit text-white/60 hover:text-white hover:bg-white/10"
+            >
               <Link href="/#chefs">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 {t("back")}
@@ -140,17 +181,26 @@ export function ChefDetailClient({
                   />
                 ) : (
                   <div className="h-full w-full bg-slate-800 flex items-center justify-center">
-                    <span className="text-4xl text-slate-500">{displayName?.charAt(0) || "C"}</span>
+                    <span className="text-4xl text-slate-500">
+                      {displayName?.charAt(0) || "C"}
+                    </span>
                   </div>
                 )}
                 <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <div className="space-y-3">
-                <Badge variant="outline" className="border-primary/50 text-primary uppercase tracking-[0.2em] text-[10px] py-1 px-3">
+                <Badge
+                  variant="outline"
+                  className="border-primary/50 text-primary uppercase tracking-[0.2em] text-[10px] py-1 px-3"
+                >
                   {t("role")}
                 </Badge>
-                <h1 className="text-5xl font-light text-white md:text-7xl tracking-tight">{displayName}</h1>
-                <p className="text-xl text-primary/80 font-medium italic">{specialty}</p>
+                <h1 className="text-5xl font-light text-white md:text-7xl tracking-tight">
+                  {displayName}
+                </h1>
+                <p className="text-xl text-primary/80 font-medium italic">
+                  {specialty}
+                </p>
               </div>
             </motion.div>
 
@@ -159,7 +209,11 @@ export function ChefDetailClient({
               transition={{ delay: 0.4, duration: 0.6 }}
               className="mb-2"
             >
-              <Button asChild size="lg" className="bg-primary text-black hover:bg-white px-10 h-14 rounded-full font-semibold text-base transition-all duration-300 shadow-lg shadow-primary/20">
+              <Button
+                asChild
+                size="lg"
+                className="bg-primary text-black hover:bg-white px-10 h-14 rounded-full font-semibold text-base transition-all duration-300 shadow-lg shadow-primary/20"
+              >
                 <Link href="/inquiry">{t("bookConsultation")}</Link>
               </Button>
             </motion.div>
@@ -171,11 +225,10 @@ export function ChefDetailClient({
         <div className="grid gap-16 lg:grid-cols-3">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-20">
-
             {/* Professional Background Stats Grid */}
             <motion.div
               variants={{
-                animate: { transition: { staggerChildren: 0.1 } }
+                animate: { transition: { staggerChildren: 0.1 } },
               }}
               initial="initial"
               whileInView="animate"
@@ -187,7 +240,7 @@ export function ChefDetailClient({
                   key={i}
                   variants={{
                     initial: { opacity: 0, scale: 0.9 },
-                    animate: { opacity: 1, scale: 1 }
+                    animate: { opacity: 1, scale: 1 },
                   }}
                   onClick={() => {
                     setDialogContent({ title: stat.title, items: stat.items });
@@ -198,8 +251,12 @@ export function ChefDetailClient({
                   <div className="mb-3 text-primary group-hover:scale-110 transition-transform">
                     <stat.icon className="h-6 w-6" />
                   </div>
-                  <div className="text-3xl font-light text-white mb-1">{stat.value}</div>
-                  <div className="text-[10px] uppercase tracking-[0.15em] text-white/40 group-hover:text-white/60 transition-colors">{stat.label}</div>
+                  <div className="text-3xl font-light text-white mb-1">
+                    {stat.value}
+                  </div>
+                  <div className="text-[10px] uppercase tracking-[0.15em] text-white/40 group-hover:text-white/60 transition-colors">
+                    {stat.label}
+                  </div>
 
                   <div className="mt-4 text-[10px] text-primary/80 opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest font-semibold flex items-center gap-1">
                     {t("viewDetails")} <span>→</span>
@@ -220,7 +277,9 @@ export function ChefDetailClient({
               className="space-y-8"
             >
               <div className="flex items-center gap-6">
-                <h2 className="text-xl font-medium text-white uppercase tracking-[0.2em] whitespace-nowrap">{t("bio")}</h2>
+                <h2 className="text-xl font-medium text-white uppercase tracking-[0.2em] whitespace-nowrap">
+                  {t("bio")}
+                </h2>
                 <div className="h-px flex-1 bg-linear-to-r from-white/20 to-transparent" />
               </div>
               <div className="prose prose-invert max-w-none">
@@ -307,24 +366,33 @@ export function ChefDetailClient({
               <Card className="overflow-hidden border-primary/20 bg-white/5 backdrop-blur-2xl rounded-3xl">
                 <CardContent className="p-8 space-y-8">
                   <div className="space-y-3">
-                    <h3 className="text-2xl font-light text-white tracking-tight">{t("directInquiry")}</h3>
+                    <h3 className="text-2xl font-light text-white tracking-tight">
+                      {t("directInquiry")}
+                    </h3>
                     <p className="text-sm text-white/50 leading-relaxed">
-                      {t("directInquiryDesc", { name: displayName.split(' ')[0] })}
+                      {t("directInquiryDesc", {
+                        name: displayName.split(" ")[0],
+                      })}
                     </p>
                   </div>
 
-                  <Button asChild className="w-full bg-primary text-black hover:bg-white h-16 rounded-full font-bold text-lg transition-all duration-300 shadow-xl shadow-primary/10">
+                  <Button
+                    asChild
+                    className="w-full bg-primary text-black hover:bg-white h-16 rounded-full font-bold text-lg transition-all duration-300 shadow-xl shadow-primary/10"
+                  >
                     <Link href="/inquiry">{t("requestConsultation")}</Link>
                   </Button>
 
                   <div className="pt-4 border-t border-white/5 text-center">
-                    <p className="text-[10px] text-white/30 uppercase tracking-[0.3em]">{t("officialPortfolio")}</p>
+                    <p className="text-[10px] text-white/30 uppercase tracking-[0.3em]">
+                      {t("officialPortfolio")}
+                    </p>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Minimal Info Card with Only Real Data */}
-              <motion.div
+              {/* <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8, duration: 0.6 }}
@@ -341,7 +409,7 @@ export function ChefDetailClient({
                     <span className="text-white/80 font-light">{yearsExperience} {t("years", { count: yearsExperience })}</span>
                   </div>
                 </div>
-              </motion.div>
+              </motion.div> */}
             </motion.div>
           </div>
         </div>
@@ -350,16 +418,23 @@ export function ChefDetailClient({
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="bg-zinc-950/90 border border-white/10 backdrop-blur-3xl text-white max-w-2xl max-h-[80vh] overflow-hidden flex flex-col sm:rounded-3xl p-8">
           <DialogHeader className="mb-6">
-            <DialogTitle className="text-3xl font-light tracking-tight">{dialogContent.title}</DialogTitle>
+            <DialogTitle className="text-3xl font-light tracking-tight">
+              {dialogContent.title}
+            </DialogTitle>
             <DialogDescription className="text-white/50 text-base mt-2">
               {t("dialogDescription", { title: dialogContent.title })}
             </DialogDescription>
           </DialogHeader>
           <div className="flex-1 overflow-y-auto pr-2 space-y-4 custom-scrollbar">
             {dialogContent.items.map((item, i) => (
-              <div key={i} className="flex gap-6 items-start rounded-2xl border border-white/5 bg-white/5 p-5">
+              <div
+                key={i}
+                className="flex gap-6 items-start rounded-2xl border border-white/5 bg-white/5 p-5"
+              >
                 <div className="mt-2 h-2 w-2 shrink-0 rounded-full bg-primary" />
-                <span className="text-white/80 font-light leading-relaxed text-lg">{item}</span>
+                <span className="text-white/80 font-light leading-relaxed text-lg">
+                  {item}
+                </span>
               </div>
             ))}
           </div>

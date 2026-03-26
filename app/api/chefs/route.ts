@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
       data: formattedChefs,
       pagination: {
         total,
-        pages: Math.ceil(total / limit),
+        totalPages: Math.ceil(total / limit),
         currentPage: page,
         limit,
       },

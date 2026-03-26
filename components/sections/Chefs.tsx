@@ -30,7 +30,7 @@ type ChefCard = {
   role: string;
   image: string;
   rating: number;
-  reviews: number;
+  reviews: number | null;
   specialty: string;
 };
 
@@ -39,16 +39,27 @@ export default function Chefs({ chefs: apiChefs }: { chefs?: ChefType[] }) {
 
   const chefsData: ChefCard[] =
     apiChefs && apiChefs.length > 0
-      ? apiChefs.map((chef) => ({
-          id: chef.id,
-          name: chef.name,
-          role: t("role"),
-          image: chef.avatar || chef.coverImage || "/chef-1.png",
-          rating: chef.rating,
-          reviews: chef.reviewCount,
-          specialty: chef.specialty || t("defaultSpecialty"),
-        }))
-      : fallbackChefProfiles.map((chef) => ({ ...chef, reviews: chef.reviewCount }));
+      ? apiChefs.map((chef) => {
+          const reviewCountValue = Number(chef.reviewCount);
+          const reviewCount = Number.isFinite(reviewCountValue)
+            ? Math.max(0, reviewCountValue)
+            : 0;
+
+          return {
+            id: chef.id,
+            name: chef.name,
+            role: t("role"),
+            image: chef.avatar || chef.coverImage || "/black.png",
+            rating: chef.rating,
+            reviews: reviewCount > 0 ? reviewCount : null,
+            specialty: chef.specialty || t("defaultSpecialty"),
+          };
+        })
+      : fallbackChefProfiles.map((chef) => ({
+          ...chef,
+          // Avoid showing fabricated social proof when using static fallback cards.
+          reviews: null,
+        }));
 
   return (
     <section id="chefs" className="py-24 border-t border-white/5">
@@ -75,46 +86,56 @@ export default function Chefs({ chefs: apiChefs }: { chefs?: ChefType[] }) {
         >
           <CarouselContent className="-ml-4">
             {chefsData.map((chef, index) => (
-              <CarouselItem key={chef.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                <Link
-                  href={`/chefs/${chef.id}`}
-                  className="block"
-                >
+              <CarouselItem
+                key={chef.id}
+                className="pl-4 basis-[calc(100%/1.3)] lg:basis-[calc(100%/4.5)]"
+              >
+                <Link href={`/chefs/${chef.id}`} className="block">
                   <motion.article
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
-                    className="group relative aspect-3/4 overflow-hidden cursor-pointer text-left w-full"
+                    className="group relative cursor-pointer text-left w-full"
                   >
-                    <div className="absolute inset-0 bg-linear-to-t from-black via-transparent to-transparent opacity-80 z-10" />
+                    <div className="relative aspect-3/4 overflow-hidden">
+                      <div className="hidden md:block absolute inset-0 bg-linear-to-t from-black via-transparent to-transparent opacity-80 z-10" />
+                      <img
+                        src={chef.image}
+                        alt={chef.name}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                    </div>
 
-                    <img
-                      src={chef.image}
-                      alt={chef.name}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-
-                    <div className="absolute bottom-0 left-0 w-full p-8 z-20 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                      <div className="flex items-center gap-2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                    <div className="w-full p-4 bg-black/70 md:bg-transparent md:p-8 md:absolute md:bottom-0 md:left-0 md:z-20 md:translate-y-4 md:group-hover:translate-y-0 md:transition-transform md:duration-500">
+                      <div className="flex items-center gap-2 mb-2 md:opacity-0 md:group-hover:opacity-100 md:transition-opacity md:duration-500 md:delay-100">
                         <div className="flex gap-0.5">
                           {[1, 2, 3, 4, 5].map((s) => (
-                            <Star key={s} className="w-3 h-3 text-primary fill-primary" />
+                            <Star
+                              key={s}
+                              className="w-3 h-3 text-primary fill-primary"
+                            />
                           ))}
                         </div>
-                        <span className="text-xs text-white/70">
-                          ({chef.reviews} {t("reviews")})
-                        </span>
+                        {chef.reviews !== null ? (
+                          <span className="text-xs text-white/70">
+                            ({chef.reviews} {t("reviews")})
+                          </span>
+                        ) : null}
                       </div>
 
                       <h3 className="text-2xl text-white mb-1">{chef.name}</h3>
-                      <p className="text-primary text-sm uppercase tracking-widest mb-4">{chef.role}</p>
+                      <p className="text-primary text-sm uppercase tracking-widest mb-4">
+                        {chef.role}
+                      </p>
 
-                      <div className="h-0 group-hover:h-auto overflow-hidden transition-all duration-500">
+                      <div className="h-auto overflow-hidden md:h-0 md:group-hover:h-auto md:transition-all md:duration-500">
                         <p className="text-sm text-white/80 border-l-2 border-primary pl-3">
                           {t("specialty")}: {chef.specialty}
                         </p>
-                        <p className="mt-3 text-xs uppercase tracking-wider text-primary">{t("openDetails")}</p>
+                        <p className="mt-3 text-xs uppercase tracking-wider text-primary">
+                          {t("openDetails")}
+                        </p>
                       </div>
                     </div>
                   </motion.article>
@@ -129,7 +150,12 @@ export default function Chefs({ chefs: apiChefs }: { chefs?: ChefType[] }) {
         </Carousel>
 
         <div className="mt-16 text-center">
-          <Button asChild variant="outline" size="lg" className="border-white/10 hover:border-primary px-10 py-6 text-lg rounded-none transition-all">
+          <Button
+            asChild
+            variant="outline"
+            size="lg"
+            className="border-white/10 hover:border-primary px-10 py-6 text-lg rounded-none transition-all"
+          >
             <Link href="/chefs">{t("seeAllTitle")}</Link>
           </Button>
         </div>

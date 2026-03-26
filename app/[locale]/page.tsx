@@ -115,7 +115,7 @@ export default function Home() {
               size="lg"
               className="bg-primary text-black hover:bg-white px-10 py-6 text-lg rounded-none transition-all btn-glow"
             >
-              <Link href="/profile">{t("startJourney")}</Link>
+              <Link href="/booking">{t("startJourney")}</Link>
             </Button>
             <Button
               asChild

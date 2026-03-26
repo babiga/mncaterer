@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -19,33 +19,53 @@ const events = [
     id: 1,
     title: "The Vanderbilt Wedding",
     type: "Wedding",
-    image: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=2070&auto=format&fit=crop",
     guests: "250 Guests",
-    highlights: ["Custom tasting menu", "Floral-plated dessert course", "Late-night snack bar"],
+    highlights: [
+      "Custom tasting menu",
+      "Floral-plated dessert course",
+      "Late-night snack bar",
+    ],
   },
   {
     id: 2,
     title: "TechFlow Annual Gala",
     type: "Corporate",
-    image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop",
     guests: "500 Guests",
-    highlights: ["Live carving stations", "Branded cocktail pairings", "Executive lounge service"],
+    highlights: [
+      "Live carving stations",
+      "Branded cocktail pairings",
+      "Executive lounge service",
+    ],
   },
   {
     id: 3,
     title: "Penthouse Private Dining",
     type: "Private",
-    image: "https://images.unsplash.com/photo-1530062845289-9109b2c9c868?q=80&w=2072&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1530062845289-9109b2c9c868?q=80&w=2072&auto=format&fit=crop",
     guests: "20 Guests",
-    highlights: ["Chef's table presentation", "Wine pairing flight", "Seasonal tasting progression"],
+    highlights: [
+      "Chef's table presentation",
+      "Wine pairing flight",
+      "Seasonal tasting progression",
+    ],
   },
   {
     id: 4,
     title: "Summer Garden Soiree",
     type: "Social",
-    image: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=2069&auto=format&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?q=80&w=2069&auto=format&fit=crop",
     guests: "80 Guests",
-    highlights: ["Garden canape circulation", "Signature dessert wall", "Sunset welcome drinks"],
+    highlights: [
+      "Garden canape circulation",
+      "Signature dessert wall",
+      "Sunset welcome drinks",
+    ],
   },
 ] as const;
 
@@ -67,7 +87,10 @@ type EventCard = {
   highlights: readonly string[];
 };
 
-const EVENT_TYPE_TRANSLATION_KEY: Record<EventType["eventType"], EventCard["type"]> = {
+const EVENT_TYPE_TRANSLATION_KEY: Record<
+  EventType["eventType"],
+  EventCard["type"]
+> = {
   WEDDING: "Wedding",
   CORPORATE: "Corporate",
   PRIVATE: "Private",
@@ -75,13 +98,33 @@ const EVENT_TYPE_TRANSLATION_KEY: Record<EventType["eventType"], EventCard["type
 };
 
 const EVENT_HIGHLIGHTS: Record<EventCard["type"], string[]> = {
-  Wedding: ["Bespoke tasting menu", "Elegant dessert station", "Premium table service"],
-  Corporate: ["Fast-paced service team", "Executive menu curation", "Branded food presentation"],
-  Private: ["Intimate plated dinner", "Chef-led storytelling", "Tailored dietary planning"],
-  Social: ["Shareable small plates", "Seasonal beverage program", "Immersive ambiance design"],
+  Wedding: [
+    "Bespoke tasting menu",
+    "Elegant dessert station",
+    "Premium table service",
+  ],
+  Corporate: [
+    "Fast-paced service team",
+    "Executive menu curation",
+    "Branded food presentation",
+  ],
+  Private: [
+    "Intimate plated dinner",
+    "Chef-led storytelling",
+    "Tailored dietary planning",
+  ],
+  Social: [
+    "Shareable small plates",
+    "Seasonal beverage program",
+    "Immersive ambiance design",
+  ],
 };
 
-export default function Events({ events: apiEvents }: { events?: EventType[] }) {
+export default function Events({
+  events: apiEvents,
+}: {
+  events?: EventType[];
+}) {
   const t = useTranslations("Events");
   const isMobile = useIsMobile();
 
@@ -93,7 +136,8 @@ export default function Events({ events: apiEvents }: { events?: EventType[] }) 
             id: event.id,
             title: event.title,
             type,
-            image: event.coverImageUrl || event.imageUrls[0] || "/event-private.png",
+            image:
+              event.coverImageUrl || event.imageUrls[0] || "/event-private.png",
             guests: `${event.guestCount} Guests`,
             highlights: EVENT_HIGHLIGHTS[type],
           };
@@ -119,7 +163,10 @@ export default function Events({ events: apiEvents }: { events?: EventType[] }) 
         >
           <CarouselContent className="-ml-4">
             {eventCards.map((event) => (
-              <CarouselItem key={event.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
+              <CarouselItem
+                key={event.id}
+                className="pl-4 basis-[calc(100%/1.3)] md:basis-1/2 lg:basis-1/3"
+              >
                 <Link href={`/events/${event.id}`} className="block w-full">
                   <motion.div
                     whileHover={{ y: -10 }}
@@ -132,13 +179,19 @@ export default function Events({ events: apiEvents }: { events?: EventType[] }) 
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                       <div className="absolute top-4 left-4 bg-black/50 backdrop-blur-md px-3 py-1 rounded-sm border border-white/10">
-                        <span className="text-xs uppercase tracking-wider text-white">{t(`types.${event.type}`)}</span>
+                        <span className="text-xs uppercase tracking-wider text-white">
+                          {t(`types.${event.type}`)}
+                        </span>
                       </div>
                     </div>
                     <div className="p-6">
                       <h3 className="text-xl text-white mb-2">{event.title}</h3>
-                      <p className="text-sm text-muted-foreground">{event.guests.replace("Guests", t("guests"))}</p>
-                      <p className="mt-3 text-xs uppercase tracking-wider text-primary">{t("openDetails")}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {event.guests.replace("Guests", t("guests"))}
+                      </p>
+                      <p className="mt-3 text-xs uppercase tracking-wider text-primary">
+                        {t("openDetails")}
+                      </p>
                     </div>
                   </motion.div>
                 </Link>
@@ -151,7 +204,12 @@ export default function Events({ events: apiEvents }: { events?: EventType[] }) 
           </div>
         </Carousel>
         <div className="flex justify-center mt-16">
-          <Button asChild variant="outline" size="lg" className="border-white/10 hover:border-primary px-10 py-6 text-lg rounded-none transition-all">
+          <Button
+            asChild
+            variant="outline"
+            size="lg"
+            className="border-white/10 hover:border-primary px-10 py-6 text-lg rounded-none transition-all"
+          >
             <Link href="/events">{t("seeAllTitle")}</Link>
           </Button>
         </div>

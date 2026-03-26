@@ -97,39 +97,6 @@ export function MenuSelectionStep({
       {/* Menu cards */}
       {serviceType !== "OTHER" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
-          {/* Custom Menu Option */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            onClick={() => setCustomMenuMode(!isCustomMenu)}
-            className={`group relative p-6 rounded-2xl border-2 text-left transition-all duration-300 cursor-pointer ${isCustomMenu
-                ? "border-primary bg-primary/5 ring-1 ring-primary/20"
-                : "border-white/5 bg-white/2 hover:border-white/15"
-              }`}
-          >
-            <div
-              className={`absolute top-4 right-4 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all ${isCustomMenu
-                  ? "border-primary bg-primary"
-                  : "border-white/20 bg-transparent"
-                }`}
-            >
-              {isCustomMenu && <Check className="w-4 h-4 text-black" />}
-            </div>
-            <div className="mb-4">
-              <span className="text-[10px] uppercase tracking-[0.3em] text-primary font-medium mb-1 block">
-                {t("customOptionTag")}
-              </span>
-              <h3 className="text-lg font-medium text-white pr-8">{t("customOption")}</h3>
-              <p className="text-white/40 text-sm mt-1">
-                {t("customOptionDesc")}
-              </p>
-            </div>
-            <div className="flex items-center gap-2 text-white/50 text-sm italic">
-              <UtensilsCrossed className="w-4 h-4" />
-              <span>{t("customOptionFooter")}</span>
-            </div>
-          </motion.div>
-
           {filteredMenus.map((menu, i) => {
             const menuState = selectedMenus.find((m) => m.menuId === menu.id);
             const isSelected = !!menuState && !isCustomMenu;
@@ -229,6 +196,40 @@ export function MenuSelectionStep({
               </motion.div>
             );
           })}
+
+          {/* Custom Menu Option */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: (filteredMenus.length + 1) * 0.05 }}
+            onClick={() => setCustomMenuMode(!isCustomMenu)}
+            className={`group relative p-6 rounded-2xl border-2 text-left transition-all duration-300 cursor-pointer ${isCustomMenu
+                ? "border-primary bg-primary/5 ring-1 ring-primary/20"
+                : "border-white/5 bg-white/2 hover:border-white/15"
+              }`}
+          >
+            <div
+              className={`absolute top-4 right-4 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all ${isCustomMenu
+                  ? "border-primary bg-primary"
+                  : "border-white/20 bg-transparent"
+                }`}
+            >
+              {isCustomMenu && <Check className="w-4 h-4 text-black" />}
+            </div>
+            <div className="mb-4">
+              <span className="text-[10px] uppercase tracking-[0.3em] text-primary font-medium mb-1 block">
+                {t("customOptionTag")}
+              </span>
+              <h3 className="text-lg font-medium text-white pr-8">{t("customOption")}</h3>
+              <p className="text-white/40 text-sm mt-1">
+                {t("customOptionDesc")}
+              </p>
+            </div>
+            <div className="flex items-center gap-2 text-white/50 text-sm italic">
+              <UtensilsCrossed className="w-4 h-4" />
+              <span>{t("customOptionFooter")}</span>
+            </div>
+          </motion.div>
         </div>
       )}
 

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Search, Filter, X, SlidersHorizontal, ChevronLeft, ChevronRight, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSearchParams } from "next/navigation";
-import { useRouter, usePathname } from "@/i18n/routing";
+import { Link, useRouter, usePathname } from "@/i18n/routing";
 
 interface ChefListClientProps {
   initialChefs: any[];
@@ -123,6 +123,12 @@ export function ChefListClient({ initialChefs, totalCount }: ChefListClientProps
           <div className="text-white/40 text-sm uppercase tracking-widest text-right">
             {t("stats.results", { count: total })}
           </div>
+          <Button
+            asChild
+            className="bg-primary text-black hover:bg-primary/90 gap-2"
+          >
+            <Link href="/signup?tab=chef">{t("registerAsChef")}</Link>
+          </Button>
           <Button
             variant="outline"
             onClick={() => setShowFilters(!showFilters)}

@@ -1,10 +1,10 @@
 "use client";
 import * as React from "react";
 import {
-  ArrowUpCircleIcon,
-  BriefcaseIcon,
+  BookOpenIcon,
   CalendarIcon,
-  CrownIcon,
+  ChefHatIcon,
+  FileTextIcon,
   LayoutDashboardIcon,
   PartyPopperIcon,
   MessageSquareIcon,
@@ -12,7 +12,6 @@ import {
   StarIcon,
   UsersIcon,
   UtensilsIcon,
-  WalletIcon,
   UserCircleIcon,
 } from "lucide-react";
 
@@ -54,7 +53,7 @@ const data = {
     {
       title: "Contents",
       url: "/dashboard/contents",
-      icon: LayoutDashboardIcon,
+      icon: FileTextIcon,
       hiddenFrom: ["CHEF", "COMPANY"],
     },
     // {
@@ -78,13 +77,13 @@ const data = {
     {
       name: "Menus",
       url: "/dashboard/menus",
-      icon: UtensilsIcon,
+      icon: BookOpenIcon,
       hiddenFrom: ["CHEF"],
     },
     {
       name: "Chefs",
       url: "/dashboard/chefs",
-      icon: UsersIcon,
+      icon: ChefHatIcon,
       hiddenFrom: ["CHEF"],
     },
     {
