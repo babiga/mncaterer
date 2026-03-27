@@ -94,6 +94,7 @@ export async function POST(request: NextRequest) {
           phone: data.phone,
           password: hashedPassword,
           role: "CHEF",
+          isVerified: true, // Auto-verify since there's no email verification flow
           chefProfile: {
             create: {
               id: await generateUniqueSlug(

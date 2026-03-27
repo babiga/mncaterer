@@ -44,11 +44,13 @@ export const metadata: Metadata = {
     description:
       "Premium high-end catering for private events, corporate functions, and VIP occasions.",
     type: "website",
+    images: [{ url: "/ogimg.jpg" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Mongolian National Caterer",
     description: "Premium luxury catering services.",
+    images: ["/ogimg.jpg"],
   },
 };
 

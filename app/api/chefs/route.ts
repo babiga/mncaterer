@@ -13,7 +13,8 @@ export async function GET(request: NextRequest) {
     const where: any = {
       role: "CHEF",
       isActive: true,
-      // Only show chefs who have a profile
+      isVerified: true,
+      // Only show chefs who have paid their registration fee
       chefProfile: {
         is: {
           taxStatus: { in: ["PAID", "WAIVED"] },

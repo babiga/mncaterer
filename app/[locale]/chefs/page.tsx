@@ -29,6 +29,7 @@ export default async function ChefsPage({
     where: {
       role: "CHEF",
       isActive: true,
+      isVerified: true,
       chefProfile: {
         is: {
           taxStatus: { in: ["PAID", "WAIVED"] },
@@ -46,6 +47,7 @@ export default async function ChefsPage({
     where: {
       role: "CHEF",
       isActive: true,
+      isVerified: true,
       chefProfile: {
         is: {
           taxStatus: { in: ["PAID", "WAIVED"] },

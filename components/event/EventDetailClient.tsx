@@ -55,8 +55,8 @@ export function EventDetailClient({ event }: { event: any }) {
   };
 
   return (
-    <div className="pt-32 pb-24">
-      <div className="container mx-auto px-6">
+    <div className="pt-24 sm:pt-32 pb-16 sm:pb-24 overflow-x-hidden">
+      <div className="container mx-auto px-4 sm:px-6">
         <motion.div {...fadeIn}>
           <Button asChild variant="ghost" className="mb-8 w-fit text-white/60 hover:text-white hover:bg-white/10">
             <Link href="/events">
@@ -66,7 +66,7 @@ export function EventDetailClient({ event }: { event: any }) {
           </Button>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-24">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-24">
           <motion.div {...fadeIn} transition={{ delay: 0.2, duration: 0.6 }} className="space-y-8">
             <div className="aspect-4/3 relative rounded-3xl overflow-hidden border border-white/10 bg-white/5">
               <AnimatePresence mode="wait">
@@ -141,22 +141,22 @@ export function EventDetailClient({ event }: { event: any }) {
               <Badge className="bg-primary/10 text-primary border-primary/20">
                 {t(`types.${EVENT_TYPE_MAP[event.eventType] || event.eventType}`) || event.eventType}
               </Badge>
-              <h1 className="text-4xl md:text-5xl lg:text-8xl font-light tracking-tight text-white">{event.title}</h1>
+              <h1 className="text-3xl sm:text-4xl lg:text-6xl font-light tracking-tight text-white wrap-break-word">{event.title}</h1>
               {event.description && (
-                <p className="text-xl text-white/60 font-light leading-relaxed max-w-2xl">
+                <p className="text-base sm:text-xl text-white/60 font-light leading-relaxed max-w-2xl">
                   {event.description}
                 </p>
               )}
             </div>
 
-            <div className="space-y-6 py-10 border-y border-white/10">
-              <div className="grid grid-cols-2 gap-8">
+            <div className="space-y-6 py-6 sm:py-10 border-y border-white/10">
+              <div className="grid grid-cols-2 gap-4 sm:gap-8">
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-white/40">
                     <Users className="w-4 h-4" />
                     <span className="text-sm uppercase tracking-wider">{t("guests")}</span>
                   </div>
-                  <p className="text-3xl text-white font-light">{event.guestCount}</p>
+                  <p className="text-2xl sm:text-3xl text-white font-light">{event.guestCount}</p>
                 </div>
 
                 {event.eventDate && (
@@ -165,7 +165,7 @@ export function EventDetailClient({ event }: { event: any }) {
                       <Calendar className="w-4 h-4" />
                       <span className="text-sm uppercase tracking-wider">{t("date")}</span>
                     </div>
-                    <p className="text-3xl text-white font-light">
+                    <p className="text-2xl sm:text-3xl text-white font-light wrap-break-word">
                       {new Date(event.eventDate).toLocaleDateString()}
                     </p>
                   </div>
@@ -178,7 +178,7 @@ export function EventDetailClient({ event }: { event: any }) {
                     <MapPin className="w-4 h-4" />
                     <span className="text-sm uppercase tracking-wider">{t("location")}</span>
                   </div>
-                  <p className="text-2xl text-white font-light">{event.location}</p>
+                  <p className="text-xl sm:text-2xl text-white font-light wrap-break-word">{event.location}</p>
                 </div>
               )}
             </div>

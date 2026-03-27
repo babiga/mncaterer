@@ -103,7 +103,7 @@ export function ChefPaymentDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] bg-zinc-950 border-zinc-800 text-white">
+      <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto bg-zinc-950 border-zinc-800 text-white">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl font-serif">
             <Landmark className="w-5 h-5 text-primary" />
