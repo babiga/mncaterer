@@ -44,7 +44,9 @@ export async function GET() {
           role: "CHEF",
           isActive: true,
           isVerified: true,
-          chefProfile: { isNot: null },
+          chefProfile: {
+            taxStatus: { in: ["PAID", "WAIVED"] },
+          },
         },
         select: {
           id: true,

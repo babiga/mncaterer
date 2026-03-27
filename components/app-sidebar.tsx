@@ -36,7 +36,7 @@ const data = {
       title: "Dashboard",
       url: "/dashboard",
       icon: LayoutDashboardIcon,
-      hiddenFrom: [],
+      hiddenFrom: ["CHEF"],
     },
     {
       title: "Bookings",

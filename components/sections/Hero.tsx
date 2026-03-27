@@ -152,7 +152,7 @@ export default function Hero({ banners }: { banners?: BannerType[] }) {
             variant="outline"
             className="border-white/30 text-white hover:border-primary hover:text-primary hover:bg-transparent text-lg px-8 py-6 rounded-none backdrop-blur-sm transition-all duration-300"
           >
-            <Link href="/inquiry">{t("requestQuote")}</Link>
+            <Link href="/signup?tab=chef">{t("registerAsChef")}</Link>
           </Button>
         </motion.div>
       </div>

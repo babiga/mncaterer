@@ -29,7 +29,11 @@ export default async function ChefsPage({
     where: {
       role: "CHEF",
       isActive: true,
-      chefProfile: { isNot: null }
+      chefProfile: {
+        is: {
+          taxStatus: { in: ["PAID", "WAIVED"] },
+        }
+      }
     },
     include: {
       chefProfile: true,
@@ -42,7 +46,11 @@ export default async function ChefsPage({
     where: {
       role: "CHEF",
       isActive: true,
-      chefProfile: { isNot: null }
+      chefProfile: {
+        is: {
+          taxStatus: { in: ["PAID", "WAIVED"] },
+        }
+      }
     }
   });
 

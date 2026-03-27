@@ -26,7 +26,8 @@ const translations = {
     referenceLabel: "Payment Reference",
     copiedMsg: "Copied to clipboard",
     closeBtn: "Close",
-    unavailableMsg: "Bank transfer is currently unavailable. Please contact support."
+    unavailableMsg: "Bank transfer is currently unavailable. Please contact support.",
+    specialOffer: "Special offer for event attendees: Join the platform at half price.",
   },
   mn: {
     title: "Бүртгэлийн хураамж",
@@ -38,7 +39,8 @@ const translations = {
     referenceLabel: "Гүйлгээний утга",
     copiedMsg: "Хуулж авлаа",
     closeBtn: "Хаах",
-    unavailableMsg: "Банкны шилжүүлэг одоогоор боломжгүй байна. Тусламжтай холбогдоно уу."
+    unavailableMsg: "Банкны шилжүүлэг одоогоор боломжгүй байна. Тусламжтай холбогдоно уу.",
+    specialOffer: "Арга хэмжээнд хүрэлцэн ирсэн танд зориулж тал үнээр платформд нэгдэх эрх болгож байна",
   }
 };
 
@@ -119,9 +121,22 @@ export function ChefPaymentDialog({
         ) : settings && settings.isActive ? (
           <div className="space-y-6 py-4">
             <div className="space-y-4">
+              <div className="p-3 rounded-lg bg-primary/10 border border-primary/20">
+                <p className="text-xs font-medium text-primary text-center">
+                  {t.specialOffer}
+                </p>
+              </div>
+
               <div className="flex justify-between items-center p-3 rounded-lg bg-white/5 border border-white/10">
                 <span className="text-sm text-zinc-400">{t.amountLabel}</span>
-                <span className="text-lg font-semibold">{Number(settings.initialTaxAmount).toLocaleString()}₮</span>
+                <div className="flex flex-col items-end">
+                  <span className="text-xs text-zinc-500 line-through">
+                    {Number(settings.initialTaxAmount).toLocaleString()}₮
+                  </span>
+                  <span className="text-lg font-semibold text-primary">
+                    {Number(settings.initialTaxAmount / 2).toLocaleString()}₮
+                  </span>
+                </div>
               </div>
 
               <div className="space-y-3">

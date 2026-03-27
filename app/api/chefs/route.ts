@@ -15,7 +15,9 @@ export async function GET(request: NextRequest) {
       isActive: true,
       // Only show chefs who have a profile
       chefProfile: {
-        isNot: null,
+        is: {
+          taxStatus: { in: ["PAID", "WAIVED"] },
+        }
       },
     };
 
