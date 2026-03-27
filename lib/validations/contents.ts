@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const siteContentSchema = z.object({
-  type: z.enum(["BANNER", "SOCIAL_LINK", "PARTNER"]),
+  type: z.enum(["BANNER", "SOCIAL_LINK", "PARTNER", "CHEF_POSTER"]),
   title: z.string().optional().nullable(),
   subtitle: z.string().optional().nullable(),
   imageUrl: z.string().optional().nullable(),
@@ -12,7 +12,7 @@ export const siteContentSchema = z.object({
 });
 
 export const contentsQuerySchema = z.object({
-  type: z.enum(["BANNER", "SOCIAL_LINK", "PARTNER"]).optional(),
+  type: z.enum(["BANNER", "SOCIAL_LINK", "PARTNER", "CHEF_POSTER"]).optional(),
   isActive: z.enum(["true", "false", "all"]).optional().default("all"),
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(100).default(100),

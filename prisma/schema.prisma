@@ -212,17 +212,17 @@ model ChefProfile {
   dashboardUser   DashboardUser @relation(fields: [dashboardUserId], references: [id], onDelete: Cascade)
 
   specialty       String
-  specialties     String[] @default([])
-  education       String[] @default([])
-  experience      String[] @default([])
-  events          String[] @default([])
-  degrees         String[] @default([])
-  awards          String[] @default([])
-  bio             String?  @db.Text
-  yearsExperience Int      @default(0)
+  specialties     String[]      @default([])
+  education       String[]      @default([])
+  experience      String[]      @default([])
+  events          String[]      @default([])
+  degrees         String[]      @default([])
+  awards          String[]      @default([])
+  bio             String?       @db.Text
+  yearsExperience Int           @default(0)
   certifications  String[]
-  rating          Float    @default(0)
-  reviewCount     Int      @default(0)
+  rating          Float         @default(0)
+  reviewCount     Int           @default(0)
   coverImage      String?
   taxStatus       ChefTaxStatus @default(PENDING)
 

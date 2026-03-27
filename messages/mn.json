@@ -234,7 +234,8 @@
         ],
         "requestAccess": "Сүлжээнд нэгдэх",
         "chefName": "Глобал Карьер",
-        "chefRole": "Тогоочийн Боловсрол"
+        "chefRole": "Тогоочийн Боловсрол",
+        "featuredChefs": "Мэдээ"
     },
     "Chefs": {
         "back": "Буцах",
@@ -318,7 +319,9 @@
         "officialPortfolio": "Албан ёсны портфолио",
         "eventsTitle": "Эвент",
         "privateEvent": "Хувийн арга хэмжээ",
-        "guestsCount": "{count} зочин"
+        "guestsCount": "{count} зочин",
+        "posters": "Постерууд",
+        "view": "Үзэх"
     },
     "Events": {
         "title": "Мартагдашгүй Мөчүүд",

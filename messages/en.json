@@ -235,7 +235,8 @@
         ],
         "requestAccess": "Join Global Network",
         "chefName": "Global Career",
-        "chefRole": "Chef Education"
+        "chefRole": "Chef Education",
+        "featuredChefs": "News"
     },
     "Chefs": {
         "back": "Back",
@@ -319,7 +320,9 @@
         "officialPortfolio": "Official Portfolio",
         "eventsTitle": "Events",
         "privateEvent": "Private Event",
-        "guestsCount": "{count} Guests"
+        "guestsCount": "{count} Guests",
+        "posters": "Posters",
+        "view": "View"
     },
     "Events": {
         "title": "Unforgettable Occasions",

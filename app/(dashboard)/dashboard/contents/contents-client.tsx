@@ -6,7 +6,7 @@ import { SiteContentTable } from "./contents-table";
 
 export function SiteContentsClient() {
   const [activeTab, setActiveTab] = useState<
-    "BANNER" | "SOCIAL_LINK" | "PARTNER"
+    "BANNER" | "SOCIAL_LINK" | "PARTNER" | "CHEF_POSTER"
   >("BANNER");
 
   return (
@@ -16,10 +16,11 @@ export function SiteContentsClient() {
         onValueChange={(val) => setActiveTab(val as any)}
         className="w-full"
       >
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="BANNER">{"Banners"}</TabsTrigger>
           <TabsTrigger value="SOCIAL_LINK">{"Social Links"}</TabsTrigger>
           <TabsTrigger value="PARTNER">{"Partners"}</TabsTrigger>
+          <TabsTrigger value="CHEF_POSTER">{"Chef Posters"}</TabsTrigger>
         </TabsList>
         <TabsContent value="BANNER" className="mt-6">
           <SiteContentTable type="BANNER" />
@@ -29,6 +30,9 @@ export function SiteContentsClient() {
         </TabsContent>
         <TabsContent value="PARTNER" className="mt-6">
           <SiteContentTable type="PARTNER" />
+        </TabsContent>
+        <TabsContent value="CHEF_POSTER" className="mt-6">
+          <SiteContentTable type="CHEF_POSTER" />
         </TabsContent>
       </Tabs>
     </div>

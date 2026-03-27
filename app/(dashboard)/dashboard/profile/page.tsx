@@ -1,4 +1,5 @@
 import { getCurrentUserWithProfile } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { ChefProfileForm } from "@/components/chef/ChefProfileForm";
 import { CompanyProfileForm } from "@/components/company/CompanyProfileForm";
@@ -44,10 +45,16 @@ export default async function ProfilePage() {
             taxStatus: chefProfile.taxStatus as any,
         };
 
+        const posters = await prisma.siteContent.findMany({
+            where: { type: "CHEF_POSTER", isActive: true },
+            orderBy: { sortOrder: "asc" },
+            select: { id: true, title: true, imageUrl: true },
+        });
+
         return (
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 lg:gap-8 lg:py-8">
                 <div className="px-4 lg:px-6 max-w-6xl mx-auto w-full">
-                    <ChefProfileForm initialData={initialData} />
+                    <ChefProfileForm initialData={initialData} posters={posters} />
                 </div>
             </div>
         );

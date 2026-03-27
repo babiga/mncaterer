@@ -33,6 +33,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import "react-photo-view/dist/react-photo-view.css";
 
 type PortfolioEvent = {
   id: string;
@@ -51,6 +53,7 @@ type ChefDetailProps = {
   canReview: boolean;
   rating: number;
   reviews: number;
+  posters?: { id: string; title: string | null; imageUrl: string | null }[];
 };
 
 export function ChefDetailClient({
@@ -61,6 +64,7 @@ export function ChefDetailClient({
   canReview,
   rating,
   reviews,
+  posters = [],
 }: ChefDetailProps) {
   const t = useTranslations("Chefs");
   const router = useRouter();
@@ -334,6 +338,45 @@ export function ChefDetailClient({
                 </div>
               </motion.section>
             )} */}
+            {/* Posters Gallery */}
+            {posters && posters.length > 0 && (
+              <motion.section
+                {...fadeIn}
+                whileInView="animate"
+                viewport={{ once: true }}
+                className="space-y-8"
+              >
+                <div className="flex items-center gap-6">
+                  <h2 className="text-xl font-medium text-white uppercase tracking-[0.2em] whitespace-nowrap">
+                    {t("posters") || "Posters"}
+                  </h2>
+                  <div className="h-px flex-1 bg-linear-to-r from-white/20 to-transparent" />
+                </div>
+                
+                <PhotoProvider>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                    {posters.map((poster) =>
+                      poster.imageUrl ? (
+                        <PhotoView key={poster.id} src={poster.imageUrl}>
+                          <div className="relative aspect-3/4 cursor-pointer group overflow-hidden rounded-xl border border-white/5 bg-white/5">
+                            <img
+                              src={poster.imageUrl}
+                              alt={poster.title || "Poster"}
+                              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            />
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                              <span className="text-white text-sm uppercase tracking-widest bg-black/60 px-3 py-1 rounded-full border border-white/20 backdrop-blur-md">
+                                {t("view") || "View"}
+                              </span>
+                            </div>
+                          </div>
+                        </PhotoView>
+                      ) : null
+                    )}
+                  </div>
+                </PhotoProvider>
+              </motion.section>
+            )}
 
             {/* Reviews Section */}
             <motion.div

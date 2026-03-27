@@ -21,6 +21,11 @@ type HomeData = {
     subtitle: string | null;
     imageUrl: string | null;
   }[];
+  chefPosters: {
+    id: string;
+    title: string | null;
+    imageUrl: string | null;
+  }[];
   partners: { id: string; title: string | null; imageUrl: string | null }[];
   socialLinks: {
     id: string;
@@ -93,7 +98,7 @@ export default function Home() {
       <Services />
       <HowItWorks />
       <SignatureMenus menus={homeData?.menus} />
-      <InternationalSection />
+      <InternationalSection posters={homeData?.chefPosters} />
       <Chefs chefs={homeData?.chefs} />
       <Events events={homeData?.events} />
 

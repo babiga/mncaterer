@@ -6,7 +6,16 @@ import { Globe } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 
-export default function InternationalSection() {
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import "react-photo-view/dist/react-photo-view.css";
+
+type Poster = {
+  id: string;
+  title: string | null;
+  imageUrl: string | null;
+};
+
+export default function InternationalSection({ posters = [] }: { posters?: Poster[] }) {
   const t = useTranslations("International");
   return (
     <section id="international" className="py-16 md:py-24 lg:py-32 relative overflow-hidden">
@@ -74,6 +83,46 @@ export default function InternationalSection() {
             <div className="absolute -bottom-4 -right-4 w-24 h-24 border-b border-r border-primary/20 -z-10 lg:hidden" />
           </motion.div>
         </div>
+
+        {posters.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="mt-20 border-t border-white/5 pt-12"
+          >
+            <div className="flex items-center gap-6 mb-8">
+              <h3 className="text-xl font-medium text-white uppercase tracking-[0.2em] whitespace-nowrap">
+                {t("featuredChefs")}
+              </h3>
+              <div className="h-px flex-1 bg-linear-to-r from-white/20 to-transparent" />
+            </div>
+
+            <PhotoProvider>
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                {posters.map((poster) =>
+                  poster.imageUrl ? (
+                    <PhotoView key={poster.id} src={poster.imageUrl}>
+                      <div className="relative aspect-3/4 cursor-pointer group overflow-hidden rounded-xl border border-white/5">
+                        <img
+                          src={poster.imageUrl}
+                          alt={poster.title || "Chef Poster"}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                          <span className="text-white text-sm uppercase tracking-widest bg-black/60 px-3 py-1 rounded-full border border-white/20 backdrop-blur-md">
+                            View
+                          </span>
+                        </div>
+                      </div>
+                    </PhotoView>
+                  ) : null
+                )}
+              </div>
+            </PhotoProvider>
+          </motion.div>
+        )}
       </div>
     </section>
   );

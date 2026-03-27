@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ContentFormSheet } from "./content-form-sheet";
 
-type ContentType = "BANNER" | "SOCIAL_LINK" | "PARTNER";
+type ContentType = "BANNER" | "SOCIAL_LINK" | "PARTNER" | "CHEF_POSTER";
 
 interface SiteContent {
   id: string;
@@ -31,7 +31,7 @@ interface SiteContent {
 }
 
 interface SiteContentTableProps {
-  type: "BANNER" | "SOCIAL_LINK" | "PARTNER";
+  type: ContentType;
 }
 
 export function SiteContentTable({ type }: SiteContentTableProps) {
@@ -112,7 +112,7 @@ export function SiteContentTable({ type }: SiteContentTableProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              {type === "BANNER" && <TableHead>Image</TableHead>}
+              {(type === "BANNER" || type === "CHEF_POSTER") && <TableHead>Image</TableHead>}
               {type === "PARTNER" && <TableHead>Name</TableHead>}
               {type === "SOCIAL_LINK" && <TableHead>Platform</TableHead>}
 
@@ -125,13 +125,13 @@ export function SiteContentTable({ type }: SiteContentTableProps) {
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center h-24">
+                <TableCell colSpan={6} className="text-center h-24">
                   Loading...
                 </TableCell>
               </TableRow>
             ) : contents.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center h-24">
+                <TableCell colSpan={6} className="text-center h-24">
                   No items found.
                 </TableCell>
               </TableRow>
@@ -139,12 +139,12 @@ export function SiteContentTable({ type }: SiteContentTableProps) {
               contents.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell className="font-medium">
-                    {type === "BANNER" ? (
+                    {(type === "BANNER" || type === "CHEF_POSTER") ? (
                       item.imageUrl ? (
                         <div className="relative w-32 h-16 rounded-md overflow-hidden border">
                           <img
                             src={item.imageUrl}
-                            alt="Banner"
+                            alt={type === "BANNER" ? "Banner" : "Poster"}
                             className="object-cover w-full h-full"
                           />
                         </div>

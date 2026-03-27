@@ -5,6 +5,7 @@ export async function GET() {
   try {
     const [
       banners,
+      chefPosters,
       partners,
       socialLinks,
       menus,
@@ -13,6 +14,10 @@ export async function GET() {
     ] = await Promise.all([
       prisma.siteContent.findMany({
         where: { type: "BANNER", isActive: true },
+        orderBy: { sortOrder: "asc" },
+      }),
+      prisma.siteContent.findMany({
+        where: { type: "CHEF_POSTER", isActive: true },
         orderBy: { sortOrder: "asc" },
       }),
       prisma.siteContent.findMany({
@@ -87,6 +92,11 @@ export async function GET() {
           title: b.title,
           subtitle: b.subtitle,
           imageUrl: b.imageUrl,
+        })),
+        chefPosters: chefPosters.map((c) => ({
+          id: c.id,
+          title: c.title,
+          imageUrl: c.imageUrl,
         })),
         partners: partners.map((p) => ({
           id: p.id,

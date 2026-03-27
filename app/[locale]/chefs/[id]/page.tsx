@@ -19,11 +19,12 @@ export default async function ChefProfilePage({ params }: ChefProfilePageProps) 
   const { id } = await params;
   const customer = await getCurrentCustomer();
 
-  const chef = await prisma.dashboardUser.findFirst({
-    where: {
-      id,
-      role: "CHEF",
-      isActive: true,
+  const [chef, posters] = await Promise.all([
+    prisma.dashboardUser.findFirst({
+      where: {
+        id,
+        role: "CHEF",
+        isActive: true,
       isVerified: true,
       chefProfile: {
         is: {
@@ -66,7 +67,13 @@ export default async function ChefProfilePage({ params }: ChefProfilePageProps) 
         },
       },
     },
-  });
+  }),
+    prisma.siteContent.findMany({
+      where: { type: "CHEF_POSTER", isActive: true },
+      orderBy: { sortOrder: "asc" },
+      select: { id: true, title: true, imageUrl: true },
+    }),
+  ]);
 
   const fallbackChef = fallbackChefProfiles.find((item) => item.id === id);
   if (!chef && !fallbackChef) {
@@ -142,6 +149,7 @@ export default async function ChefProfilePage({ params }: ChefProfilePageProps) 
         canReview={canReview}
         rating={liveAverageRating}
         reviews={liveReviewCount}
+        posters={posters}
       />
 
       <Footer />

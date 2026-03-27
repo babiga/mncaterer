@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 
-type ContentType = "BANNER" | "SOCIAL_LINK" | "PARTNER";
+type ContentType = "BANNER" | "SOCIAL_LINK" | "PARTNER" | "CHEF_POSTER";
 
 interface SiteContent {
   id: string;
@@ -106,10 +106,10 @@ export function ContentFormSheet({
     setIsPending(true);
     try {
       const payload =
-        type === "BANNER"
+        (type === "BANNER" || type === "CHEF_POSTER")
           ? { ...data, title: null, subtitle: null }
           : data;
-      const url = isEdit ? `/api/contents/${content.id}` : "/api/contents";
+      const url = isEdit ? `/api/contents/${content!.id}` : "/api/contents";
       const method = isEdit ? "PUT" : "POST";
 
       const response = await fetch(url, {
@@ -205,20 +205,20 @@ export function ContentFormSheet({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {type === "BANNER"
-                      ? "Banner Image"
+                    {(type === "BANNER" || type === "CHEF_POSTER")
+                      ? (type === "BANNER" ? "Banner Image" : "Poster Image")
                       : type === "PARTNER"
                         ? "Partner Logo (Optional)"
                         : "Image URL (Optional)"}
                   </FormLabel>
-                  {(type === "BANNER" || type === "PARTNER") ? (
+                  {(type === "BANNER" || type === "PARTNER" || type === "CHEF_POSTER") ? (
                     <FormControl>
                       <ImageUpload
                         value={field.value || null}
                         onChange={field.onChange}
                         onRemove={() => field.onChange("")}
                         disabled={isPending}
-                        aspectRatio={type === "BANNER" ? "video" : "square"}
+                        aspectRatio={(type === "BANNER" || type === "CHEF_POSTER") ? "video" : "square"}
                       />
                     </FormControl>
                   ) : (
@@ -231,8 +231,8 @@ export function ContentFormSheet({
                     </FormControl>
                   )}
                   <FormDescription>
-                    {type === "BANNER"
-                      ? "Upload the main banner image."
+                    {(type === "BANNER" || type === "CHEF_POSTER")
+                      ? (type === "BANNER" ? "Upload the main banner image." : "Upload the poster image.")
                       : type === "PARTNER"
                         ? "Upload a partner logo image."
                         : "URL for the social icon image."}

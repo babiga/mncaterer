@@ -29,6 +29,8 @@ import { AlertCircle, CreditCard } from "lucide-react";
 import { ChefPaymentDialog } from "./ChefPaymentDialog";
 import { useLanguage } from "@/components/language-context";
 import { LanguageToggler } from "@/components/language-toggler";
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import "react-photo-view/dist/react-photo-view.css";
 
 const translations = {
     en: {
@@ -63,7 +65,9 @@ const translations = {
         add: "Add",
         noItems: "No {label} added yet.",
         pageTitle: "Chef Profile",
-        pageDesc: "Manage your public profile information and culinary credentials."
+        pageDesc: "Manage your public profile information and culinary credentials.",
+        news: "News",
+        view: "View"
     },
     mn: {
         profileStatus: "Профайлын төлөв",
@@ -71,7 +75,7 @@ const translations = {
         registrationStatus: "Бүртгэлийн төлөв",
         profileDetails: "Профайлын дэлгэрэнгүй",
         profileDetailsDesc: "Профайл зураг болон намтраа шинэчилнэ үү.",
-        profileDetailsReadonly: "Чэф-ийн профайл зураг болон намтар.",
+        profileDetailsReadonly: "Тогоочын профайл зураг болон намтар.",
         bioLabel: "Мэргэжлийн намтар",
         bioPlaceholder: "Хоол хийх туршлага, арга барил, философиосоо хуваалцаарай...",
         basicInfo: "Үндсэн мэдээлэл",
@@ -96,8 +100,10 @@ const translations = {
         payNow: "Одоо төлөх (50% хөнгөлөлт)",
         add: "Нэмэх",
         noItems: "Одоогоор {label} нэмээгүй байна.",
-        pageTitle: "Чэф-ийн профайл",
-        pageDesc: "Өөрийн нийтийн профайлын мэдээлэл болон туршлагаа энд удирдана уу."
+        pageTitle: "Тогоочын профайл",
+        pageDesc: "Өөрийн нээлттэй профайлын мэдээллээ энд удирдана уу.",
+        news: "Мэдээ",
+        view: "Үзэх"
     }
 };
 
@@ -191,9 +197,10 @@ function DynamicList({ name, label, description, placeholder, form, readonly, is
 interface ChefProfileFormProps {
     initialData: ChefProfileData;
     readonly?: boolean;
+    posters?: { id: string; title: string | null; imageUrl: string | null }[];
 }
 
-export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFormProps) {
+export function ChefProfileForm({ initialData, readonly = false, posters }: ChefProfileFormProps) {
     const { language } = useLanguage();
     const t = translations[language];
     const [isPending, setIsPending] = useState(false);
@@ -231,7 +238,7 @@ export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFo
                     onOpenChange={setShowPaymentDialog}
                     chefName={form.watch("name")}
                 />
-                
+
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 max-w-4xl mx-auto">
                     <div className="flex flex-col gap-1">
                         <h1 className="text-2xl font-bold lg:text-3xl">{t.pageTitle}</h1>
@@ -255,9 +262,9 @@ export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFo
                                     </AlertDescription>
                                 </div>
                             </div>
-                            <Button 
-                                type="button" 
-                                size="sm" 
+                            <Button
+                                type="button"
+                                size="sm"
                                 className="bg-amber-600 hover:bg-amber-700 text-white border-none shadow-lg shrink-0"
                                 onClick={() => setShowPaymentDialog(true)}
                             >
@@ -282,6 +289,41 @@ export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFo
                             </div>
                         </CardHeader>
                     </Card>
+
+                    {/* Posters Gallery */}
+                    {posters && posters.length > 0 && (
+                        <div className="space-y-4 pt-4 pb-4">
+                            <h2 className="text-xl font-medium tracking-wide uppercase">
+                                {t.news || "News"}
+                            </h2>
+                            <div className="h-px w-full bg-border" />
+                            <PhotoProvider>
+                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                    {posters.map((poster) =>
+                                        poster.imageUrl ? (
+                                            <PhotoView key={poster.id} src={poster.imageUrl}>
+                                                <div className="relative aspect-3/4 cursor-pointer group overflow-hidden rounded-xl border border-border">
+                                                    <img
+                                                        src={poster.imageUrl}
+                                                        alt={poster.title || "Poster"}
+                                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                    />
+                                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                                                        <span className="text-white text-sm font-medium drop-shadow-md line-clamp-2">
+                                                            {poster.title}
+                                                        </span>
+                                                        <span className="text-primary text-xs mt-1 uppercase tracking-wider font-semibold">
+                                                            {t.view || "View"}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </PhotoView>
+                                        ) : null
+                                    )}
+                                </div>
+                            </PhotoProvider>
+                        </div>
+                    )}
 
                     {/* Profile Details (Avatar + Bio) */}
                     <Card className="shadow-lg border-white/5 bg-white/2">
@@ -314,9 +356,9 @@ export function ChefProfileForm({ initialData, readonly = false }: ChefProfileFo
                                     )}
                                 />
                             </div>
-                            
+
                             <Separator className="bg-white/5" />
-                            
+
                             <FormField
                                 control={form.control as any}
                                 name="bio"
