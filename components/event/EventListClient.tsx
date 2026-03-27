@@ -23,11 +23,11 @@ export function EventListClient({ initialEvents, totalCount }: EventListClientPr
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  
+
   const [events, setEvents] = useState(initialEvents);
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(totalCount);
-  
+
   // Get initial values from URL
   const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
   const [search, setSearch] = useState(searchParams.get("search") || "");
@@ -42,7 +42,7 @@ export function EventListClient({ initialEvents, totalCount }: EventListClientPr
 
   const updateUrl = useCallback((updates: Record<string, string | null | undefined>) => {
     const params = new URLSearchParams(searchParams.toString());
-    
+
     Object.entries(updates).forEach(([key, value]) => {
       if (value === null || value === undefined || value === "" || value === "all") {
         params.delete(key);
@@ -84,7 +84,7 @@ export function EventListClient({ initialEvents, totalCount }: EventListClientPr
     setEventType(searchParams.get("eventType") || "all");
     setMinGuests(searchParams.get("minGuests") || "");
     setMaxGuests(searchParams.get("maxGuests") || "");
-    
+
     fetchEvents();
   }, [searchParams, fetchEvents]);
 
@@ -108,14 +108,14 @@ export function EventListClient({ initialEvents, totalCount }: EventListClientPr
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
         <div className="max-w-2xl">
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="text-4xl md:text-6xl font-serif text-white mb-4"
           >
             {t("seeAllTitle")}
           </motion.h1>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
@@ -125,7 +125,7 @@ export function EventListClient({ initialEvents, totalCount }: EventListClientPr
           </motion.p>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 justify-between">
           <div className="text-white/40 text-sm uppercase tracking-widest">
             {t("stats.results", { count: total })}
           </div>
@@ -155,7 +155,7 @@ export function EventListClient({ initialEvents, totalCount }: EventListClientPr
                 <label className="text-xs uppercase tracking-[0.2em] text-white/40">{t("filters.search")}</label>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
-                  <Input 
+                  <Input
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder={t("filters.search")}
@@ -186,14 +186,14 @@ export function EventListClient({ initialEvents, totalCount }: EventListClientPr
               <div className="space-y-2">
                 <label className="text-xs uppercase tracking-[0.2em] text-white/40">{t("filters.guestRange")}</label>
                 <div className="flex gap-2">
-                  <Input 
+                  <Input
                     type="number"
                     value={minGuests}
                     onChange={(e) => updateUrl({ minGuests: e.target.value })}
                     placeholder={t("filters.minGuests")}
                     className="bg-white/5 border-white/10 h-12 rounded-xl"
                   />
-                  <Input 
+                  <Input
                     type="number"
                     value={maxGuests}
                     onChange={(e) => updateUrl({ maxGuests: e.target.value })}
@@ -205,7 +205,7 @@ export function EventListClient({ initialEvents, totalCount }: EventListClientPr
 
               {/* Actions */}
               <div className="flex gap-2">
-                <Button 
+                <Button
                   variant="ghost"
                   onClick={handleClearFilters}
                   className="grow h-12 p-0 hover:bg-white/10 border border-white/5 rounded-xl text-white/40 hover:text-white"
@@ -258,7 +258,7 @@ export function EventListClient({ initialEvents, totalCount }: EventListClientPr
           >
             <ChevronLeft className="w-6 h-6" />
           </Button>
-          
+
           <div className="flex items-center gap-2">
             {[...Array(totalPages)].map((_, i) => (
               <button

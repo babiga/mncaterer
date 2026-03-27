@@ -186,7 +186,7 @@
         "description": "Exquisite seasonal selections curated by our executive chefs.",
         "seeAllDescription": "Explore our diverse range of culinary experiences, from intimate private dinners to grand corporate galas.",
         "stats": {
-            "results": "{count} menus discovered"
+            "results": "{count} menus"
         },
         "downloadMenu": "Full Catalog",
         "perGuest": "per guest",
@@ -313,6 +313,9 @@
         "experienceLevel": "Experience Level",
         "directInquiry": "Direct Inquiry",
         "directInquiryDesc": "Connect directly with {name} to discuss your upcoming event, dietary requirements, and custom menu options.",
+        "startBooking": "Start Booking",
+        "startBookingDesc": "Ready to experience {name}'s culinary art? Start your booking process now and secure your preferred date.",
+        "bookCatering": "Book Catering",
         "officialPortfolio": "Official Portfolio",
         "eventsTitle": "Events",
         "privateEvent": "Private Event",
@@ -344,7 +347,7 @@
             "clear": "Reset Filters"
         },
         "stats": {
-            "results": "{count} events discovered"
+            "results": "{count} events"
         },
         "types": {
             "Wedding": "Wedding",

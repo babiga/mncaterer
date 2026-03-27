@@ -144,7 +144,7 @@ export default function Home() {
                 ) : (
                   <span
                     key={partner.id}
-                    className="text-2xl font-serif font-bold tracking-[0.3em] uppercase"
+                    className="text-2xl font-serif font-bold tracking-[0.3em] uppercase text-center"
                   >
                     {partner.title}
                   </span>

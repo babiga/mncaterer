@@ -6,7 +6,8 @@ import {
   ChefReviewsSection,
   type ChefReviewItem,
 } from "@/components/chef/chef-reviews-section";
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
+import { useBookingStore } from "@/lib/store/use-booking-store";
 import {
   ArrowLeft,
   Star,
@@ -62,6 +63,18 @@ export function ChefDetailClient({
   reviews,
 }: ChefDetailProps) {
   const t = useTranslations("Chefs");
+  const router = useRouter();
+  const { setChef, goToStep, resetBooking } = useBookingStore();
+
+  const handleStartBooking = () => {
+    // Start fresh booking but pre-select the chef
+    resetBooking();
+    if (chef?.chefProfile?.id) {
+      setChef(chef.chefProfile.id);
+    }
+    goToStep(0);
+    router.push("/booking");
+  };
 
   const displayName = chef?.name ?? fallbackChef?.name ?? "";
   const rawAvatar = chef?.avatar ?? fallbackChef?.image;
@@ -151,7 +164,7 @@ export function ChefDetailClient({
   return (
     <div className="space-y-0">
       {/* Dynamic Header Section - No Cover Image, Just Avatar */}
-      <div className="relative pt-32 pb-16 w-full">
+      <div className="relative pt-24 md:pt-32 md:pb-16 w-full">
         <div className="container relative mx-auto px-6">
           <motion.div {...fadeIn}>
             <Button
@@ -170,7 +183,7 @@ export function ChefDetailClient({
             <motion.div
               {...fadeIn}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="flex items-center gap-8"
+              className="flex flex-col md:flex-row items-center gap-8"
             >
               <div className="h-32 w-32 overflow-hidden rounded-full border-4 border-primary/30 shadow-2xl md:h-48 md:w-48 group relative">
                 {avatar ? (
@@ -202,20 +215,6 @@ export function ChefDetailClient({
                   {specialty}
                 </p>
               </div>
-            </motion.div>
-
-            <motion.div
-              {...fadeIn}
-              transition={{ delay: 0.4, duration: 0.6 }}
-              className="mb-2"
-            >
-              <Button
-                asChild
-                size="lg"
-                className="bg-primary text-black hover:bg-white px-10 h-14 rounded-full font-semibold text-base transition-all duration-300 shadow-lg shadow-primary/20"
-              >
-                <Link href="/inquiry">{t("bookConsultation")}</Link>
-              </Button>
             </motion.div>
           </div>
         </div>
@@ -367,20 +366,20 @@ export function ChefDetailClient({
                 <CardContent className="p-8 space-y-8">
                   <div className="space-y-3">
                     <h3 className="text-2xl font-light text-white tracking-tight">
-                      {t("directInquiry")}
+                      {t("startBooking")}
                     </h3>
                     <p className="text-sm text-white/50 leading-relaxed">
-                      {t("directInquiryDesc", {
+                      {t("startBookingDesc", {
                         name: displayName.split(" ")[0],
                       })}
                     </p>
                   </div>
 
                   <Button
-                    asChild
+                    onClick={handleStartBooking}
                     className="w-full bg-primary text-black hover:bg-white h-16 rounded-full font-bold text-lg transition-all duration-300 shadow-xl shadow-primary/10"
                   >
-                    <Link href="/inquiry">{t("requestConsultation")}</Link>
+                    {t("bookCatering")}
                   </Button>
 
                   <div className="pt-4 border-t border-white/5 text-center">
