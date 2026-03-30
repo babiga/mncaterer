@@ -42,6 +42,7 @@ export async function GET(
             yearsExperience: true,
             rating: true,
             reviewCount: true,
+            taxStatus: true,
           },
         },
         companyProfile: {

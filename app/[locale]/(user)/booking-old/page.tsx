@@ -46,6 +46,7 @@ export default async function UserBookingPage({
           isActive: true,
           isVerified: true,
         },
+        taxStatus: { in: ["PAID", "WAIVED"] },
       },
       orderBy: [{ rating: "desc" }, { reviewCount: "desc" }],
       select: {

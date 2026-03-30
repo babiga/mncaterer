@@ -97,6 +97,7 @@ export async function GET(request: NextRequest) {
           select: {
             specialty: true,
             rating: true,
+            taxStatus: true,
           },
         },
       },

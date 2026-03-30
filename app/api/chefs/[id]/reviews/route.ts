@@ -10,7 +10,11 @@ async function resolveChefProfileId(id: string) {
       role: "CHEF",
       isActive: true,
       isVerified: true,
-      chefProfile: { isNot: null },
+      chefProfile: {
+        is: {
+          taxStatus: { in: ["PAID", "WAIVED"] },
+        }
+      },
     },
     select: {
       chefProfile: {
