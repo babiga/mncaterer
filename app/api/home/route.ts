@@ -42,7 +42,7 @@ export async function GET() {
           },
         },
         orderBy: { createdAt: "desc" },
-        take: 3,
+        take: 10,
       }),
       prisma.dashboardUser.findMany({
         where: {
@@ -67,7 +67,7 @@ export async function GET() {
           },
         },
         orderBy: { createdAt: "desc" },
-        take: 3,
+        take: 10,
       }),
       prisma.event.findMany({
         where: { isFeatured: true },

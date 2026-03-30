@@ -189,7 +189,7 @@ export function ChefDetailClient({
               transition={{ delay: 0.2, duration: 0.6 }}
               className="flex flex-col md:flex-row items-center gap-8"
             >
-              <div className="h-32 w-32 overflow-hidden rounded-full border-4 border-primary/30 shadow-2xl md:h-48 md:w-48 group relative">
+              <div className="h-44 w-44 overflow-hidden rounded-full border-4 border-primary/30 shadow-2xl md:h-56 md:w-56 group relative">
                 {avatar ? (
                   <img
                     src={avatar}
