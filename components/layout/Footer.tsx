@@ -63,7 +63,7 @@ export default function Footer({ socialLinks }: { socialLinks?: SocialLinkType[]
           <div>
             <h4 className="text-white font-medium mb-6 uppercase tracking-widest text-xs">{t("company")}</h4>
             <ul className="space-y-4 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-primary transition-colors">{t("aboutUs")}</a></li>
+              <li><Link href="/about" className="hover:text-primary transition-colors">{t("aboutUs")}</Link></li>
               <li><a href="#" className="hover:text-primary transition-colors">{t("careers")}</a></li>
               <li><a href="#" className="hover:text-primary transition-colors">{t("journal")}</a></li>
               <li><a href="#" className="hover:text-primary transition-colors">{t("contact")}</a></li>

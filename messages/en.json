@@ -855,6 +855,60 @@
             ]
         }
     },
+    "AboutPage": {
+        "meta": {
+            "title": "About Us | Mongolian National Caterer",
+            "description": "Discover the story, standards, and culinary philosophy behind Mongolian National Caterer."
+        },
+        "hero": {
+            "eyebrow": "About Us",
+            "title": "A hospitality house built around precision, warmth, and unforgettable food experiences.",
+            "description": "Mongolian National Caterer brings executive-level planning and chef-led culinary execution to private gatherings, weddings, corporate occasions, and premium celebrations."
+        },
+        "story": {
+            "title": "Our Story",
+            "paragraph1": "We started with one clear belief: exceptional catering is not only about menu quality, but also about timing, coordination, and emotional atmosphere. Every event should feel effortless to the host and memorable to every guest.",
+            "paragraph2": "Today, we work with trusted chefs, disciplined service teams, and tailored event workflows to deliver experiences that feel refined from first consultation to final service."
+        },
+        "values": {
+            "title": "What Guides Us",
+            "items": [
+                {
+                    "title": "Craft Without Compromise",
+                    "description": "From ingredient sourcing to final plating, we uphold premium culinary standards at every stage."
+                },
+                {
+                    "title": "Service With Intent",
+                    "description": "We design each interaction around guest comfort, host confidence, and smooth event flow."
+                },
+                {
+                    "title": "Planning With Clarity",
+                    "description": "Transparent communication and structured preparation keep every event aligned and stress-free."
+                }
+            ]
+        },
+        "stats": {
+            "items": [
+                {
+                    "value": "1000+",
+                    "label": "Events served across private, corporate, and premium formats"
+                },
+                {
+                    "value": "300+",
+                    "label": "Trusted clients and partners who return for recurring events"
+                },
+                {
+                    "value": "24/7",
+                    "label": "Coordination support for mission-critical event timelines"
+                }
+            ]
+        },
+        "cta": {
+            "title": "Plan Your Next Culinary Experience",
+            "description": "Tell us your event goals and we will craft a service plan that matches your guests, timeline, and budget.",
+            "button": "Start Booking"
+        }
+    },
     "InquiryPage": {
         "eyebrow": "Consultation",
         "title": "Inquiry Request",
