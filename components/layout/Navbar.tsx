@@ -94,7 +94,7 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
               <Link
                 key={link.name}
                 href={link.href}
-                className={`hidden lg:block text-sm font-medium transition-colors tracking-wide ${
+                className={`hidden xl:block text-sm font-medium transition-colors tracking-wide ${
                   isWeddingServicePage
                     ? "text-[#8a5b35]/85 hover:text-[#6f4d2f]"
                     : "text-foreground/80 hover:text-primary"
