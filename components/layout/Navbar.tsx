@@ -71,16 +71,18 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
 
   return (
     <nav
-      className={`fixed top-0 w-full z-50  ${scrolled
-        ? "bg-background/90 backdrop-blur-md py-4 border-b border-white/5"
-        : "bg-transparent py-6"
-        }`}
+      className={`fixed top-0 w-full z-50  ${
+        scrolled
+          ? "bg-background/90 backdrop-blur-md py-4 border-b border-white/5"
+          : "bg-transparent py-6"
+      }`}
     >
       <div className="container mx-auto px-6 flex justify-between items-center">
         <Link
           href="/"
-          className={`md:text-xl lg:text-2xl font-serif tracking-wider font-bold uppercase ${isWeddingServicePage ? "text-[#8a5b35]" : "text-foreground"
-            }`}
+          className={`md:text-xl lg:text-2xl font-serif tracking-wider font-bold uppercase ${
+            isWeddingServicePage ? "text-[#8a5b35]" : "text-foreground"
+          }`}
         >
           Mongolian National Caterer
         </Link>
@@ -92,10 +94,11 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
               <Link
                 key={link.name}
                 href={link.href}
-                className={`text-sm font-medium transition-colors tracking-wide ${isWeddingServicePage
-                  ? "text-[#8a5b35]/85 hover:text-[#6f4d2f]"
-                  : "text-foreground/80 hover:text-primary"
-                  }`}
+                className={`hidden lg:block text-sm font-medium transition-colors tracking-wide ${
+                  isWeddingServicePage
+                    ? "text-[#8a5b35]/85 hover:text-[#6f4d2f]"
+                    : "text-foreground/80 hover:text-primary"
+                }`}
               >
                 {link.name}
               </Link>
@@ -106,10 +109,11 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
               <Button
                 variant="ghost"
                 size="sm"
-                className={`flex items-center gap-2 ${isWeddingServicePage
-                  ? "text-[#8a5b35]/85 hover:text-[#6f4d2f]"
-                  : "text-foreground/80 hover:text-primary"
-                  }`}
+                className={`flex items-center gap-2 ${
+                  isWeddingServicePage
+                    ? "text-[#8a5b35]/85 hover:text-[#6f4d2f]"
+                    : "text-foreground/80 hover:text-primary"
+                }`}
               >
                 <Globe className="h-4 w-4" />
                 <span className="uppercase">{locale}</span>
@@ -178,7 +182,9 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className={isWeddingServicePage ? "text-[#8a5b35]" : "text-foreground"}
+                className={
+                  isWeddingServicePage ? "text-[#8a5b35]" : "text-foreground"
+                }
               >
                 <Menu className="h-6 w-6" />
               </Button>
@@ -240,10 +246,11 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
                         key={link.name}
                         href={link.href}
                         onClick={() => setIsOpen(false)}
-                        className={`text-2xl font-serif transition-colors ${isWeddingServicePage
-                          ? "text-[#8a5b35] hover:text-[#6f4d2f]"
-                          : "text-foreground hover:text-primary"
-                          }`}
+                        className={`text-2xl font-serif transition-colors ${
+                          isWeddingServicePage
+                            ? "text-[#8a5b35] hover:text-[#6f4d2f]"
+                            : "text-foreground hover:text-primary"
+                        }`}
                       >
                         {link.name}
                       </Link>
@@ -260,12 +267,13 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
                           handleLocaleChange("en");
                           setIsOpen(false);
                         }}
-                        className={`text-lg font-serif transition-colors ${locale === "en"
-                          ? isWeddingServicePage
-                            ? "text-[#8a5b35] font-bold"
-                            : "text-primary font-bold"
-                          : "text-foreground/40 hover:text-foreground/70"
-                          }`}
+                        className={`text-lg font-serif transition-colors ${
+                          locale === "en"
+                            ? isWeddingServicePage
+                              ? "text-[#8a5b35] font-bold"
+                              : "text-primary font-bold"
+                            : "text-foreground/40 hover:text-foreground/70"
+                        }`}
                       >
                         English
                       </button>
@@ -275,12 +283,13 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
                           handleLocaleChange("mn");
                           setIsOpen(false);
                         }}
-                        className={`text-lg font-serif transition-colors ${locale === "mn"
-                          ? isWeddingServicePage
-                            ? "text-[#8a5b35] font-bold"
-                            : "text-primary font-bold"
-                          : "text-foreground/40 hover:text-foreground/70"
-                          }`}
+                        className={`text-lg font-serif transition-colors ${
+                          locale === "mn"
+                            ? isWeddingServicePage
+                              ? "text-[#8a5b35] font-bold"
+                              : "text-primary font-bold"
+                            : "text-foreground/40 hover:text-foreground/70"
+                        }`}
                       >
                         Монгол
                       </button>
@@ -289,10 +298,11 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
                     {!currentUser && (
                       <Link href="/login" onClick={() => setIsOpen(false)}>
                         <button
-                          className={`text-lg font-serif transition-colors ${isWeddingServicePage
-                            ? "text-[#8a5b35]"
-                            : "text-foreground/60"
-                            }`}
+                          className={`text-lg font-serif transition-colors ${
+                            isWeddingServicePage
+                              ? "text-[#8a5b35]"
+                              : "text-foreground/60"
+                          }`}
                         >
                           Log In
                         </button>
@@ -301,12 +311,17 @@ export default function Navbar({ trimmed = false }: NavbarProps) {
                   </div>
 
                   {!currentUser && (
-                    <Link href="/login" onClick={() => setIsOpen(false)} className="w-full">
+                    <Link
+                      href="/login"
+                      onClick={() => setIsOpen(false)}
+                      className="w-full"
+                    >
                       <Button
-                        className={`w-full font-serif text-xl py-7 rounded-none ${isWeddingServicePage
-                          ? "bg-[#8a5b35] text-white hover:bg-[#6f4d2f]"
-                          : "bg-primary text-black hover:bg-primary/90"
-                          }`}
+                        className={`w-full font-serif text-xl py-7 rounded-none ${
+                          isWeddingServicePage
+                            ? "bg-[#8a5b35] text-white hover:bg-[#6f4d2f]"
+                            : "bg-primary text-black hover:bg-primary/90"
+                        }`}
                       >
                         {t("getStarted")}
                       </Button>
