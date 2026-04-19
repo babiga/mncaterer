@@ -26,17 +26,30 @@ import {
   CheckCircle2,
   XCircle,
   Building2,
-  Coins
+  Coins,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
 
-type BookingStatus = "PENDING" | "CONFIRMED" | "DEPOSIT_PAID" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
+type BookingStatus =
+  | "PENDING"
+  | "CONFIRMED"
+  | "DEPOSIT_PAID"
+  | "IN_PROGRESS"
+  | "COMPLETED"
+  | "CANCELLED";
 
 type BookingDetail = {
   id: string;
@@ -161,7 +174,10 @@ function formatAmount(amount: number) {
 
 function SectionCard({ children, title, icon: Icon, className = "" }: any) {
   return (
-    <motion.div variants={itemVariants} className={`rounded-2xl border border-primary/20 bg-card/60 p-6 backdrop-blur-xl shadow-lg shadow-black/20 ${className}`}>
+    <motion.div
+      variants={itemVariants}
+      className={`rounded-2xl border border-primary/20 bg-card/60 p-6 backdrop-blur-xl shadow-lg shadow-black/20 ${className}`}
+    >
       {title && (
         <div className="flex items-center gap-3 mb-6">
           {Icon && (
@@ -169,7 +185,9 @@ function SectionCard({ children, title, icon: Icon, className = "" }: any) {
               <Icon className="w-5 h-5" />
             </div>
           )}
-          <h2 className="text-xl font-bold tracking-tight text-foreground">{title}</h2>
+          <h2 className="text-xl font-bold tracking-tight text-foreground">
+            {title}
+          </h2>
         </div>
       )}
       {children}
@@ -177,16 +195,30 @@ function SectionCard({ children, title, icon: Icon, className = "" }: any) {
   );
 }
 
-function InfoBlock({ icon: Icon, label, value, subValue, highlight = false }: any) {
+function InfoBlock({
+  icon: Icon,
+  label,
+  value,
+  subValue,
+  highlight = false,
+}: any) {
   return (
-    <div className={`flex items-start gap-4 p-4 rounded-xl border transition-all duration-300 ${highlight ? 'border-primary/40 bg-primary/5 hover:border-primary/60' : 'border-border/50 bg-background/50 hover:border-border hover:bg-background/80'}`}>
-      <div className={`rounded-lg p-3 ${highlight ? 'bg-primary/20 text-primary shadow-[0_0_15px_rgba(234,179,8,0.2)]' : 'bg-muted text-muted-foreground'}`}>
+    <div
+      className={`flex items-start gap-4 p-4 rounded-xl border transition-all duration-300 ${highlight ? "border-primary/40 bg-primary/5 hover:border-primary/60" : "border-border/50 bg-background/50 hover:border-border hover:bg-background/80"}`}
+    >
+      <div
+        className={`rounded-lg p-3 ${highlight ? "bg-primary/20 text-primary shadow-[0_0_15px_rgba(234,179,8,0.2)]" : "bg-muted text-muted-foreground"}`}
+      >
         <Icon className="h-5 w-5" />
       </div>
       <div>
-        <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">{label}</p>
+        <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">
+          {label}
+        </p>
         <p className="font-medium text-foreground">{value}</p>
-        {subValue && <p className="text-sm text-muted-foreground mt-0.5">{subValue}</p>}
+        {subValue && (
+          <p className="text-sm text-muted-foreground mt-0.5">{subValue}</p>
+        )}
       </div>
     </div>
   );
@@ -195,7 +227,8 @@ function InfoBlock({ icon: Icon, label, value, subValue, highlight = false }: an
 export default function BookingDetailPage() {
   const params = useParams<{ id: string }>();
   const [booking, setBooking] = useState<BookingDetail | null>(null);
-  const [selectedStatus, setSelectedStatus] = useState<BookingStatus>("PENDING");
+  const [selectedStatus, setSelectedStatus] =
+    useState<BookingStatus>("PENDING");
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -225,7 +258,15 @@ export default function BookingDetailPage() {
   }, [fetchBooking]);
 
   const statusOptions = useMemo(
-    () => ["PENDING", "CONFIRMED", "DEPOSIT_PAID", "IN_PROGRESS", "COMPLETED", "CANCELLED"] as const,
+    () =>
+      [
+        "PENDING",
+        "CONFIRMED",
+        "DEPOSIT_PAID",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "CANCELLED",
+      ] as const,
     [],
   );
 
@@ -253,45 +294,67 @@ export default function BookingDetailPage() {
     }
   }, [booking, selectedStatus]);
 
-  const { isCustom, customItems, structuredMenus, displayRequests } = useMemo(() => {
-    if (!booking) return { isCustom: false, customItems: [], structuredMenus: [], displayRequests: "" };
-    
-    const customMenuData = booking.customMenuData as any;
-    const isCustom = booking.isCustomMenu;
-    const customItems = isCustom ? (customMenuData?.items || []) : [];
-    let structuredMenus = !isCustom && customMenuData?.menus ? customMenuData.menus : [];
+  const { isCustom, customItems, structuredMenus, displayRequests } =
+    useMemo(() => {
+      if (!booking)
+        return {
+          isCustom: false,
+          customItems: [],
+          structuredMenus: [],
+          displayRequests: "",
+        };
 
-    // Fallback parsing for older bookings
-    if (!isCustom && structuredMenus.length === 0 && booking.specialRequests) {
-      const menuSection = booking.specialRequests.split("Selected menus:\n- ")[1];
-      if (menuSection) {
-        const menuLines = menuSection.split("\nContact email")[0].split("\n- ");
-        structuredMenus = menuLines.map((line: string) => {
-          const match = line.match(/(.*) \((\d+) guests\)/);
-          if (match) {
-            return { name: match[1], guestCount: parseInt(match[2], 10) };
-          }
-          return null;
-        }).filter(Boolean);
+      const customMenuData = booking.customMenuData as any;
+      const isCustom = booking.isCustomMenu;
+      const customItems = isCustom ? customMenuData?.items || [] : [];
+      let structuredMenus =
+        !isCustom && customMenuData?.menus ? customMenuData.menus : [];
+
+      // Fallback parsing for older bookings
+      if (
+        !isCustom &&
+        structuredMenus.length === 0 &&
+        booking.specialRequests
+      ) {
+        const menuSection = booking.specialRequests.split(
+          "Selected menus:\n- ",
+        )[1];
+        if (menuSection) {
+          const menuLines = menuSection
+            .split("\nContact email")[0]
+            .split("\n- ");
+          structuredMenus = menuLines
+            .map((line: string) => {
+              const match = line.match(/(.*) \((\d+) guests\)/);
+              if (match) {
+                return { name: match[1], guestCount: parseInt(match[2], 10) };
+              }
+              return null;
+            })
+            .filter(Boolean);
+        }
       }
-    }
 
-    // Clean specialRequests for display
-    let displayRequests = booking.specialRequests || "";
-    const markers = ["Selected menus:", "Custom menu items:", "Contact email for this booking:"];
-    let firstMarker = -1;
-    for (const marker of markers) {
-      const idx = displayRequests.indexOf(marker);
-      if (idx !== -1 && (firstMarker === -1 || idx < firstMarker)) {
-        firstMarker = idx;
+      // Clean specialRequests for display
+      let displayRequests = booking.specialRequests || "";
+      const markers = [
+        "Selected menus:",
+        "Custom menu items:",
+        "Contact email for this booking:",
+      ];
+      let firstMarker = -1;
+      for (const marker of markers) {
+        const idx = displayRequests.indexOf(marker);
+        if (idx !== -1 && (firstMarker === -1 || idx < firstMarker)) {
+          firstMarker = idx;
+        }
       }
-    }
-    if (firstMarker !== -1) {
-      displayRequests = displayRequests.substring(0, firstMarker).trim();
-    }
+      if (firstMarker !== -1) {
+        displayRequests = displayRequests.substring(0, firstMarker).trim();
+      }
 
-    return { isCustom, customItems, structuredMenus, displayRequests };
-  }, [booking]);
+      return { isCustom, customItems, structuredMenus, displayRequests };
+    }, [booking]);
 
   if (isLoading) {
     return (
@@ -310,46 +373,56 @@ export default function BookingDetailPage() {
       <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
         <XCircle className="w-16 h-16 text-muted-foreground mb-4 opacity-50" />
         <h2 className="text-2xl font-bold mb-2">Booking Not Found</h2>
-        <p className="text-muted-foreground mb-6 max-w-md">The requested booking detail could not be loaded or doesn't exist.</p>
+        <p className="text-muted-foreground mb-6 max-w-md">
+          The requested booking detail could not be loaded or doesn't exist.
+        </p>
         <Button asChild variant="outline" className="gap-2 rounded-full px-6">
-          <a href="/dashboard/bookings"><ArrowLeft className="w-4 h-4" /> Return to Bookings</a>
+          <a href="/dashboard/bookings">
+            <ArrowLeft className="w-4 h-4" /> Return to Bookings
+          </a>
         </Button>
       </div>
     );
   }
 
   return (
-    <motion.div 
-      initial="hidden" 
-      animate="visible" 
+    <motion.div
+      initial="hidden"
+      animate="visible"
       variants={containerVariants}
       className="flex flex-col gap-6 py-8 px-4 md:px-8 max-w-[1400px] mx-auto w-full"
     >
-      <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-border/50">
+      <motion.div
+        variants={itemVariants}
+        className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-border/50"
+      >
         <div className="space-y-2">
-          <div className="flex items-center gap-3">
-            <Button asChild variant="ghost" size="icon" className="rounded-full hover:bg-primary/10 hover:text-primary">
-              <a href="/dashboard/bookings"><ArrowLeft className="w-5 h-5" /></a>
+          <div className="flex items-center gap-2">
+            <Button
+              asChild
+              variant="ghost"
+              size="icon"
+              className="rounded-full hover:bg-primary/10 hover:text-primary"
+            >
+              <a href="/dashboard/bookings">
+                <ArrowLeft className="w-5 h-5" />
+              </a>
             </Button>
-            <Badge variant="outline" className={`px-3 py-1 text-xs font-semibold tracking-wider ${statusClasses[booking.status]} border rounded-full`}>
+            <h1 className="text-xl text-foreground">
+              Booking{" "}
+              <span className="text-primary/80">#{booking.bookingNumber}</span>
+            </h1>
+          </div>
+
+          <p className="text-muted-foreground flex items-center gap-2 text-sm mt-2 ml-10">
+            {format(new Date(booking.createdAt), "MMMM d, yyyy 'at' HH:mm")}
+            <Badge
+              variant="outline"
+              className={`px-3 py-1 text-xs font-semibold tracking-wider ${statusClasses[booking.status]} border rounded-full`}
+            >
               {booking.status.replaceAll("_", " ")}
             </Badge>
-            <Badge variant="secondary" className="px-3 py-1 text-xs font-medium tracking-wider uppercase bg-primary/10 text-primary border-transparent rounded-full">
-              {booking.serviceType}
-            </Badge>
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mt-2 text-foreground">
-            Booking <span className="text-primary/80">#{booking.bookingNumber}</span>
-          </h1>
-          <p className="text-muted-foreground flex items-center gap-2 text-sm mt-2">
-            <Clock className="w-4 h-4" /> Created on {format(new Date(booking.createdAt), "MMMM d, yyyy 'at' HH:mm")}
           </p>
-        </div>
-        
-        <div className="flex gap-3">
-          <Button variant="outline" className="rounded-full px-6 border-primary/20 hover:bg-primary/10 hover:border-primary/50 transition-colors">
-            <Receipt className="w-4 h-4 mr-2" /> View Invoice
-          </Button>
         </div>
       </motion.div>
 
@@ -358,42 +431,63 @@ export default function BookingDetailPage() {
         <div className="space-y-6 lg:col-span-8">
           <SectionCard title="Event Configuration" icon={Crown}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <InfoBlock 
-                highlight 
-                icon={CalendarDays} 
-                label="Date & Time" 
-                value={format(new Date(booking.eventDate), "EEEE, MMMM do, yyyy")} 
-                subValue={`at ${booking.eventTime}`} 
+              <InfoBlock
+                highlight
+                icon={CalendarDays}
+                label="Date & Time"
+                value={format(
+                  new Date(booking.eventDate),
+                  "EEEE, MMMM do, yyyy",
+                )}
+                subValue={`at ${booking.eventTime}`}
               />
-              <InfoBlock 
-                icon={Users} 
-                label="Guest Count" 
-                value={`${booking.guestCount} Guests`} 
-                subValue={`${formatAmount(booking.serviceTier.pricePerGuest)} per person`} 
+              <InfoBlock
+                icon={Users}
+                label="Guest Count"
+                value={`${booking.guestCount} Guests`}
+                subValue={`${formatAmount(booking.serviceTier.pricePerGuest)} per person`}
               />
-              <InfoBlock 
-                icon={MapPin} 
-                label="Venue" 
-                value={booking.venue} 
-                subValue={booking.venueAddress || "Address not provided"} 
+              <InfoBlock
+                icon={MapPin}
+                label="Venue"
+                value={booking.venue}
+                subValue={booking.venueAddress || "Address not provided"}
               />
-              <InfoBlock 
-                icon={Building2} 
-                label="Service Tier" 
-                value={booking.serviceTier.name} 
-                subValue={booking.serviceTier.isVIP ? "VIP Experience" : "Standard Experience"} 
+              <InfoBlock
+                icon={Building2}
+                label="Service Tier"
+                value={booking.serviceTier.name}
+                subValue={
+                  booking.serviceTier.isVIP
+                    ? "VIP Experience"
+                    : "Standard Experience"
+                }
               />
-              <InfoBlock 
-                icon={ChefHat} 
-                label="Assigned Chef" 
-                value={booking.chefProfile?.dashboardUser.name || "Pending Assignment"} 
-                subValue={booking.chefProfile?.specialty || "General"} 
+              <InfoBlock
+                icon={ChefHat}
+                label="Assigned Chef"
+                value={
+                  booking.chefProfile?.dashboardUser.name ||
+                  "Pending Assignment"
+                }
+                subValue={booking.chefProfile?.specialty || "General"}
               />
-              <InfoBlock 
-                icon={Utensils} 
-                label="Selected Menu" 
-                value={isCustom ? "Custom Menu" : (structuredMenus.length > 1 ? `${structuredMenus.length} Menus Selected` : (booking.menu?.name || "TBD"))} 
-                subValue={booking.menu?.description || (isCustom ? "Itemized custom selection" : "Menu details pending")} 
+              <InfoBlock
+                icon={Utensils}
+                label="Selected Menu"
+                value={
+                  isCustom
+                    ? "Custom Menu"
+                    : structuredMenus.length > 1
+                      ? `${structuredMenus.length} Menus Selected`
+                      : booking.menu?.name || "TBD"
+                }
+                subValue={
+                  booking.menu?.description ||
+                  (isCustom
+                    ? "Itemized custom selection"
+                    : "Menu details pending")
+                }
               />
             </div>
 
@@ -401,82 +495,131 @@ export default function BookingDetailPage() {
               <div className="mt-4 p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
                 <div className="flex items-center gap-2 mb-2 text-amber-500">
                   <Info className="w-4 h-4" />
-                  <h3 className="font-semibold text-sm uppercase tracking-wider">Special Requests</h3>
+                  <h3 className="font-semibold text-sm uppercase tracking-wider">
+                    Special Requests
+                  </h3>
                 </div>
-                <p className="text-foreground/90 italic leading-relaxed text-sm whitespace-pre-line">"{displayRequests}"</p>
+                <p className="text-foreground/90 italic leading-relaxed text-sm whitespace-pre-line">
+                  "{displayRequests}"
+                </p>
               </div>
             )}
           </SectionCard>
 
-          <SectionCard title="Payment History" icon={CreditCard}>
+          <SectionCard title="Payment" icon={CreditCard}>
             <div className="space-y-4">
               <div className="flex flex-col p-5 rounded-xl bg-primary/10 border border-primary/20 backdrop-blur-sm gap-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-primary uppercase tracking-wider mb-1">Total Contract Value</p>
-                    <p className="text-3xl font-bold text-foreground">{formatAmount(booking.totalPrice)}</p>
+                    <p className="text-sm font-medium text-primary uppercase tracking-wider mb-1">
+                      Total Value
+                    </p>
+                    <p className="text-3xl font-bold text-foreground">
+                      {formatAmount(booking.totalPrice)}
+                    </p>
                   </div>
                   <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                     <Coins className="w-6 h-6" />
                   </div>
                 </div>
-                
+
                 <Separator className="bg-primary/20" />
-                
+
                 <div className="space-y-3">
                   {isCustom ? (
                     customItems.map((item: any, idx: number) => (
-                      <div key={idx} className="flex justify-between items-center text-xs">
-                        <span className="text-muted-foreground">{item.name} <span className="text-[10px] opacity-70">(x{item.quantity})</span></span>
-                        <span className="font-medium">{formatAmount(item.price * item.quantity)}</span>
+                      <div
+                        key={idx}
+                        className="flex justify-between items-center text-xs"
+                      >
+                        <span className="text-muted-foreground">
+                          {item.name}{" "}
+                          <span className="text-[10px] opacity-70">
+                            (x{item.quantity})
+                          </span>
+                        </span>
+                        <span className="font-medium">
+                          {formatAmount(item.price * item.quantity)}
+                        </span>
                       </div>
                     ))
                   ) : structuredMenus.length > 0 ? (
                     structuredMenus.map((menu: any, idx: number) => (
-                      <div key={idx} className="flex justify-between items-center text-xs">
-                        <span className="text-muted-foreground">{menu.name} <span className="text-[10px] opacity-70">({menu.guestCount} guests)</span></span>
+                      <div
+                        key={idx}
+                        className="flex justify-between items-center text-xs"
+                      >
+                        <span className="text-muted-foreground">
+                          {menu.name}{" "}
+                          <span className="text-[10px] opacity-70">
+                            ({menu.guestCount} guests)
+                          </span>
+                        </span>
                         {menu.pricePerGuest && (
-                          <span className="font-medium">{formatAmount(menu.pricePerGuest * menu.guestCount)}</span>
+                          <span className="font-medium">
+                            {formatAmount(menu.pricePerGuest * menu.guestCount)}
+                          </span>
                         )}
                       </div>
                     ))
                   ) : (
                     <div className="flex justify-between items-center text-xs">
-                      <span className="text-muted-foreground">{booking.menu?.name || "Single Service Entry"}</span>
-                      <span className="font-medium">{formatAmount(booking.totalPrice)}</span>
+                      <span className="text-muted-foreground">
+                        {booking.menu?.name || "Single Service Entry"}
+                      </span>
+                      <span className="font-medium">
+                        {formatAmount(booking.totalPrice)}
+                      </span>
                     </div>
                   )}
-                  
+
                   {!isCustom && structuredMenus.length <= 1 && (
                     <div className="flex justify-between items-center text-[10px] pt-1 text-muted-foreground/60 italic">
-                      <span>{booking.guestCount} guests @ {formatAmount(booking.serviceTier.pricePerGuest)}/person</span>
+                      <span>
+                        {booking.guestCount} guests @{" "}
+                        {formatAmount(booking.serviceTier.pricePerGuest)}/person
+                      </span>
                     </div>
                   )}
                 </div>
               </div>
 
-              {booking.payments.length === 0 ? (
-                <div className="text-center py-8 rounded-xl border border-dashed border-border/50">
-                  <p className="text-muted-foreground">No payments recorded yet</p>
-                </div>
-              ) : (
+              {booking.payments.length > 0 && (
                 <div className="space-y-3">
                   {booking.payments.map((payment) => (
-                    <div key={payment.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-border/50 bg-background/50 p-4 transition-colors hover:bg-muted/50">
+                    <div
+                      key={payment.id}
+                      className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-border/50 bg-background/50 p-4 transition-colors hover:bg-muted/50"
+                    >
                       <div>
                         <div className="flex items-center gap-3 mb-1">
-                          <p className="font-bold text-lg">{formatAmount(payment.amount)}</p>
-                          <Badge variant="outline" className="uppercase text-[10px] tracking-wider">{payment.status}</Badge>
+                          <p className="font-bold text-lg">
+                            {formatAmount(payment.amount)}
+                          </p>
+                          <Badge
+                            variant="outline"
+                            className="uppercase text-[10px] tracking-wider"
+                          >
+                            {payment.status}
+                          </Badge>
                         </div>
                         <p className="text-sm text-muted-foreground flex items-center gap-2">
                           <CreditCard className="w-3.5 h-3.5" />
-                          {payment.method.replace('_', ' ')}
-                          {payment.invoice && ` • Invoice #${payment.invoice.invoiceNumber}`}
+                          {payment.method.replace("_", " ")}
+                          {payment.invoice &&
+                            ` • Invoice #${payment.invoice.invoiceNumber}`}
                         </p>
                       </div>
                       <div className="text-sm text-muted-foreground text-left sm:text-right">
-                        <p>Initiated: {format(new Date(payment.createdAt), "MMM d, yyyy")}</p>
-                        {payment.paidAt && <p className="text-foreground font-medium mt-0.5">Paid: {format(new Date(payment.paidAt), "MMM d")}</p>}
+                        <p>
+                          Initiated:{" "}
+                          {format(new Date(payment.createdAt), "MMM d, yyyy")}
+                        </p>
+                        {payment.paidAt && (
+                          <p className="text-foreground font-medium mt-0.5">
+                            Paid: {format(new Date(payment.paidAt), "MMM d")}
+                          </p>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -489,23 +632,41 @@ export default function BookingDetailPage() {
             <SectionCard title="Client Feedback" icon={MessageSquare}>
               <div className="grid gap-4">
                 {booking.reviews.map((review) => (
-                  <div key={review.id} className="rounded-xl border border-border/50 bg-background/50 p-5">
+                  <div
+                    key={review.id}
+                    className="rounded-xl border border-border/50 bg-background/50 p-5"
+                  >
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
                           {review.customer.name.charAt(0)}
                         </div>
                         <div>
-                          <p className="font-semibold">{review.customer.name}</p>
-                          <p className="text-xs text-muted-foreground">{format(new Date(review.createdAt), "MMMM d, yyyy")}</p>
+                          <p className="font-semibold">
+                            {review.customer.name}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {format(new Date(review.createdAt), "MMMM d, yyyy")}
+                          </p>
                         </div>
                       </div>
-                      <Badge variant="secondary" className="bg-primary/20 text-primary border-none">
+                      <Badge
+                        variant="secondary"
+                        className="bg-primary/20 text-primary border-none"
+                      >
                         {review.rating}.0 / 5.0
                       </Badge>
                     </div>
-                    {review.title && <h4 className="font-medium text-foreground mb-1">{review.title}</h4>}
-                    {review.comment && <p className="text-muted-foreground text-sm italic">"{review.comment}"</p>}
+                    {review.title && (
+                      <h4 className="font-medium text-foreground mb-1">
+                        {review.title}
+                      </h4>
+                    )}
+                    {review.comment && (
+                      <p className="text-muted-foreground text-sm italic">
+                        "{review.comment}"
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>
@@ -515,26 +676,39 @@ export default function BookingDetailPage() {
 
         {/* Sidebar */}
         <div className="space-y-6 lg:col-span-4">
-          <SectionCard title="Lifecycle Management" icon={Activity} className="border-primary/40 shadow-[0_0_30px_rgba(234,179,8,0.05)]">
+          <SectionCard
+            title="Lifecycle Management"
+            icon={Activity}
+            className="border-primary/40 shadow-[0_0_30px_rgba(234,179,8,0.05)]"
+          >
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label className="text-xs uppercase tracking-wider text-muted-foreground">Current Status</Label>
-                <Select value={selectedStatus} onValueChange={(value: BookingStatus) => setSelectedStatus(value)}>
+                <Label className="text-xs uppercase tracking-wider text-muted-foreground">
+                  Current Status
+                </Label>
+                <Select
+                  value={selectedStatus}
+                  onValueChange={(value: BookingStatus) =>
+                    setSelectedStatus(value)
+                  }
+                >
                   <SelectTrigger className="h-12 bg-background/50 border-primary/30 focus:ring-primary">
                     <SelectValue placeholder="Select status" />
                   </SelectTrigger>
                   <SelectContent>
                     {statusOptions.map((status) => (
                       <SelectItem key={status} value={status} className="py-3">
-                        <span className="font-medium">{status.replaceAll("_", " ")}</span>
+                        <span className="font-medium">
+                          {status.replaceAll("_", " ")}
+                        </span>
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
-              <Button 
-                onClick={handleSaveStatus} 
-                disabled={isUpdating || selectedStatus === booking.status} 
+              <Button
+                onClick={handleSaveStatus}
+                disabled={isUpdating || selectedStatus === booking.status}
                 className="w-full h-12 text-base font-semibold transition-all hover:shadow-[0_0_20px_rgba(234,179,8,0.3)] shadow-md"
               >
                 {isUpdating ? "Processing..." : "Update Status"}
@@ -542,50 +716,77 @@ export default function BookingDetailPage() {
             </div>
           </SectionCard>
 
-          <SectionCard title="Client Profile" icon={User}>
+          <SectionCard title="Client Profile">
             <div className="space-y-5 text-sm">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
                   <User className="w-5 h-5 text-secondary-foreground" />
                 </div>
-                <div>
-                  <p className="font-bold text-base text-foreground">{booking.customer.name}</p>
-                  <p className="text-muted-foreground text-xs uppercase tracking-wider">{booking.customer.userType}</p>
-                </div>
+                <Link href={`/dashboard/users/customer/${booking.customer.id}`}>
+                  <p className="font-bold text-base text-foreground">
+                    {booking.customer.name}
+                  </p>
+                  <p className="text-muted-foreground text-xs uppercase tracking-wider">
+                    {booking.customer.userType}
+                  </p>
+                </Link>
               </div>
               <Separator className="bg-border/50" />
               <div className="space-y-3">
                 <div className="flex items-center gap-3 group">
                   <Mail className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                  <a href={`mailto:${booking.customer.email}`} className="hover:text-primary hover:underline transition-colors">{booking.customer.email}</a>
+                  <a
+                    href={`mailto:${booking.customer.email}`}
+                    className="hover:text-primary hover:underline transition-colors"
+                  >
+                    {booking.customer.email}
+                  </a>
                 </div>
                 {booking.customer.phone && (
                   <div className="flex items-center gap-3 group">
                     <Phone className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                    <a href={`tel:${booking.customer.phone}`} className="hover:text-primary hover:underline transition-colors">{booking.customer.phone}</a>
+                    <a
+                      href={`tel:${booking.customer.phone}`}
+                      className="hover:text-primary hover:underline transition-colors"
+                    >
+                      {booking.customer.phone}
+                    </a>
                   </div>
                 )}
               </div>
             </div>
           </SectionCard>
 
-          <SectionCard title="Legal & Contract" icon={FileSignature}>
+          {/* <SectionCard title="Legal & Contract" icon={FileSignature}>
             {booking.contract ? (
               <div className="space-y-4">
                 <div className="flex justify-between items-center rounded-lg bg-background/50 p-3 border border-border/50">
                   <span className="text-sm text-muted-foreground">Status</span>
-                  <Badge variant="outline" className="uppercase font-semibold tracking-wider text-[10px]">
+                  <Badge
+                    variant="outline"
+                    className="uppercase font-semibold tracking-wider text-[10px]"
+                  >
                     {booking.contract.status}
                   </Badge>
                 </div>
                 <div className="flex justify-between items-center rounded-lg bg-background/50 p-3 border border-border/50">
-                  <span className="text-sm text-muted-foreground">Executed On</span>
+                  <span className="text-sm text-muted-foreground">
+                    Executed On
+                  </span>
                   <span className="text-sm font-medium">
-                    {booking.contract.signedAt ? format(new Date(booking.contract.signedAt), "MMM d, yyyy") : "Pending execution"}
+                    {booking.contract.signedAt
+                      ? format(
+                          new Date(booking.contract.signedAt),
+                          "MMM d, yyyy",
+                        )
+                      : "Pending execution"}
                   </span>
                 </div>
                 {booking.contract.signatureUrl && (
-                  <Button variant="outline" className="w-full mt-2 group border-primary/20 hover:border-primary/50">
+                  <Button
+                    variant="outline"
+                    className="w-full mt-2 group border-primary/20 hover:border-primary/50"
+                  >
                     <FileSignature className="w-4 h-4 mr-2 text-muted-foreground group-hover:text-primary transition-colors" />
                     Download Executed Copy
                   </Button>
@@ -594,15 +795,17 @@ export default function BookingDetailPage() {
             ) : (
               <div className="text-center py-6">
                 <FileSignature className="w-10 h-10 mx-auto text-muted-foreground/30 mb-3" />
-                <p className="text-sm text-muted-foreground mb-4">No formal agreement has been generated for this booking.</p>
-                <Button variant="outline" className="w-full">Generate Draft Contract</Button>
+                <p className="text-sm text-muted-foreground mb-4">
+                  No formal agreement has been generated for this booking.
+                </p>
+                <Button variant="outline" className="w-full">
+                  Generate Draft Contract
+                </Button>
               </div>
             )}
-          </SectionCard>
-
+          </SectionCard> */}
         </div>
       </div>
     </motion.div>
   );
 }
-
