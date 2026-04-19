@@ -14,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Link from "next/link";
 
 export type InquiryRecord = {
   id: string;
@@ -115,7 +116,12 @@ export function getInquiriesColumns({
       header: "Linked User",
       cell: ({ row }) =>
         row.original.userId ? (
-          <span className="font-mono text-xs">{row.original.userId}</span>
+          <Link
+            href={`/dashboard/users/customer/${row.original.userId}`}
+            className="font-mono text-xs hover:underline"
+          >
+            {row.original.userId}
+          </Link>
         ) : (
           <span className="text-xs text-muted-foreground">Guest</span>
         ),

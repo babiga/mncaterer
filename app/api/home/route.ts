@@ -66,7 +66,7 @@ export async function GET() {
             },
           },
         },
-        orderBy: { createdAt: "desc" },
+        orderBy: { createdAt: "asc" },
         take: 10,
       }),
       prisma.event.findMany({

@@ -14,6 +14,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Link from "next/link";
 
 export type EventItem = {
     id: string;
@@ -32,10 +33,10 @@ export type EventItem = {
     createdAt: string;
     updatedAt: string;
     chefProfile: {
-        dashboardUser: { name: string };
+        dashboardUser: { id: string; name: string };
     } | null;
     companyProfile: {
-        dashboardUser: { name: string };
+        dashboardUser: { id: string; name: string };
     } | null;
 };
 
@@ -165,7 +166,7 @@ export function getEventsColumns({
                         Featured
                     </Badge>
                 ) : (
-                    <span className="text-muted-foreground text-xs">—</span>
+                    <span className="text-muted-foreground text-xs">-</span>
                 ),
         },
         {
@@ -173,13 +174,18 @@ export function getEventsColumns({
             header: "Chef / Company",
             cell: ({ row }) => {
                 const event = row.original;
-                const name =
-                    event.chefProfile?.dashboardUser?.name ||
-                    event.companyProfile?.dashboardUser?.name;
-                return name ? (
-                    <span className="text-sm">{name}</span>
+                const linkedUser =
+                    event.chefProfile?.dashboardUser ||
+                    event.companyProfile?.dashboardUser;
+                return linkedUser ? (
+                    <Link
+                        href={`/dashboard/users/dashboard/${linkedUser.id}`}
+                        className="text-sm hover:underline"
+                    >
+                        {linkedUser.name}
+                    </Link>
                 ) : (
-                    <span className="text-muted-foreground text-xs">—</span>
+                    <span className="text-muted-foreground text-xs">-</span>
                 );
             },
         },

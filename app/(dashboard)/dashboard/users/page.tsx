@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +22,7 @@ import { DashboardUserFormSheet } from "@/components/users/dashboard-user-form-s
 import { DeleteUserDialog } from "@/components/users/delete-user-dialog";
 
 export default function UsersPage() {
+  const router = useRouter();
   const [user, setUser] = useState<any>(null);
   // State for data
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -90,10 +92,8 @@ export default function UsersPage() {
 
   // Customer handlers
   const handleViewCustomer = useCallback((customer: Customer) => {
-    setSelectedCustomer(customer);
-    setCustomerSheetMode("view");
-    setCustomerSheetOpen(true);
-  }, []);
+    router.push(`/dashboard/users/customer/${customer.id}`);
+  }, [router]);
 
   const handleEditCustomer = useCallback((customer: Customer) => {
     setSelectedCustomer(customer);
@@ -119,10 +119,8 @@ export default function UsersPage() {
 
   // Dashboard user handlers
   const handleViewDashboardUser = useCallback((user: DashboardUser) => {
-    setSelectedDashboardUser(user);
-    setDashboardUserSheetMode("view");
-    setDashboardUserSheetOpen(true);
-  }, []);
+    router.push(`/dashboard/users/dashboard/${user.id}`);
+  }, [router]);
 
   const handleEditDashboardUser = useCallback((user: DashboardUser) => {
     setSelectedDashboardUser(user);

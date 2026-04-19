@@ -14,6 +14,7 @@ type BookingRow = {
   totalPrice: number;
   eventDate: string;
   customer: {
+    id: string;
     name: string;
   };
 };
@@ -89,7 +90,14 @@ export function DashboardRecentBookings() {
                         {booking.bookingNumber.slice(0, 8)}
                       </Link>
                     </TableCell>
-                    <TableCell>{booking.customer.name}</TableCell>
+                    <TableCell>
+                      <Link
+                        href={`/dashboard/users/customer/${booking.customer.id}`}
+                        className="hover:underline"
+                      >
+                        {booking.customer.name}
+                      </Link>
+                    </TableCell>
                     <TableCell>
                       <Badge variant="outline">{booking.status}</Badge>
                     </TableCell>

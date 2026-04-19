@@ -57,9 +57,96 @@ export async function GET(
       );
     }
 
+    const now = new Date();
+    const activeStatuses = ["PENDING", "CONFIRMED", "DEPOSIT_PAID", "IN_PROGRESS"] as const;
+    const [recentBookingsRaw, bookingStatusBreakdownRaw, bookingTotalsRaw, upcomingOrdersCount] = await Promise.all([
+      prisma.booking.findMany({
+        where: { customerId: id },
+        orderBy: { createdAt: "desc" },
+        take: 6,
+        select: {
+          id: true,
+          bookingNumber: true,
+          serviceType: true,
+          status: true,
+          eventDate: true,
+          eventTime: true,
+          guestCount: true,
+          venue: true,
+          totalPrice: true,
+          depositAmount: true,
+          createdAt: true,
+          serviceTier: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          menu: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          chefProfile: {
+            select: {
+              id: true,
+              dashboardUser: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      }),
+      prisma.booking.groupBy({
+        by: ["status"],
+        where: { customerId: id },
+        _count: {
+          status: true,
+        },
+      }),
+      prisma.booking.aggregate({
+        where: { customerId: id },
+        _sum: {
+          totalPrice: true,
+        },
+      }),
+      prisma.booking.count({
+        where: {
+          customerId: id,
+          eventDate: { gte: now },
+          status: { in: [...activeStatuses] },
+        },
+      }),
+    ]);
+
+    const statusBreakdown = bookingStatusBreakdownRaw.reduce<Record<string, number>>((acc, item) => {
+      acc[item.status] = item._count.status;
+      return acc;
+    }, {});
+
+    const recentBookings = recentBookingsRaw.map((booking) => ({
+      ...booking,
+      totalPrice: Number(booking.totalPrice),
+      depositAmount: booking.depositAmount ? Number(booking.depositAmount) : null,
+    }));
+
     return NextResponse.json({
       success: true,
-      data: user,
+      data: {
+        ...user,
+        recentBookings,
+        bookingInsights: {
+          totalOrders: user._count.bookings,
+          totalSpent: Number(bookingTotalsRaw._sum.totalPrice ?? 0),
+          completedOrders: statusBreakdown.COMPLETED ?? 0,
+          cancelledOrders: statusBreakdown.CANCELLED ?? 0,
+          upcomingOrders: upcomingOrdersCount,
+        },
+      },
     });
   } catch (error) {
     console.error("Get user error:", error);

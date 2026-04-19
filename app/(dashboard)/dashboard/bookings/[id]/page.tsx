@@ -4,10 +4,33 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
+import {
+  CalendarDays,
+  Clock,
+  Users,
+  MapPin,
+  ChefHat,
+  Receipt,
+  Utensils,
+  CreditCard,
+  MessageSquare,
+  FileSignature,
+  ArrowLeft,
+  Crown,
+  Info,
+  Phone,
+  Mail,
+  User,
+  Activity,
+  CheckCircle2,
+  XCircle,
+  Building2,
+  Coins
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
@@ -27,7 +50,6 @@ type BookingDetail = {
   venueAddress: string | null;
   specialRequests: string | null;
   totalPrice: number;
-  depositAmount: number | null;
   createdAt: string;
   updatedAt: string;
   customer: {
@@ -101,19 +123,71 @@ type BookingDetail = {
 };
 
 const statusClasses: Record<BookingStatus, string> = {
-  PENDING: "border-amber-500/30 text-amber-700",
-  CONFIRMED: "border-blue-500/30 text-blue-700",
-  DEPOSIT_PAID: "border-cyan-500/30 text-cyan-700",
-  IN_PROGRESS: "border-indigo-500/30 text-indigo-700",
-  COMPLETED: "border-emerald-500/30 text-emerald-700",
-  CANCELLED: "border-rose-500/30 text-rose-700",
+  PENDING: "border-amber-500/30 text-amber-500 bg-amber-500/10",
+  CONFIRMED: "border-blue-500/30 text-blue-400 bg-blue-500/10",
+  DEPOSIT_PAID: "border-cyan-500/30 text-cyan-400 bg-cyan-500/10",
+  IN_PROGRESS: "border-indigo-500/30 text-indigo-400 bg-indigo-500/10",
+  COMPLETED: "border-emerald-500/30 text-emerald-400 bg-emerald-500/10",
+  CANCELLED: "border-rose-500/30 text-rose-400 bg-rose-500/10",
+};
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08, delayChildren: 0.1 },
+  },
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { type: "spring" as const, stiffness: 100, damping: 15 },
+  },
 };
 
 function formatAmount(amount: number) {
-  return amount.toLocaleString("en-US", {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "MNT",
     minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  });
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
+function SectionCard({ children, title, icon: Icon, className = "" }: any) {
+  return (
+    <motion.div variants={itemVariants} className={`rounded-2xl border border-primary/20 bg-card/60 p-6 backdrop-blur-xl shadow-lg shadow-black/20 ${className}`}>
+      {title && (
+        <div className="flex items-center gap-3 mb-6">
+          {Icon && (
+            <div className="p-2 rounded-lg bg-primary/10 text-primary">
+              <Icon className="w-5 h-5" />
+            </div>
+          )}
+          <h2 className="text-xl font-bold tracking-tight text-foreground">{title}</h2>
+        </div>
+      )}
+      {children}
+    </motion.div>
+  );
+}
+
+function InfoBlock({ icon: Icon, label, value, subValue, highlight = false }: any) {
+  return (
+    <div className={`flex items-start gap-4 p-4 rounded-xl border transition-all duration-300 ${highlight ? 'border-primary/40 bg-primary/5 hover:border-primary/60' : 'border-border/50 bg-background/50 hover:border-border hover:bg-background/80'}`}>
+      <div className={`rounded-lg p-3 ${highlight ? 'bg-primary/20 text-primary shadow-[0_0_15px_rgba(234,179,8,0.2)]' : 'bg-muted text-muted-foreground'}`}>
+        <Icon className="h-5 w-5" />
+      </div>
+      <div>
+        <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">{label}</p>
+        <p className="font-medium text-foreground">{value}</p>
+        {subValue && <p className="text-sm text-muted-foreground mt-0.5">{subValue}</p>}
+      </div>
+    </div>
+  );
 }
 
 export default function BookingDetailPage() {
@@ -149,8 +223,7 @@ export default function BookingDetailPage() {
   }, [fetchBooking]);
 
   const statusOptions = useMemo(
-    () =>
-      ["PENDING", "CONFIRMED", "DEPOSIT_PAID", "IN_PROGRESS", "COMPLETED", "CANCELLED"] as const,
+    () => ["PENDING", "CONFIRMED", "DEPOSIT_PAID", "IN_PROGRESS", "COMPLETED", "CANCELLED"] as const,
     [],
   );
 
@@ -170,7 +243,7 @@ export default function BookingDetailPage() {
       }
 
       setBooking((prev) => (prev ? { ...prev, ...result.data } : prev));
-      toast.success("Booking status updated");
+      toast.success("Booking status updated successfully");
     } catch {
       toast.error("Failed to update booking status");
     } finally {
@@ -180,231 +253,279 @@ export default function BookingDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-4 px-4 py-4 md:gap-6 md:py-6 lg:px-6">
-        <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-64 w-full" />
-        <Skeleton className="h-64 w-full" />
+      <div className="flex flex-col gap-8 px-4 py-8 max-w-7xl mx-auto w-full">
+        <Skeleton className="h-12 w-64 rounded-xl bg-primary/10" />
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <Skeleton className="h-[400px] w-full rounded-2xl bg-primary/5 lg:col-span-2" />
+          <Skeleton className="h-[400px] w-full rounded-2xl bg-primary/5" />
+        </div>
       </div>
     );
   }
 
   if (!booking) {
     return (
-      <div className="px-4 py-6 lg:px-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Booking Not Found</CardTitle>
-            <CardDescription>The requested booking could not be loaded.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button asChild variant="outline">
-              <a href="/dashboard/bookings">Back to bookings</a>
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
+        <XCircle className="w-16 h-16 text-muted-foreground mb-4 opacity-50" />
+        <h2 className="text-2xl font-bold mb-2">Booking Not Found</h2>
+        <p className="text-muted-foreground mb-6 max-w-md">The requested booking detail could not be loaded or doesn't exist.</p>
+        <Button asChild variant="outline" className="gap-2 rounded-full px-6">
+          <a href="/dashboard/bookings"><ArrowLeft className="w-4 h-4" /> Return to Bookings</a>
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-      <div className="flex items-start justify-between gap-4 px-4 lg:px-6">
-        <div>
-          <p className="text-xs text-muted-foreground">Booking #{booking.bookingNumber}</p>
-          <h1 className="text-2xl font-bold">Booking Detail</h1>
-          <p className="text-muted-foreground">
-            Created {format(new Date(booking.createdAt), "MMM d, yyyy HH:mm")}
+    <motion.div 
+      initial="hidden" 
+      animate="visible" 
+      variants={containerVariants}
+      className="flex flex-col gap-6 py-8 px-4 md:px-8 max-w-[1400px] mx-auto w-full"
+    >
+      <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-border/50">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <Button asChild variant="ghost" size="icon" className="rounded-full hover:bg-primary/10 hover:text-primary">
+              <a href="/dashboard/bookings"><ArrowLeft className="w-5 h-5" /></a>
+            </Button>
+            <Badge variant="outline" className={`px-3 py-1 text-xs font-semibold tracking-wider ${statusClasses[booking.status]} border rounded-full`}>
+              {booking.status.replaceAll("_", " ")}
+            </Badge>
+            <Badge variant="secondary" className="px-3 py-1 text-xs font-medium tracking-wider uppercase bg-primary/10 text-primary border-transparent rounded-full">
+              {booking.serviceType}
+            </Badge>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mt-2 text-foreground">
+            Booking <span className="text-primary/80">#{booking.bookingNumber}</span>
+          </h1>
+          <p className="text-muted-foreground flex items-center gap-2 text-sm mt-2">
+            <Clock className="w-4 h-4" /> Created on {format(new Date(booking.createdAt), "MMMM d, yyyy 'at' HH:mm")}
           </p>
         </div>
-        <Button asChild variant="outline">
-          <a href="/dashboard/bookings">Back to list</a>
-        </Button>
-      </div>
+        
+        <div className="flex gap-3">
+          <Button variant="outline" className="rounded-full px-6 border-primary/20 hover:bg-primary/10 hover:border-primary/50 transition-colors">
+            <Receipt className="w-4 h-4 mr-2" /> View Invoice
+          </Button>
+        </div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 gap-4 px-4 lg:grid-cols-3 lg:px-6">
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle>Booking Summary</CardTitle>
-            <CardDescription>Core event and service information</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
-              <div>
-                <p className="text-muted-foreground">Status</p>
-                <Badge variant="outline" className={statusClasses[booking.status]}>
-                  {booking.status.replaceAll("_", " ")}
-                </Badge>
-              </div>
-              <div>
-                <p className="text-muted-foreground">Service Type</p>
-                <p>{booking.serviceType}</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground">Service Tier</p>
-                <p>{booking.serviceTier.name}</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground">Guest Count</p>
-                <p>{booking.guestCount}</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground">Event Date</p>
-                <p>{format(new Date(booking.eventDate), "PPP")} at {booking.eventTime}</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground">Venue</p>
-                <p>{booking.venue}</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground">Venue Address</p>
-                <p>{booking.venueAddress || "N/A"}</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground">Preferred Chef</p>
-                <p>{booking.chefProfile?.dashboardUser.name || "No preference"}</p>
-              </div>
-              <div>
-                <p className="text-muted-foreground">Menu</p>
-                <p>{booking.menu?.name || "Not selected"}</p>
-              </div>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        {/* Main Event Details */}
+        <div className="space-y-6 lg:col-span-8">
+          <SectionCard title="Event Configuration" icon={Crown}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <InfoBlock 
+                highlight 
+                icon={CalendarDays} 
+                label="Date & Time" 
+                value={format(new Date(booking.eventDate), "EEEE, MMMM do, yyyy")} 
+                subValue={`at ${booking.eventTime}`} 
+              />
+              <InfoBlock 
+                icon={Users} 
+                label="Guest Count" 
+                value={`${booking.guestCount} Guests`} 
+                subValue={`${formatAmount(booking.serviceTier.pricePerGuest)} per person`} 
+              />
+              <InfoBlock 
+                icon={MapPin} 
+                label="Venue" 
+                value={booking.venue} 
+                subValue={booking.venueAddress || "Address not provided"} 
+              />
+              <InfoBlock 
+                icon={Building2} 
+                label="Service Tier" 
+                value={booking.serviceTier.name} 
+                subValue={booking.serviceTier.isVIP ? "VIP Experience" : "Standard Experience"} 
+              />
+              <InfoBlock 
+                icon={ChefHat} 
+                label="Assigned Chef" 
+                value={booking.chefProfile?.dashboardUser.name || "Pending Assignment"} 
+                subValue={booking.chefProfile?.specialty || "General"} 
+              />
+              <InfoBlock 
+                icon={Utensils} 
+                label="Selected Menu" 
+                value={booking.menu?.name || "TBD"} 
+                subValue={booking.menu?.description || "Menu details pending"} 
+              />
             </div>
 
-            <Separator />
+            {booking.specialRequests && (
+              <div className="mt-4 p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
+                <div className="flex items-center gap-2 mb-2 text-amber-500">
+                  <Info className="w-4 h-4" />
+                  <h3 className="font-semibold text-sm uppercase tracking-wider">Special Requests</h3>
+                </div>
+                <p className="text-foreground/90 italic leading-relaxed text-sm">"{booking.specialRequests}"</p>
+              </div>
+            )}
+          </SectionCard>
 
-            <div className="text-sm">
-              <p className="text-muted-foreground">Special Requests</p>
-              <p>{booking.specialRequests || "None"}</p>
-            </div>
-          </CardContent>
-        </Card>
+          <SectionCard title="Payment History" icon={CreditCard}>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 rounded-xl bg-primary/10 border border-primary/20 backdrop-blur-sm">
+                <div>
+                  <p className="text-sm font-medium text-primary uppercase tracking-wider mb-1">Total Contract Value</p>
+                  <p className="text-3xl font-bold text-foreground">{formatAmount(booking.totalPrice)}</p>
+                </div>
+                <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                  <Coins className="w-6 h-6" />
+                </div>
+              </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Manage Status</CardTitle>
-            <CardDescription>Update booking lifecycle state</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label>Status</Label>
-              <Select value={selectedStatus} onValueChange={(value: BookingStatus) => setSelectedStatus(value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-                <SelectContent>
-                  {statusOptions.map((status) => (
-                    <SelectItem key={status} value={status}>
-                      {status.replaceAll("_", " ")}
-                    </SelectItem>
+              {booking.payments.length === 0 ? (
+                <div className="text-center py-8 rounded-xl border border-dashed border-border/50">
+                  <p className="text-muted-foreground">No payments recorded yet</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {booking.payments.map((payment) => (
+                    <div key={payment.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-border/50 bg-background/50 p-4 transition-colors hover:bg-muted/50">
+                      <div>
+                        <div className="flex items-center gap-3 mb-1">
+                          <p className="font-bold text-lg">{formatAmount(payment.amount)}</p>
+                          <Badge variant="outline" className="uppercase text-[10px] tracking-wider">{payment.status}</Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground flex items-center gap-2">
+                          <CreditCard className="w-3.5 h-3.5" />
+                          {payment.method.replace('_', ' ')}
+                          {payment.invoice && ` • Invoice #${payment.invoice.invoiceNumber}`}
+                        </p>
+                      </div>
+                      <div className="text-sm text-muted-foreground text-left sm:text-right">
+                        <p>Initiated: {format(new Date(payment.createdAt), "MMM d, yyyy")}</p>
+                        {payment.paidAt && <p className="text-foreground font-medium mt-0.5">Paid: {format(new Date(payment.paidAt), "MMM d")}</p>}
+                      </div>
+                    </div>
                   ))}
-                </SelectContent>
-              </Select>
+                </div>
+              )}
             </div>
-            <Button onClick={handleSaveStatus} disabled={isUpdating || selectedStatus === booking.status} className="w-full">
-              {isUpdating ? "Saving..." : "Save Status"}
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+          </SectionCard>
 
-      <div className="grid grid-cols-1 gap-4 px-4 lg:grid-cols-3 lg:px-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Customer</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2 text-sm">
-            <p><span className="text-muted-foreground">Name:</span> {booking.customer.name}</p>
-            <p><span className="text-muted-foreground">Email:</span> {booking.customer.email}</p>
-            <p><span className="text-muted-foreground">Phone:</span> {booking.customer.phone || "N/A"}</p>
-            <p><span className="text-muted-foreground">Type:</span> {booking.customer.userType}</p>
-          </CardContent>
-        </Card>
+          {booking.reviews.length > 0 && (
+            <SectionCard title="Client Feedback" icon={MessageSquare}>
+              <div className="grid gap-4">
+                {booking.reviews.map((review) => (
+                  <div key={review.id} className="rounded-xl border border-border/50 bg-background/50 p-5">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                          {review.customer.name.charAt(0)}
+                        </div>
+                        <div>
+                          <p className="font-semibold">{review.customer.name}</p>
+                          <p className="text-xs text-muted-foreground">{format(new Date(review.createdAt), "MMMM d, yyyy")}</p>
+                        </div>
+                      </div>
+                      <Badge variant="secondary" className="bg-primary/20 text-primary border-none">
+                        {review.rating}.0 / 5.0
+                      </Badge>
+                    </div>
+                    {review.title && <h4 className="font-medium text-foreground mb-1">{review.title}</h4>}
+                    {review.comment && <p className="text-muted-foreground text-sm italic">"{review.comment}"</p>}
+                  </div>
+                ))}
+              </div>
+            </SectionCard>
+          )}
+        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Pricing</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2 text-sm">
-            <p><span className="text-muted-foreground">Price / Guest:</span> {formatAmount(booking.serviceTier.pricePerGuest)}</p>
-            <p><span className="text-muted-foreground">Total:</span> {formatAmount(booking.totalPrice)}</p>
-            <p><span className="text-muted-foreground">Deposit:</span> {booking.depositAmount ? formatAmount(booking.depositAmount) : "N/A"}</p>
-          </CardContent>
-        </Card>
+        {/* Sidebar */}
+        <div className="space-y-6 lg:col-span-4">
+          <SectionCard title="Lifecycle Management" icon={Activity} className="border-primary/40 shadow-[0_0_30px_rgba(234,179,8,0.05)]">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label className="text-xs uppercase tracking-wider text-muted-foreground">Current Status</Label>
+                <Select value={selectedStatus} onValueChange={(value: BookingStatus) => setSelectedStatus(value)}>
+                  <SelectTrigger className="h-12 bg-background/50 border-primary/30 focus:ring-primary">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {statusOptions.map((status) => (
+                      <SelectItem key={status} value={status} className="py-3">
+                        <span className="font-medium">{status.replaceAll("_", " ")}</span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button 
+                onClick={handleSaveStatus} 
+                disabled={isUpdating || selectedStatus === booking.status} 
+                className="w-full h-12 text-base font-semibold transition-all hover:shadow-[0_0_20px_rgba(234,179,8,0.3)] shadow-md"
+              >
+                {isUpdating ? "Processing..." : "Update Status"}
+              </Button>
+            </div>
+          </SectionCard>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Contract</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2 text-sm">
+          <SectionCard title="Client Profile" icon={User}>
+            <div className="space-y-5 text-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
+                  <User className="w-5 h-5 text-secondary-foreground" />
+                </div>
+                <div>
+                  <p className="font-bold text-base text-foreground">{booking.customer.name}</p>
+                  <p className="text-muted-foreground text-xs uppercase tracking-wider">{booking.customer.userType}</p>
+                </div>
+              </div>
+              <Separator className="bg-border/50" />
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 group">
+                  <Mail className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <a href={`mailto:${booking.customer.email}`} className="hover:text-primary hover:underline transition-colors">{booking.customer.email}</a>
+                </div>
+                {booking.customer.phone && (
+                  <div className="flex items-center gap-3 group">
+                    <Phone className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                    <a href={`tel:${booking.customer.phone}`} className="hover:text-primary hover:underline transition-colors">{booking.customer.phone}</a>
+                  </div>
+                )}
+              </div>
+            </div>
+          </SectionCard>
+
+          <SectionCard title="Legal & Contract" icon={FileSignature}>
             {booking.contract ? (
-              <>
-                <p><span className="text-muted-foreground">Status:</span> {booking.contract.status}</p>
-                <p><span className="text-muted-foreground">Signed:</span> {booking.contract.signedAt ? format(new Date(booking.contract.signedAt), "PPP") : "Not signed"}</p>
-              </>
-            ) : (
-              <p className="text-muted-foreground">No contract created yet</p>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 px-4 lg:grid-cols-2 lg:px-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Payments</CardTitle>
-            <CardDescription>{booking.payments.length} payment record(s)</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {booking.payments.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No payments recorded</p>
-            ) : (
-              booking.payments.map((payment) => (
-                <div key={payment.id} className="rounded-md border p-3 text-sm">
-                  <div className="flex items-center justify-between">
-                    <p className="font-medium">{formatAmount(payment.amount)}</p>
-                    <Badge variant="outline">{payment.status}</Badge>
-                  </div>
-                  <p className="text-muted-foreground">Method: {payment.method}</p>
-                  <p className="text-muted-foreground">
-                    Created: {format(new Date(payment.createdAt), "MMM d, yyyy HH:mm")}
-                  </p>
-                  {payment.paidAt ? (
-                    <p className="text-muted-foreground">Paid: {format(new Date(payment.paidAt), "MMM d, yyyy HH:mm")}</p>
-                  ) : null}
-                  {payment.invoice ? (
-                    <p className="text-muted-foreground">Invoice #{payment.invoice.invoiceNumber}</p>
-                  ) : null}
+              <div className="space-y-4">
+                <div className="flex justify-between items-center rounded-lg bg-background/50 p-3 border border-border/50">
+                  <span className="text-sm text-muted-foreground">Status</span>
+                  <Badge variant="outline" className="uppercase font-semibold tracking-wider text-[10px]">
+                    {booking.contract.status}
+                  </Badge>
                 </div>
-              ))
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Reviews</CardTitle>
-            <CardDescription>{booking.reviews.length} review(s)</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {booking.reviews.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No reviews yet</p>
-            ) : (
-              booking.reviews.map((review) => (
-                <div key={review.id} className="rounded-md border p-3 text-sm">
-                  <div className="flex items-center justify-between">
-                    <p className="font-medium">{review.customer.name}</p>
-                    <Badge variant="outline">{review.rating} / 5</Badge>
-                  </div>
-                  {review.title ? <p className="mt-1 font-medium">{review.title}</p> : null}
-                  {review.comment ? <p className="mt-1 text-muted-foreground">{review.comment}</p> : null}
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Submitted {format(new Date(review.createdAt), "MMM d, yyyy HH:mm")}
-                  </p>
+                <div className="flex justify-between items-center rounded-lg bg-background/50 p-3 border border-border/50">
+                  <span className="text-sm text-muted-foreground">Executed On</span>
+                  <span className="text-sm font-medium">
+                    {booking.contract.signedAt ? format(new Date(booking.contract.signedAt), "MMM d, yyyy") : "Pending execution"}
+                  </span>
                 </div>
-              ))
+                {booking.contract.signatureUrl && (
+                  <Button variant="outline" className="w-full mt-2 group border-primary/20 hover:border-primary/50">
+                    <FileSignature className="w-4 h-4 mr-2 text-muted-foreground group-hover:text-primary transition-colors" />
+                    Download Executed Copy
+                  </Button>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-6">
+                <FileSignature className="w-10 h-10 mx-auto text-muted-foreground/30 mb-3" />
+                <p className="text-sm text-muted-foreground mb-4">No formal agreement has been generated for this booking.</p>
+                <Button variant="outline" className="w-full">Generate Draft Contract</Button>
+              </div>
             )}
-          </CardContent>
-        </Card>
+          </SectionCard>
+
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
+

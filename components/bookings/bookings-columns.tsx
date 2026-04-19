@@ -15,6 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Link from "next/link";
 
 export type BookingRecord = {
   id: string;
@@ -126,7 +127,12 @@ export function getBookingsColumns({ onUpdateStatus, role }: BookingsColumnsProp
       header: "Customer",
       cell: ({ row }) => (
         <div className="flex flex-col">
-          <span className="font-medium">{row.original.customer.name}</span>
+          <Link
+            href={`/dashboard/users/customer/${row.original.customer.id}`}
+            className="w-fit font-medium hover:underline"
+          >
+            {row.original.customer.name}
+          </Link>
           <span className="text-xs text-muted-foreground">{row.original.customer.email}</span>
         </div>
       ),

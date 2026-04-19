@@ -7,7 +7,10 @@ export async function GET(request: NextRequest) {
   try {
     const session = await getSession();
     if (!session || session.userType !== "dashboard") {
-      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 },
+      );
     }
 
     const searchParams = request.nextUrl.searchParams;
@@ -78,7 +81,9 @@ export async function GET(request: NextRequest) {
       data: bookings.map((booking) => ({
         ...booking,
         totalPrice: Number(booking.totalPrice),
-        depositAmount: booking.depositAmount ? Number(booking.depositAmount) : null,
+        depositAmount: booking.depositAmount
+          ? Number(booking.depositAmount)
+          : null,
         serviceTier: {
           ...booking.serviceTier,
           pricePerGuest: Number(booking.serviceTier.pricePerGuest),

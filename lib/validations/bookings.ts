@@ -3,27 +3,34 @@ import { z } from "zod";
 type BookingValidationTranslator = (key: string) => string;
 
 const serviceTypeValues = ["CORPORATE", "PRIVATE", "WEDDING", "VIP"] as const;
-const bookingRequestServiceTypeValues = [...serviceTypeValues, "OTHER"] as const;
+const bookingRequestServiceTypeValues = [
+  ...serviceTypeValues,
+  "OTHER",
+] as const;
 
 export const createBookingApiSchema = z.object({
   serviceTierId: z.string().min(1).optional(),
-  selectedMenus: z.array(z.object({
-    menuId: z.string().min(1),
-    guestCount: z.coerce.number().int().min(1).max(100000),
-  })).optional(),
+  selectedMenus: z
+    .array(
+      z.object({
+        menuId: z.string().min(1),
+        guestCount: z.coerce.number().int().min(1).max(100000),
+      }),
+    )
+    .optional(),
   isCustomMenu: z.boolean().default(false),
-  customMenuItems: z.array(z.object({
-    menuItemId: z.string().min(1),
-    quantity: z.coerce.number().int().min(1).max(100000),
-  })).optional(),
+  customMenuItems: z
+    .array(
+      z.object({
+        menuItemId: z.string().min(1),
+        quantity: z.coerce.number().int().min(1).max(100000),
+      }),
+    )
+    .optional(),
   chefProfileId: z.string().nullable().optional(),
   serviceType: z.enum(bookingRequestServiceTypeValues),
-  eventDate: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/),
-  eventTime: z
-    .string()
-    .regex(/^([01]\d|2[0-3]):([0-5]\d)$/),
+  eventDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  eventTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/),
   venue: z.string().min(2).max(300),
   venueAddress: z.string().max(500).nullable().optional(),
   guestCount: z.coerce.number().int().min(1).max(100000).optional(),
@@ -36,27 +43,49 @@ export const createBookingApiSchema = z.object({
 export const dashboardBookingsQuerySchema = z.object({
   limit: z.coerce.number().min(1).max(500).default(200),
   status: z
-    .enum(["PENDING", "CONFIRMED", "DEPOSIT_PAID", "IN_PROGRESS", "COMPLETED", "CANCELLED"])
+    .enum([
+      "PENDING",
+      "CONFIRMED",
+      "DEPOSIT_PAID",
+      "IN_PROGRESS",
+      "COMPLETED",
+      "CANCELLED",
+    ])
     .optional(),
   sortOrder: z.enum(["asc", "desc"]).default("desc"),
 });
 
 export const updateBookingStatusSchema = z.object({
-  status: z.enum(["PENDING", "CONFIRMED", "DEPOSIT_PAID", "IN_PROGRESS", "COMPLETED", "CANCELLED"]),
+  status: z.enum([
+    "PENDING",
+    "CONFIRMED",
+    "DEPOSIT_PAID",
+    "IN_PROGRESS",
+    "COMPLETED",
+    "CANCELLED",
+  ]),
 });
 
 export function getCreateBookingSchema(t: BookingValidationTranslator) {
   return z.object({
     serviceTierId: z.string().optional(),
-    selectedMenus: z.array(z.object({
-      menuId: z.string().min(1),
-      guestCount: z.coerce.number().int().min(1).max(100000),
-    })).optional(),
+    selectedMenus: z
+      .array(
+        z.object({
+          menuId: z.string().min(1),
+          guestCount: z.coerce.number().int().min(1).max(100000),
+        }),
+      )
+      .optional(),
     isCustomMenu: z.boolean().optional(),
-    customMenuItems: z.array(z.object({
-      menuItemId: z.string().min(1),
-      quantity: z.coerce.number().int().min(1).max(100000),
-    })).optional(),
+    customMenuItems: z
+      .array(
+        z.object({
+          menuItemId: z.string().min(1),
+          quantity: z.coerce.number().int().min(1).max(100000),
+        }),
+      )
+      .optional(),
     menuId: z.string().optional(),
     menuIds: z.array(z.string()).optional(),
     guestCount: z.coerce.number().int().min(1).max(100000).optional(),
@@ -70,16 +99,17 @@ export function getCreateBookingSchema(t: BookingValidationTranslator) {
       .refine((value) => {
         const selected = new Date(`${value}T00:00:00`);
         const now = new Date();
-        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const today = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+        );
         return selected >= today;
       }, t("eventDateFuture")),
     eventTime: z
       .string()
       .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, t("eventTimeInvalid")),
-    venue: z
-      .string()
-      .min(2, t("venueMin"))
-      .max(300, t("venueMax")),
+    venue: z.string().min(2, t("venueMin")).max(300, t("venueMax")),
     venueAddress: z.string().max(500, t("venueAddressMax")).optional(),
     specialRequests: z.string().max(2000, t("specialRequestsMax")).optional(),
     contactName: z
@@ -96,4 +126,6 @@ export function getCreateBookingSchema(t: BookingValidationTranslator) {
   });
 }
 
-export type CreateBookingData = z.infer<ReturnType<typeof getCreateBookingSchema>>;
+export type CreateBookingData = z.infer<
+  ReturnType<typeof getCreateBookingSchema>
+>;

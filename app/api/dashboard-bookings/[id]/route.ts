@@ -38,7 +38,10 @@ export async function GET(
   try {
     const session = await getSession();
     if (!session || session.userType !== "dashboard") {
-      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 },
+      );
     }
 
     const { id } = await params;
@@ -139,7 +142,10 @@ export async function GET(
     });
 
     if (!booking) {
-      return NextResponse.json({ success: false, error: "Booking not found" }, { status: 404 });
+      return NextResponse.json(
+        { success: false, error: "Booking not found" },
+        { status: 404 },
+      );
     }
 
     return NextResponse.json({
@@ -161,8 +167,15 @@ export async function PATCH(
 ) {
   try {
     const session = await getSession();
-    if (!session || session.userType !== "dashboard" || session.role !== "ADMIN") {
-      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    if (
+      !session ||
+      session.userType !== "dashboard" ||
+      session.role !== "ADMIN"
+    ) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 },
+      );
     }
 
     const { id } = await params;
@@ -186,7 +199,10 @@ export async function PATCH(
     });
 
     if (!existing) {
-      return NextResponse.json({ success: false, error: "Booking not found" }, { status: 404 });
+      return NextResponse.json(
+        { success: false, error: "Booking not found" },
+        { status: 404 },
+      );
     }
 
     const updated = await prisma.booking.update({

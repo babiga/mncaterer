@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 import { PlusIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import { getChefsColumns, type ChefUser } from "@/components/chefs/chefs-columns
 import { ChefFormSheet } from "@/components/chefs/chef-form-sheet";
 
 export default function ChefsManagementPage() {
+    const router = useRouter();
     const [user, setUser] = useState<any>(null);
     const [chefs, setChefs] = useState<ChefUser[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -67,9 +69,7 @@ export default function ChefsManagementPage() {
     };
 
     const handleView = (chef: ChefUser) => {
-        setSelectedChef(chef);
-        setSheetMode("view");
-        setSheetOpen(true);
+        router.push(`/dashboard/users/dashboard/${chef.id}`);
     };
 
     const handleEdit = (chef: ChefUser) => {

@@ -78,14 +78,14 @@ export async function GET(request: NextRequest) {
         chefProfile: {
           include: {
             dashboardUser: {
-              select: { name: true, avatar: true },
+              select: { id: true, name: true, avatar: true },
             },
           },
         },
         companyProfile: {
           include: {
             dashboardUser: {
-              select: { name: true, avatar: true },
+              select: { id: true, name: true, avatar: true },
             },
           },
         },
@@ -160,14 +160,14 @@ export async function POST(request: NextRequest) {
         chefProfile: {
           include: {
             dashboardUser: {
-              select: { name: true },
+              select: { id: true, name: true },
             },
           },
         },
         companyProfile: {
           include: {
             dashboardUser: {
-              select: { name: true },
+              select: { id: true, name: true },
             },
           },
         },
