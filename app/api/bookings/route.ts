@@ -334,6 +334,16 @@ export async function POST(request: NextRequest) {
               quantity: sel.quantity,
             };
           }),
+        } : (data.selectedMenus && data.selectedMenus.length > 0) ? {
+          menus: (data.selectedMenus || []).map((sel) => {
+            const menu = selectedMenus.find((m) => m.id === sel.menuId);
+            return {
+              id: sel.menuId,
+              name: menu?.name,
+              guestCount: sel.guestCount,
+              pricePerGuest: menu?.serviceTier ? Number(menu.serviceTier.pricePerGuest) : Number(serviceTier.pricePerGuest)
+            };
+          })
         } : Prisma.JsonNull,
         totalPrice,
         depositAmount,

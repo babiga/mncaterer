@@ -21,12 +21,12 @@ type BookingListItem = {
   bookingNumber: string;
   serviceType: "CORPORATE" | "PRIVATE" | "WEDDING" | "VIP" | "OTHER";
   status:
-    | "PENDING"
-    | "CONFIRMED"
-    | "DEPOSIT_PAID"
-    | "IN_PROGRESS"
-    | "COMPLETED"
-    | "CANCELLED";
+  | "PENDING"
+  | "CONFIRMED"
+  | "DEPOSIT_PAID"
+  | "IN_PROGRESS"
+  | "COMPLETED"
+  | "CANCELLED";
   eventDate: string;
   eventTime: string;
   guestCount: number;
@@ -97,7 +97,7 @@ export function UserOrdersList({ bookings }: UserOrdersListProps) {
               <div className="flex items-center gap-4">
                 <Badge
                   variant="outline"
-                  className={`${bookingStatusVariant[booking.status]} px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border`}
+                  className={`${bookingStatusVariant[booking.status]} px-3 py-1 rounded-full text-[11px] border`}
                 >
                   {t(`statuses.${booking.status}`)}
                 </Badge>
@@ -197,7 +197,7 @@ export function UserOrdersList({ bookings }: UserOrdersListProps) {
 
                 {/* Price & Summary */}
                 <div className="flex flex-col justify-end p-4 rounded-xl bg-muted/30 lg:items-end">
-                   <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">
                     {t("summary.total")}
                   </p>
                   <p className="text-xl font-medium text-primary">

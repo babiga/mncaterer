@@ -138,6 +138,8 @@ export async function GET(
             },
           },
         },
+        isCustomMenu: true,
+        customMenuData: true,
       },
     });
 

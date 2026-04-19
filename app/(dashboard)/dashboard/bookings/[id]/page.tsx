@@ -108,6 +108,8 @@ type BookingDetail = {
       dueDate: string | null;
     } | null;
   }>;
+  isCustomMenu: boolean;
+  customMenuData: any;
   reviews: Array<{
     id: string;
     rating: number;
@@ -251,6 +253,46 @@ export default function BookingDetailPage() {
     }
   }, [booking, selectedStatus]);
 
+  const { isCustom, customItems, structuredMenus, displayRequests } = useMemo(() => {
+    if (!booking) return { isCustom: false, customItems: [], structuredMenus: [], displayRequests: "" };
+    
+    const customMenuData = booking.customMenuData as any;
+    const isCustom = booking.isCustomMenu;
+    const customItems = isCustom ? (customMenuData?.items || []) : [];
+    let structuredMenus = !isCustom && customMenuData?.menus ? customMenuData.menus : [];
+
+    // Fallback parsing for older bookings
+    if (!isCustom && structuredMenus.length === 0 && booking.specialRequests) {
+      const menuSection = booking.specialRequests.split("Selected menus:\n- ")[1];
+      if (menuSection) {
+        const menuLines = menuSection.split("\nContact email")[0].split("\n- ");
+        structuredMenus = menuLines.map((line: string) => {
+          const match = line.match(/(.*) \((\d+) guests\)/);
+          if (match) {
+            return { name: match[1], guestCount: parseInt(match[2], 10) };
+          }
+          return null;
+        }).filter(Boolean);
+      }
+    }
+
+    // Clean specialRequests for display
+    let displayRequests = booking.specialRequests || "";
+    const markers = ["Selected menus:", "Custom menu items:", "Contact email for this booking:"];
+    let firstMarker = -1;
+    for (const marker of markers) {
+      const idx = displayRequests.indexOf(marker);
+      if (idx !== -1 && (firstMarker === -1 || idx < firstMarker)) {
+        firstMarker = idx;
+      }
+    }
+    if (firstMarker !== -1) {
+      displayRequests = displayRequests.substring(0, firstMarker).trim();
+    }
+
+    return { isCustom, customItems, structuredMenus, displayRequests };
+  }, [booking]);
+
   if (isLoading) {
     return (
       <div className="flex flex-col gap-8 px-4 py-8 max-w-7xl mx-auto w-full">
@@ -350,31 +392,66 @@ export default function BookingDetailPage() {
               <InfoBlock 
                 icon={Utensils} 
                 label="Selected Menu" 
-                value={booking.menu?.name || "TBD"} 
-                subValue={booking.menu?.description || "Menu details pending"} 
+                value={isCustom ? "Custom Menu" : (structuredMenus.length > 1 ? `${structuredMenus.length} Menus Selected` : (booking.menu?.name || "TBD"))} 
+                subValue={booking.menu?.description || (isCustom ? "Itemized custom selection" : "Menu details pending")} 
               />
             </div>
 
-            {booking.specialRequests && (
+            {displayRequests && (
               <div className="mt-4 p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
                 <div className="flex items-center gap-2 mb-2 text-amber-500">
                   <Info className="w-4 h-4" />
                   <h3 className="font-semibold text-sm uppercase tracking-wider">Special Requests</h3>
                 </div>
-                <p className="text-foreground/90 italic leading-relaxed text-sm">"{booking.specialRequests}"</p>
+                <p className="text-foreground/90 italic leading-relaxed text-sm whitespace-pre-line">"{displayRequests}"</p>
               </div>
             )}
           </SectionCard>
 
           <SectionCard title="Payment History" icon={CreditCard}>
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 rounded-xl bg-primary/10 border border-primary/20 backdrop-blur-sm">
-                <div>
-                  <p className="text-sm font-medium text-primary uppercase tracking-wider mb-1">Total Contract Value</p>
-                  <p className="text-3xl font-bold text-foreground">{formatAmount(booking.totalPrice)}</p>
+              <div className="flex flex-col p-5 rounded-xl bg-primary/10 border border-primary/20 backdrop-blur-sm gap-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-primary uppercase tracking-wider mb-1">Total Contract Value</p>
+                    <p className="text-3xl font-bold text-foreground">{formatAmount(booking.totalPrice)}</p>
+                  </div>
+                  <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                    <Coins className="w-6 h-6" />
+                  </div>
                 </div>
-                <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                  <Coins className="w-6 h-6" />
+                
+                <Separator className="bg-primary/20" />
+                
+                <div className="space-y-3">
+                  {isCustom ? (
+                    customItems.map((item: any, idx: number) => (
+                      <div key={idx} className="flex justify-between items-center text-xs">
+                        <span className="text-muted-foreground">{item.name} <span className="text-[10px] opacity-70">(x{item.quantity})</span></span>
+                        <span className="font-medium">{formatAmount(item.price * item.quantity)}</span>
+                      </div>
+                    ))
+                  ) : structuredMenus.length > 0 ? (
+                    structuredMenus.map((menu: any, idx: number) => (
+                      <div key={idx} className="flex justify-between items-center text-xs">
+                        <span className="text-muted-foreground">{menu.name} <span className="text-[10px] opacity-70">({menu.guestCount} guests)</span></span>
+                        {menu.pricePerGuest && (
+                          <span className="font-medium">{formatAmount(menu.pricePerGuest * menu.guestCount)}</span>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="text-muted-foreground">{booking.menu?.name || "Single Service Entry"}</span>
+                      <span className="font-medium">{formatAmount(booking.totalPrice)}</span>
+                    </div>
+                  )}
+                  
+                  {!isCustom && structuredMenus.length <= 1 && (
+                    <div className="flex justify-between items-center text-[10px] pt-1 text-muted-foreground/60 italic">
+                      <span>{booking.guestCount} guests @ {formatAmount(booking.serviceTier.pricePerGuest)}/person</span>
+                    </div>
+                  )}
                 </div>
               </div>
 

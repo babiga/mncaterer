@@ -19,7 +19,7 @@ export function PaymentButton({ bookingNumber, amount }: PaymentButtonProps) {
     <>
       <Button
         onClick={() => setIsOpen(true)}
-        className="gap-2 bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20"
+        className="gap-2 bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20 text-sm"
       >
         <CreditCard className="w-4 h-4" />
         {t("payment")}

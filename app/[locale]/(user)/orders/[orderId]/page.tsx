@@ -69,6 +69,43 @@ export default async function OrderDetailsPage({
     notFound();
   }
 
+  // Parse structured data for detailed view
+  const customMenuData = booking.customMenuData as any;
+  const isCustom = booking.isCustomMenu;
+  const customItems = isCustom ? (customMenuData?.items || []) : [];
+  let structuredMenus = !isCustom && customMenuData?.menus ? customMenuData.menus : [];
+
+  // Fallback parsing for older bookings that stored multiple menus in specialRequests
+  if (!isCustom && structuredMenus.length === 0 && booking.specialRequests) {
+    const menuSection = booking.specialRequests.split("Selected menus:\n- ")[1];
+    if (menuSection) {
+      const menuLines = menuSection.split("\nContact email")[0].split("\n- ");
+      structuredMenus = menuLines.map((line: string) => {
+        const match = line.match(/(.*) \((\d+) guests\)/);
+        if (match) {
+          return { name: match[1], guestCount: parseInt(match[2], 10) };
+        }
+        return null;
+      }).filter(Boolean);
+    }
+  }
+
+  // Clean specialRequests for display (remove structured info)
+  let displayRequests = booking.specialRequests;
+  if (displayRequests) {
+    const markers = ["Selected menus:", "Custom menu items:", "Contact email for this booking:"];
+    let firstMarker = -1;
+    for (const marker of markers) {
+      const idx = displayRequests.indexOf(marker);
+      if (idx !== -1 && (firstMarker === -1 || idx < firstMarker)) {
+        firstMarker = idx;
+      }
+    }
+    if (firstMarker !== -1) {
+      displayRequests = displayRequests.substring(0, firstMarker).trim();
+    }
+  }
+
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
       {/* Header with Navigation */}
@@ -89,9 +126,9 @@ export default async function OrderDetailsPage({
             </h1>
           </div>
           <div className="hidden sm:flex items-center gap-3">
-             <Badge
+            <Badge
               variant="outline"
-              className={`${bookingStatusVariant[booking.status]} px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest border-2`}
+              className={`${bookingStatusVariant[booking.status]} px-4 py-1.5 rounded-full text-xs border-2`}
             >
               {t(`statuses.${booking.status}`)}
             </Badge>
@@ -119,7 +156,7 @@ export default async function OrderDetailsPage({
             )}
             <Badge
               variant="outline"
-              className={`${bookingStatusVariant[booking.status]} sm:hidden px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest`}
+              className={`${bookingStatusVariant[booking.status]} sm:hidden px-3 py-1 rounded-full text-xs`}
             >
               {t(`statuses.${booking.status}`)}
             </Badge>
@@ -159,7 +196,11 @@ export default async function OrderDetailsPage({
                 <div className="flex items-center gap-2">
                   <Utensils className="w-4 h-4 text-primary" />
                   <p className="text-base font-medium">
-                    {booking.menu?.name || t("list.notSelected")}
+                    {isCustom 
+                      ? t("serviceTypes.OTHER") 
+                      : (structuredMenus.length > 1 
+                        ? `${structuredMenus.length} ${t("list.menu")}` 
+                        : (booking.menu?.name || t("list.notSelected")))}
                   </p>
                 </div>
               </div>
@@ -222,8 +263,8 @@ export default async function OrderDetailsPage({
                     <MessageSquare className="w-3 h-3" />
                     {t("form.fields.specialRequestsOptional").replace(" (Optional)", "")}
                   </p>
-                  <div className="p-4 rounded-xl bg-muted/30 border border-dashed text-sm italic">
-                    {booking.specialRequests}
+                  <div className="p-4 rounded-xl bg-muted/30 border border-dashed text-sm italic whitespace-pre-line">
+                    {displayRequests}
                   </div>
                 </div>
               )}
@@ -252,20 +293,55 @@ export default async function OrderDetailsPage({
                   </div>
                 </div>
 
-                <div className="pt-4 border-t space-y-3 font-medium">
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-muted-foreground font-normal">
-                      {t("pricePerGuest")}
-                    </span>
-                    <span>{formatPrice(Number(booking.serviceTier.pricePerGuest))}₮</span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-muted-foreground font-normal">
-                      {t("totalGuests")}
-                    </span>
-                    <span>x {booking.guestCount}</span>
-                  </div>
+                <div className="pt-4 border-t space-y-4">
+                  {isCustom ? (
+                    customItems.map((item: any, idx: number) => (
+                      <div key={idx} className="flex justify-between items-start text-sm">
+                        <div className="max-w-[70%]">
+                          <p className="font-medium leading-tight">{item.name}</p>
+                          <p className="text-[10px] text-muted-foreground mt-0.5">x {item.quantity}</p>
+                        </div>
+                        <span className="font-medium whitespace-nowrap text-xs">
+                          {formatPrice(item.price * item.quantity)}₮
+                        </span>
+                      </div>
+                    ))
+                  ) : structuredMenus.length > 0 ? (
+                    structuredMenus.map((menu: any, idx: number) => (
+                      <div key={idx} className="flex justify-between items-start text-sm">
+                        <div className="max-w-[70%]">
+                          <p className="font-medium leading-tight">{menu.name}</p>
+                          <p className="text-[10px] text-muted-foreground mt-0.5">{menu.guestCount} {t("summary.guests")}</p>
+                        </div>
+                        {menu.pricePerGuest && (
+                          <span className="font-medium whitespace-nowrap text-xs">
+                            {formatPrice(menu.pricePerGuest * menu.guestCount)}₮
+                          </span>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-muted-foreground font-normal">
+                        {booking.menu?.name || t("serviceTypes." + booking.serviceType)}
+                      </span>
+                      <span className="font-medium">{formatPrice(Number(booking.totalPrice))}₮</span>
+                    </div>
+                  )}
                 </div>
+
+                {!isCustom && structuredMenus.length <= 1 && (
+                  <div className="pt-4 border-t border-dashed space-y-2 font-medium bg-muted/20 -mx-6 px-6 py-3">
+                    <div className="flex justify-between items-center text-[10px] text-muted-foreground">
+                      <span className="uppercase tracking-wider">{t("pricePerGuest")}</span>
+                      <span>{formatPrice(Number(booking.serviceTier.pricePerGuest))}₮</span>
+                    </div>
+                    <div className="flex justify-between items-center text-[10px] text-muted-foreground">
+                      <span className="uppercase tracking-wider">{t("totalGuests")}</span>
+                      <span>x {booking.guestCount}</span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="bg-primary/10 p-6 flex items-center justify-between">
@@ -280,7 +356,7 @@ export default async function OrderDetailsPage({
           </section>
 
           {/* Additional details card or helper info */}
-          <div className="p-5 rounded-2xl bg-muted/20 border border-dashed flex items-start gap-3">
+          {/* <div className="p-5 rounded-2xl bg-muted/20 border border-dashed flex items-start gap-3">
             <ShoppingBag className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
             <div className="text-xs text-muted-foreground space-y-2">
               <p className="font-semibold text-foreground uppercase tracking-wider">
@@ -291,7 +367,7 @@ export default async function OrderDetailsPage({
                 Please contact support if you have any questions regarding your order.
               </p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
