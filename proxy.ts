@@ -5,7 +5,7 @@ import { jwtVerify } from "jose";
 
 const LOCALE_COOKIE_NAME = "lastLocale";
 const SESSION_COOKIE_NAME = "session";
-const DEFAULT_LOCALE = "en";
+const DEFAULT_LOCALE = "mn";
 const VALID_LOCALES = ["en", "mn"];
 
 const JWT_SECRET = new TextEncoder().encode(
