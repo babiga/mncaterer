@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import { PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { UsersDataTable } from "@/components/users/users-data-table";
@@ -121,6 +120,40 @@ export default function ChefsManagementPage() {
         }
     };
 
+    const handleToggleFeatured = async (chef: ChefUser) => {
+        if (!chef.chefProfile) {
+            toast.error("Chef profile not found");
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/dashboard-users/chefs/${chef.id}/is-featured`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ isFeatured: !chef.chefProfile.isFeatured }),
+            });
+            const result = await response.json();
+            if (result.success) {
+                setChefs((prev) =>
+                    prev.map((c) =>
+                        c.id === chef.id && c.chefProfile
+                            ? {
+                                  ...c,
+                                  chefProfile: {
+                                      ...c.chefProfile,
+                                      isFeatured: !c.chefProfile.isFeatured,
+                                  },
+                              }
+                            : c
+                    )
+                );
+                toast.success(chef.chefProfile.isFeatured ? "Chef unfeatured" : "Chef featured");
+            }
+        } catch {
+            toast.error("Failed to update featured status");
+        }
+    };
+
     const handleToggleTaxStatus = async (chef: ChefUser, taxStatus: "PENDING" | "PAID" | "WAIVED") => {
         try {
             const response = await fetch(`/api/dashboard-users/chefs/${chef.id}/tax-status`, {
@@ -163,10 +196,11 @@ export default function ChefsManagementPage() {
                 onDelete: handleDelete,
                 onToggleActive: handleToggleActive,
                 onToggleVerify: handleToggleVerify,
+                onToggleFeatured: handleToggleFeatured,
                 onToggleTaxStatus: handleToggleTaxStatus,
                 role: user?.role,
             }),
-        [handleDelete, handleEdit, handleToggleActive, handleToggleVerify, handleToggleTaxStatus, handleView, user?.role]
+        [handleDelete, handleEdit, handleToggleActive, handleToggleFeatured, handleToggleTaxStatus, handleToggleVerify, handleView, user?.role]
     );
 
     if (isLoading) {

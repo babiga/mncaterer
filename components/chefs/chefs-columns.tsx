@@ -32,6 +32,7 @@ export type ChefUser = {
         specialty: string;
         rating: number;
         taxStatus: "PENDING" | "PAID" | "WAIVED";
+        isFeatured: boolean;
     } | null;
 };
 
@@ -41,6 +42,7 @@ interface ChefsColumnsProps {
     onDelete: (user: ChefUser) => void;
     onToggleActive: (user: ChefUser) => void;
     onToggleVerify: (user: ChefUser) => void;
+    onToggleFeatured: (user: ChefUser) => void;
     onToggleTaxStatus: (user: ChefUser, status: "PENDING" | "PAID" | "WAIVED") => void;
     role?: string;
 }
@@ -51,6 +53,7 @@ export function getChefsColumns({
     onDelete,
     onToggleActive,
     onToggleVerify,
+    onToggleFeatured,
     onToggleTaxStatus,
     role,
 }: ChefsColumnsProps): ColumnDef<ChefUser>[] {
@@ -108,6 +111,9 @@ export function getChefsColumns({
                                 className="h-auto p-0 text-left justify-start font-medium"
                                 onClick={() => onView(user)}
                             >
+                                {user.chefProfile?.isFeatured && (
+                                    <StarIcon className="mr-1 h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+                                )}
                                 {user.name}
                             </Button>
                             <span className="text-xs text-muted-foreground">{user.email}</span>
@@ -194,6 +200,9 @@ export function getChefsColumns({
                                     </DropdownMenuItem>
                                     <DropdownMenuItem onClick={() => onToggleVerify(user)}>
                                         {user.isVerified ? "Unverify" : "Verify"}
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => onToggleFeatured(user)}>
+                                        {user.chefProfile?.isFeatured ? "Unfeature" : "Feature"}
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem disabled className="font-semibold">

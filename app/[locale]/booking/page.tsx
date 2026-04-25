@@ -81,7 +81,7 @@ export default async function BookingPage({
         },
         taxStatus: { in: ["PAID", "WAIVED"] },
       },
-      orderBy: [{ rating: "desc" }, { reviewCount: "desc" }],
+      orderBy: { isFeatured: "desc" },
       select: {
         id: true,
         specialty: true,

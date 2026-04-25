@@ -225,6 +225,7 @@ model ChefProfile {
   reviewCount     Int           @default(0)
   coverImage      String?
   taxStatus       ChefTaxStatus @default(PENDING)
+  isFeatured      Boolean       @default(false)
 
   bookings        Booking[]
   reviews         Review[]

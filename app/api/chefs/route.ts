@@ -18,14 +18,16 @@ export async function GET(request: NextRequest) {
       chefProfile: {
         is: {
           taxStatus: { in: ["PAID", "WAIVED"] },
-        }
+        },
       },
     };
 
     if (search) {
       where.OR = [
         { name: { contains: search, mode: "insensitive" } },
-        { chefProfile: { specialty: { contains: search, mode: "insensitive" } } },
+        {
+          chefProfile: { specialty: { contains: search, mode: "insensitive" } },
+        },
         { chefProfile: { bio: { contains: search, mode: "insensitive" } } },
       ];
     }
@@ -50,7 +52,7 @@ export async function GET(request: NextRequest) {
         include: {
           chefProfile: true,
         },
-        orderBy: { createdAt: "desc" },
+        orderBy: { chefProfile: { isFeatured: "desc" } },
         skip,
         take: limit,
       }),
@@ -83,7 +85,7 @@ export async function GET(request: NextRequest) {
     console.error("[CHEFS_GET]", error);
     return NextResponse.json(
       { success: false, message: error.message || "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

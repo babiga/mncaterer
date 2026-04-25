@@ -110,6 +110,10 @@ export const toggleVerifySchema = z.object({
   isVerified: z.boolean(),
 });
 
+export const toggleFeaturedSchema = z.object({
+  isFeatured: z.boolean(),
+});
+
 export const updateChefTaxStatusSchema = z.object({
   taxStatus: z.enum(["PENDING", "PAID", "WAIVED"]),
 });

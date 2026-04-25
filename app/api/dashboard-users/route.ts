@@ -98,6 +98,7 @@ export async function GET(request: NextRequest) {
             specialty: true,
             rating: true,
             taxStatus: true,
+            isFeatured: true,
           },
         },
       },

@@ -51,6 +51,7 @@ export async function GET() {
           isVerified: true,
           chefProfile: {
             taxStatus: { in: ["PAID", "WAIVED"] },
+            isFeatured: true,
           },
         },
         select: {
